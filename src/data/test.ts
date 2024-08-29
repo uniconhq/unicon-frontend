@@ -11,13 +11,13 @@ export const testNodes: FlowNode<NodeData>[] = [
   {
     id: "2",
     type: "custom",
-    position: { x: 10, y: 0 },
+    position: { x: 0, y: 200 },
     data: { label: "User", type: NodeType.USER, course: "CS3234" },
   },
   {
     id: "3",
     type: "custom",
-    position: { x: 20, y: 0 },
+    position: { x: 500, y: 0 },
     data: {
       label: "Task",
       type: NodeType.TASK,
@@ -31,7 +31,7 @@ export const testNodes: FlowNode<NodeData>[] = [
   {
     id: "4",
     type: "custom",
-    position: { x: 30, y: 0 },
+    position: { x: 500, y: 200 },
     data: {
       label: "Task",
       type: NodeType.TASK,
@@ -45,19 +45,19 @@ export const testNodes: FlowNode<NodeData>[] = [
   {
     id: "5",
     type: "custom",
-    position: { x: 40, y: 0 },
+    position: { x: 250, y: -100 },
     data: { label: "Group", type: NodeType.GROUP, minUsers: 1, maxUsers: 3 },
   },
   {
     id: "6",
     type: "custom",
-    position: { x: 50, y: 0 },
+    position: { x: 250, y: 70 },
     data: { label: "Artifact", type: NodeType.ARTIFACT, fileType: "pdf" },
   },
   {
     id: "7",
     type: "custom",
-    position: { x: 60, y: 0 },
+    position: { x: 250, y: 300 },
     data: { label: "Artifact", type: NodeType.ARTIFACT, fileType: "py" },
   },
 ];

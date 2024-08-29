@@ -59,6 +59,7 @@ export default function App() {
             }
             colorMode="dark"
             fitView
+            fitViewOptions={{ maxZoom: 1.0 }}
             proOptions={{ hideAttribution: true }}
           >
             <Background variant={BackgroundVariant.Dots} />
