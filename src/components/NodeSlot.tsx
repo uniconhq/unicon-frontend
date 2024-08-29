@@ -1,3 +1,4 @@
+import { twJoin } from "tailwind-merge";
 import { HandleType, Position as HandlePosition, Handle } from "@xyflow/react";
 
 interface NodeSlotProps {
@@ -9,11 +10,18 @@ interface NodeSlotProps {
 export function NodeSlot({ id, label, type }: NodeSlotProps) {
   return (
     <div
-      className={`${type === "target" ? "flex flex-row-reverse space-x-reverse" : "flex"} my-1 items-center space-x-2`}
+      className={twJoin(
+        "my-1 flex items-center space-x-2",
+        type === "target" && "flex-row-reverse space-x-reverse",
+      )}
     >
       <Handle
         style={{ border: "0", position: "static" }} // NOTE: Override default position to use flex positioning
-        className={`h-4 w-2 bg-neutral-700 ${type === "target" ? "rounded-bl-full rounded-tl-full" : "rounded-br-full rounded-tr-full"}`}
+        className={twJoin(
+          "h-4 w-2 bg-neutral-700",
+          type === "target" && "rounded-bl-full rounded-tl-full",
+          type === "source" && "rounded-br-full rounded-tr-full",
+        )}
         id={id}
         type={type}
         position={
