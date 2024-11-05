@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -14,10 +8,11 @@ import { CircleAlert } from "lucide-react";
 import { Box } from "@/components/ui/box";
 import TextField from "@/components/form/fields/text-field";
 import PasswordField from "@/components/form/fields/password-field";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginAuthTokenPost } from "@/client";
 import { Form } from "@/components/ui/form";
 import { useUserStore } from "@/store/user/user-store-provider";
+import { useNavigate } from "react-router-dom";
 
 const loginFormSchema = z.object({
   username: z.string().min(1, "Username required"),
@@ -38,7 +33,14 @@ const Login = () => {
   });
 
   const [isError, setIsError] = useState(false);
-  const { setUser } = useUserStore((store) => store);
+  const { user, setUser } = useUserStore((store) => store);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     const response = await loginAuthTokenPost({
@@ -52,6 +54,7 @@ const Login = () => {
     } else {
       setIsError(false);
       setUser(response.data.user);
+      navigate("/");
     }
   };
 
