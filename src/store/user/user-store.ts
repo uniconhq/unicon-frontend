@@ -9,7 +9,7 @@ interface UserState {
 export const defaultUserState: UserState = {};
 
 interface UserActions {
-  setUser: (user: UserPublic) => void;
+  setUser: (user?: UserPublic) => void;
 }
 
 export type UserStore = UserState & UserActions;
