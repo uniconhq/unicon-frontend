@@ -1,4 +1,4 @@
-import { UserNodeData } from "../lib/types";
+import { UserNodeData } from "@/lib/types";
 import { NodeSlot } from "./NodeSlot";
 
 export function UserNode({ course }: Pick<UserNodeData, "course">) {
