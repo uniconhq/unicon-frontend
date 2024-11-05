@@ -17,7 +17,7 @@ import {
 import { AiOutlinePython } from "react-icons/ai";
 
 import "@xyflow/react/dist/style.css";
-import { Node } from "@/features/node-graph/components/Node";
+import { Node } from "@/components/node-graph/components/Node";
 import { NodeData } from "./lib/types";
 import { Editor } from "@monaco-editor/react";
 import { testEdges, testNodes } from "./data/test";
