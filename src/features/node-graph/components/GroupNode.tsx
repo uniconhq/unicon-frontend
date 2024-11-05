@@ -1,7 +1,7 @@
-import { GroupNodeData } from "../lib/types";
+import { GroupNodeData } from "@/lib/types";
 import { NodeSlot, NodeSlotGroup } from "./NodeSlot";
 import { IoPeopleCircle } from "react-icons/io5";
-import { range } from "../utils";
+import { range } from "@/utils";
 
 export function GroupNode({
   minUsers,

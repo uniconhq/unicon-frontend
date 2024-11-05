@@ -1,4 +1,4 @@
-import { ArtifactNodeData } from "../lib/types";
+import { ArtifactNodeData } from "@/lib/types";
 import { NodeSlot } from "./NodeSlot";
 
 export function ArtifactNode({ fileType }: Pick<ArtifactNodeData, "fileType">) {
