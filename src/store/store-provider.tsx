@@ -8,8 +8,9 @@ import { client } from "@/client";
 
 import { UserStoreProvider } from "@/store/user/user-store-provider";
 
+const queryClient = new QueryClient();
+
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const queryClient = new QueryClient();
   client.setConfig({
     baseURL: import.meta.env.VITE_BACKEND_URL,
     withCredentials: true,

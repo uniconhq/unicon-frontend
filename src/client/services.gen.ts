@@ -15,18 +15,21 @@ import type {
   GetUserAuthSessionGetData,
   GetUserAuthSessionGetError,
   GetUserAuthSessionGetResponse,
-  SubmitDefinitionContestDefinitionPostData,
-  SubmitDefinitionContestDefinitionPostError,
-  SubmitDefinitionContestDefinitionPostResponse,
-  UpdateDefinitionContestDefinitionIdPatchData,
-  UpdateDefinitionContestDefinitionIdPatchError,
-  UpdateDefinitionContestDefinitionIdPatchResponse,
-  SubmitContestSubmissionContestDefinitionIdSubmissionPostData,
-  SubmitContestSubmissionContestDefinitionIdSubmissionPostError,
-  SubmitContestSubmissionContestDefinitionIdSubmissionPostResponse,
-  GetSubmissionContestSubmissionSubmissionIdGetData,
-  GetSubmissionContestSubmissionSubmissionIdGetError,
-  GetSubmissionContestSubmissionSubmissionIdGetResponse,
+  GetDefinitionsContestsDefinitionsGetData,
+  GetDefinitionsContestsDefinitionsGetError,
+  GetDefinitionsContestsDefinitionsGetResponse,
+  SubmitDefinitionContestsDefinitionsPostData,
+  SubmitDefinitionContestsDefinitionsPostError,
+  SubmitDefinitionContestsDefinitionsPostResponse,
+  UpdateDefinitionContestsDefinitionsIdPatchData,
+  UpdateDefinitionContestsDefinitionsIdPatchError,
+  UpdateDefinitionContestsDefinitionsIdPatchResponse,
+  SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostData,
+  SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostError,
+  SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostResponse,
+  GetSubmissionContestsSubmissionsSubmissionIdGetData,
+  GetSubmissionContestsSubmissionsSubmissionIdGetError,
+  GetSubmissionContestsSubmissionsSubmissionIdGetResponse,
 } from "./types.gen";
 
 export const client = createClient(createConfig());
@@ -85,79 +88,100 @@ export const getUserAuthSessionGet = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Submit a contest definition
+ * Get all definitions
  */
-export const submitDefinitionContestDefinitionPost = <
+export const getDefinitionsContestsDefinitionsGet = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<SubmitDefinitionContestDefinitionPostData, ThrowOnError>,
+  options?: Options<GetDefinitionsContestsDefinitionsGetData, ThrowOnError>,
 ) => {
-  return (options?.client ?? client).post<
-    SubmitDefinitionContestDefinitionPostResponse,
-    SubmitDefinitionContestDefinitionPostError,
+  return (options?.client ?? client).get<
+    GetDefinitionsContestsDefinitionsGetResponse,
+    GetDefinitionsContestsDefinitionsGetError,
     ThrowOnError
   >({
     ...options,
-    url: "/contest/definition",
+    url: "/contests/definitions",
+  });
+};
+
+/**
+ * Submit a contest definition
+ */
+export const submitDefinitionContestsDefinitionsPost = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<SubmitDefinitionContestsDefinitionsPostData, ThrowOnError>,
+) => {
+  return (options?.client ?? client).post<
+    SubmitDefinitionContestsDefinitionsPostResponse,
+    SubmitDefinitionContestsDefinitionsPostError,
+    ThrowOnError
+  >({
+    ...options,
+    url: "/contests/definitions",
   });
 };
 
 /**
  * Update a contest definition
  */
-export const updateDefinitionContestDefinitionIdPatch = <
+export const updateDefinitionContestsDefinitionsIdPatch = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<UpdateDefinitionContestDefinitionIdPatchData, ThrowOnError>,
+  options: Options<
+    UpdateDefinitionContestsDefinitionsIdPatchData,
+    ThrowOnError
+  >,
 ) => {
   return (options?.client ?? client).patch<
-    UpdateDefinitionContestDefinitionIdPatchResponse,
-    UpdateDefinitionContestDefinitionIdPatchError,
+    UpdateDefinitionContestsDefinitionsIdPatchResponse,
+    UpdateDefinitionContestsDefinitionsIdPatchError,
     ThrowOnError
   >({
     ...options,
-    url: "/contest/definition/{id}",
+    url: "/contests/definitions/{id}",
   });
 };
 
 /**
  * Upload a submission for a contest definition
  */
-export const submitContestSubmissionContestDefinitionIdSubmissionPost = <
+export const submitContestSubmissionContestsDefinitionsIdSubmissionsPost = <
   ThrowOnError extends boolean = false,
 >(
   options: Options<
-    SubmitContestSubmissionContestDefinitionIdSubmissionPostData,
+    SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostData,
     ThrowOnError
   >,
 ) => {
   return (options?.client ?? client).post<
-    SubmitContestSubmissionContestDefinitionIdSubmissionPostResponse,
-    SubmitContestSubmissionContestDefinitionIdSubmissionPostError,
+    SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostResponse,
+    SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostError,
     ThrowOnError
   >({
     ...options,
-    url: "/contest/definition/{id}/submission",
+    url: "/contests/definitions/{id}/submissions",
   });
 };
 
 /**
  * Get results of a submission
  */
-export const getSubmissionContestSubmissionSubmissionIdGet = <
+export const getSubmissionContestsSubmissionsSubmissionIdGet = <
   ThrowOnError extends boolean = false,
 >(
   options: Options<
-    GetSubmissionContestSubmissionSubmissionIdGetData,
+    GetSubmissionContestsSubmissionsSubmissionIdGetData,
     ThrowOnError
   >,
 ) => {
   return (options?.client ?? client).get<
-    GetSubmissionContestSubmissionSubmissionIdGetResponse,
-    GetSubmissionContestSubmissionSubmissionIdGetError,
+    GetSubmissionContestsSubmissionsSubmissionIdGetResponse,
+    GetSubmissionContestsSubmissionsSubmissionIdGetError,
     ThrowOnError
   >({
     ...options,
-    url: "/contest/submission/{submission_id}",
+    url: "/contests/submissions/{submission_id}",
   });
 };
