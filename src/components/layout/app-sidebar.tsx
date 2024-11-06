@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useUserStore } from "@/store/user/user-store-provider";
 import { logoutAuthLogoutGet } from "@/client";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const SIDEBAR_ITEMS = [
   {
@@ -50,10 +50,10 @@ const AppSidebar = () => {
           {SIDEBAR_ITEMS.map(({ icon, label, path }) => (
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={pathname === path}>
-                <a href={path}>
+                <Link to={path}>
                   {icon}
                   <span>{label}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
