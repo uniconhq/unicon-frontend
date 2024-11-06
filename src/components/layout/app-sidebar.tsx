@@ -17,11 +17,21 @@ import {
 } from "@/components/ui/sidebar";
 import { useUserStore } from "@/store/user/user-store-provider";
 import { logoutAuthLogoutGet } from "@/client";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+const SIDEBAR_ITEMS = [
+  {
+    path: "/",
+    icon: <Home />,
+    label: "Home",
+  },
+];
 
 const AppSidebar = () => {
   const { user, setUser } = useUserStore((store) => store);
   const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
   if (!user) {
     return;
   }
@@ -37,14 +47,16 @@ const AppSidebar = () => {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Unicon</SidebarGroupLabel>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="#">
-                <Home />
-                <span>Home</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {SIDEBAR_ITEMS.map(({ icon, label, path }) => (
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname === path}>
+                <a href={path}>
+                  {icon}
+                  <span>{label}</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
