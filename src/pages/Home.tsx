@@ -23,7 +23,7 @@ const Home = () => {
   }
 
   return (
-    <div className="flex h-full w-full flex-col gap-8 p-4 px-8">
+    <div className="flex w-full flex-col gap-8 p-4 px-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Contests</h1>
         <Link to="/contests/new" className="flex gap-1">

@@ -14,16 +14,18 @@ const Layout: React.FC<PropsWithChildren> = () => {
   useEffect(() => {
     if (userProfile) {
       setUser(userProfile);
+    } else {
+      setUser();
     }
   }, [setUser, userProfile]);
 
   return (
-    <main className="flex h-screen w-screen flex-col bg-[#141414] p-4">
-      <div className="flex h-full w-full text-neutral-300">
+    <main className="flex h-screen w-screen flex-col overflow-y-scroll bg-[#141414] p-4">
+      <div className="flex max-h-screen w-full text-neutral-300">
         {user && (
           <SidebarProvider>
             <AppSidebar />
-            <main className="h-full w-full">
+            <main className="w-full">
               <div className="flex justify-between">
                 <SidebarTrigger />
               </div>

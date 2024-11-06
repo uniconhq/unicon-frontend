@@ -7,6 +7,7 @@ import Login from "@/pages/Login.tsx";
 import { StoreProvider } from "./store/store-provider.tsx";
 import Layout from "./components/layout/layout.tsx";
 import Home from "./pages/Home.tsx";
+import CreateContest from "./pages/CreateContest.tsx";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { path: "/old", element: <App /> },
       { path: "/login", element: <Login /> },
       { path: "/", element: <Home /> },
+      { path: "/contests/new", element: <CreateContest /> },
     ],
   },
 ]);

@@ -102,7 +102,7 @@ export type SubmitDefinitionContestsDefinitionsPostData = {
   body: Definition;
 };
 
-export type SubmitDefinitionContestsDefinitionsPostResponse = unknown;
+export type SubmitDefinitionContestsDefinitionsPostResponse = BaseDefinitionDTO;
 
 export type SubmitDefinitionContestsDefinitionsPostError = HTTPValidationError;
 
