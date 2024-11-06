@@ -1,9 +1,11 @@
+import { Button } from "@/components/ui/button";
 import { getDefinitions } from "@/features/definitions/queries";
 import DefinitionsTable from "@/features/definitions/table/definitions-table";
 import { useUserStore } from "@/store/user/user-store-provider";
 import { useQuery } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { user } = useUserStore((store) => store);
@@ -22,7 +24,15 @@ const Home = () => {
 
   return (
     <div className="flex h-full w-full flex-col gap-8 p-4 px-8">
-      <h1 className="text-2xl font-semibold">Contests</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Contests</h1>
+        <Link to="/contests/new" className="flex gap-1">
+          <Button variant="ghost" className="hover:text-purple-300">
+            <Plus /> New contest
+          </Button>
+        </Link>
+      </div>
+
       {!isLoading && data && <DefinitionsTable data={data} />}
     </div>
   );
