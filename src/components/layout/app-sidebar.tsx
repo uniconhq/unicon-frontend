@@ -47,16 +47,18 @@ const AppSidebar = () => {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Unicon</SidebarGroupLabel>
-          {SIDEBAR_ITEMS.map(({ icon, label, path }) => (
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname === path}>
-                <Link to={path}>
-                  {icon}
-                  <span>{label}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          <SidebarMenu>
+            {SIDEBAR_ITEMS.map(({ icon, label, path }) => (
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={pathname === path}>
+                  <Link to={path}>
+                    {icon}
+                    <span>{label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
