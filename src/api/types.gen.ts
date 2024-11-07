@@ -35,6 +35,12 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type PydanticDefinitionORM = {
+    id: number;
+    name: string;
+    description: string;
+};
+
 export type RootModelList_ExpectedAnswer_ = Array<ExpectedAnswer>;
 
 export type RootModelList_UserInput_ = Array<UserInput>;
@@ -97,7 +103,7 @@ export type SubmitDefinitionContestsDefinitionsPostData = {
     body: Definition;
 };
 
-export type SubmitDefinitionContestsDefinitionsPostResponse = (unknown);
+export type SubmitDefinitionContestsDefinitionsPostResponse = (PydanticDefinitionORM);
 
 export type SubmitDefinitionContestsDefinitionsPostError = (HTTPValidationError);
 

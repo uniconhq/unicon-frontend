@@ -141,6 +141,26 @@ export const HTTPValidationErrorSchema = {
     title: 'HTTPValidationError'
 } as const;
 
+export const PydanticDefinitionORMSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    required: ['id', 'name', 'description'],
+    title: 'PydanticDefinitionORM'
+} as const;
+
 export const RootModelList_ExpectedAnswer_Schema = {
     items: {
         '$ref': '#/components/schemas/ExpectedAnswer'
