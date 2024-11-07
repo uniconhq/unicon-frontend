@@ -129,6 +129,9 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.9
         version: 0.4.10(eslint@9.9.0(jiti@2.4.0))
+      eslint-plugin-unused-imports:
+        specifier: ^4.1.4
+        version: 4.1.4(@typescript-eslint/eslint-plugin@8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.0(jiti@2.4.0))(typescript@5.5.4))(eslint@9.9.0(jiti@2.4.0))(typescript@5.5.4))(eslint@9.9.0(jiti@2.4.0))
       globals:
         specifier: ^15.9.0
         version: 15.9.0
@@ -1455,6 +1458,15 @@ packages:
     resolution: {integrity: sha512-I39s6G9We7ZxbCRxTTM5XX4KJV2cfWhFbHF4kTuL0ygdEVdQXtCNGqUQ43sBOCbTC/N6dEZXoQKFHr8gp1VHrQ==}
     peerDependencies:
       eslint: '>=7'
+
+  eslint-plugin-unused-imports@4.1.4:
+    resolution: {integrity: sha512-YptD6IzQjDardkl0POxnnRBhU1OEePMV0nd6siHaRBbd+lyh6NAhFEobiznKU7kTsSsDeSD62Pe7kAM1b7dAZQ==}
+    peerDependencies:
+      '@typescript-eslint/eslint-plugin': ^8.0.0-0 || ^7.0.0 || ^6.0.0 || ^5.0.0
+      eslint: ^9.0.0 || ^8.0.0
+    peerDependenciesMeta:
+      '@typescript-eslint/eslint-plugin':
+        optional: true
 
   eslint-scope@8.0.2:
     resolution: {integrity: sha512-6E4xmrTw5wtxnLA5wYL3WDfhZ/1bUBGOXV0zQvVRDOtrR8D0p6W7fs3JweNYhwRYeGvd/1CKX2se0/2s7Q/nJA==}
@@ -3749,6 +3761,12 @@ snapshots:
   eslint-plugin-react-refresh@0.4.10(eslint@9.9.0(jiti@2.4.0)):
     dependencies:
       eslint: 9.9.0(jiti@2.4.0)
+
+  eslint-plugin-unused-imports@4.1.4(@typescript-eslint/eslint-plugin@8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.0(jiti@2.4.0))(typescript@5.5.4))(eslint@9.9.0(jiti@2.4.0))(typescript@5.5.4))(eslint@9.9.0(jiti@2.4.0)):
+    dependencies:
+      eslint: 9.9.0(jiti@2.4.0)
+    optionalDependencies:
+      '@typescript-eslint/eslint-plugin': 8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.0(jiti@2.4.0))(typescript@5.5.4))(eslint@9.9.0(jiti@2.4.0))(typescript@5.5.4)
 
   eslint-scope@8.0.2:
     dependencies:

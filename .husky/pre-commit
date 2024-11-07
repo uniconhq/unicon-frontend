@@ -1,2 +1,2 @@
-pnpm exec prettier --write .
-pnpm lint
+pnpm format:fix
+pnpm lint:fix
