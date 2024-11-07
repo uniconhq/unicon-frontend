@@ -1,6 +1,6 @@
 import { createStore } from "zustand";
 
-import { UserPublic } from "@/client";
+import { UserPublic } from "@/api";
 
 interface UserState {
   user?: UserPublic;

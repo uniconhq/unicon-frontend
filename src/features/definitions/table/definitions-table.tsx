@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
-import { BaseDefinitionDTO } from "@/client";
+import { BaseDefinitionDTO } from "@/api";
 
 type OwnProps = {
   data: BaseDefinitionDTO[];

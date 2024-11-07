@@ -16,7 +16,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useUserStore } from "@/store/user/user-store-provider";
-import { logoutAuthLogoutGet } from "@/client";
+import { logoutAuthLogoutGet } from "@/api";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const SIDEBAR_ITEMS = [

@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import qs from "qs";
 
-import { client } from "@/client";
+import { client } from "@/api";
 
 import { UserStoreProvider } from "@/store/user/user-store-provider";
 

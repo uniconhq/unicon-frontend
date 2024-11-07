@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { QueryKeys } from "./utils/query-keys";
-import { getUserAuthSessionGet } from "@/client";
+import { getUserAuthSessionGet } from "@/api";
 
 export const getUserProfile = () => {
   return queryOptions({

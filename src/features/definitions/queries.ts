@@ -2,7 +2,7 @@ import {
   Definition,
   getDefinitionsContestsDefinitionsGet,
   submitDefinitionContestsDefinitionsPost,
-} from "@/client";
+} from "@/api";
 import { QueryKeys } from "@/queries/utils/query-keys";
 import { queryOptions, useMutation } from "@tanstack/react-query";
 

@@ -9,7 +9,7 @@ import { Box } from "@/components/ui/box";
 import TextField from "@/components/form/fields/text-field";
 import PasswordField from "@/components/form/fields/password-field";
 import { useEffect, useState } from "react";
-import { loginAuthTokenPost } from "@/client";
+import { loginAuthTokenPost } from "@/api";
 import { Form } from "@/components/ui/form";
 import { useUserStore } from "@/store/user/user-store-provider";
 import { useNavigate } from "react-router-dom";

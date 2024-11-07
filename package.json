@@ -11,7 +11,7 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier src --check",
     "format:fix": "prettier src --write",
-    "openapi-ts": "openapi-ts",
+    "generate:api": "openapi-ts",
     "prepare": "husky"
   },
   "dependencies": {
