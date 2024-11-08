@@ -49,7 +49,7 @@ const AppSidebar = () => {
           <SidebarGroupLabel>Unicon</SidebarGroupLabel>
           <SidebarMenu>
             {SIDEBAR_ITEMS.map(({ icon, label, path }) => (
-              <SidebarMenuItem>
+              <SidebarMenuItem key={label}>
                 <SidebarMenuButton asChild isActive={pathname === path}>
                   <Link to={path}>
                     {icon}
