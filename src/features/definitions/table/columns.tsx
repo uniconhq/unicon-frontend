@@ -1,8 +1,8 @@
-import { BaseDefinitionDTO } from "@/api";
+import { DefinitionORM } from "@/api";
 import { ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
 
-export const columns: ColumnDef<BaseDefinitionDTO>[] = [
+export const columns: ColumnDef<DefinitionORM>[] = [
   {
     accessorKey: "id",
     header: "ID",
@@ -10,6 +10,10 @@ export const columns: ColumnDef<BaseDefinitionDTO>[] = [
   {
     accessorKey: "name",
     header: "Name",
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
   },
   {
     id: "actions",
@@ -20,7 +24,7 @@ export const columns: ColumnDef<BaseDefinitionDTO>[] = [
           to={`/contests/${id}`}
           className="hover:text-purple-300 hover:underline"
         >
-          view
+          View
         </Link>
       );
     },

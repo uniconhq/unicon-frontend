@@ -1,10 +1,11 @@
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
-import { BaseDefinitionDTO } from "@/api";
+import { DefinitionORM } from "@/api";
 
 type OwnProps = {
-  data: BaseDefinitionDTO[];
+  data: DefinitionORM[];
 };
+
 const DefinitionsTable: React.FC<OwnProps> = ({ data }) => {
   return <DataTable columns={columns} data={data} />;
 };
