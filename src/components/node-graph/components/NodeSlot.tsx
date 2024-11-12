@@ -1,4 +1,4 @@
-import { Handle, HandleType,Position as HandlePosition } from "@xyflow/react";
+import { Handle, HandleType, Position as HandlePosition } from "@xyflow/react";
 import { twJoin } from "tailwind-merge";
 
 interface NodeSlotProps {

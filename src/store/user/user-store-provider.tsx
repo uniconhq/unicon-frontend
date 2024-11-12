@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useRef } from "react";
 import { StoreApi, useStore } from "zustand";
 
-import { createUserStore,UserStore } from "@/store/user/user-store";
+import { createUserStore, UserStore } from "@/store/user/user-store";
 
 export type UserStoreApi = StoreApi<UserStore>;
 export const UserStoreContext = createContext<UserStoreApi | null>(null);
