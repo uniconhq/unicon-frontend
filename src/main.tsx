@@ -1,15 +1,17 @@
+import "@/index.css";
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter,RouterProvider } from "react-router-dom";
+
+import App from "@/App.tsx";
+import Layout from "@/components/layout/layout.tsx";
+import CreateContest from "@/pages/CreateContest.tsx";
+import Error from "@/pages/Error.tsx";
+import Home from "@/pages/Home.tsx";
 import Login from "@/pages/Login.tsx";
-import { StoreProvider } from "./store/store-provider.tsx";
-import Layout from "./components/layout/layout.tsx";
-import Home from "./pages/Home.tsx";
-import CreateContest from "./pages/CreateContest.tsx";
-import Contest from "./pages/Contest.tsx";
-import Error from "./pages/Error.tsx";
+import { StoreProvider } from "@/store/store-provider.tsx";
+import Contest from "@/pages/Contest";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <Login /> },
       { path: "/", element: <Home /> },
       { path: "/contests/new", element: <CreateContest /> },
+      { path: "/contests/:id", element: <Contest /> },
     ],
     errorElement: <Error />,
   },

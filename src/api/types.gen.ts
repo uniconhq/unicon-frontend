@@ -82,60 +82,60 @@ export type ValidationError = {
     type: string;
 };
 
-export type LoginAuthTokenPostData = {
+export type LoginData = {
     body: Body_login_auth_token_post;
 };
 
-export type LoginAuthTokenPostResponse = (Token);
+export type LoginResponse = (Token);
 
-export type LoginAuthTokenPostError = (HTTPValidationError);
+export type LoginError = (HTTPValidationError);
 
-export type LogoutAuthLogoutGetResponse = (unknown);
+export type LogoutResponse = (unknown);
 
-export type LogoutAuthLogoutGetError = unknown;
+export type LogoutError = unknown;
 
-export type GetUserAuthSessionGetData = unknown;
+export type GetUserData = unknown;
 
-export type GetUserAuthSessionGetResponse = (UserPublic);
+export type GetUserResponse = (UserPublic);
 
-export type GetUserAuthSessionGetError = (HTTPValidationError);
+export type GetUserError = (HTTPValidationError);
 
-export type GetDefinitionsContestsDefinitionsGetData = unknown;
+export type GetDefinitionsData = unknown;
 
-export type GetDefinitionsContestsDefinitionsGetResponse = (Array<DefinitionORM>);
+export type GetDefinitionsResponse = (Array<DefinitionORM>);
 
-export type GetDefinitionsContestsDefinitionsGetError = (HTTPValidationError);
+export type GetDefinitionsError = (HTTPValidationError);
 
-export type SubmitDefinitionContestsDefinitionsPostData = {
+export type SubmitDefinitionData = {
     body: Definition;
 };
 
-export type SubmitDefinitionContestsDefinitionsPostResponse = (DefinitionORM);
+export type SubmitDefinitionResponse = (DefinitionORM);
 
-export type SubmitDefinitionContestsDefinitionsPostError = (HTTPValidationError);
+export type SubmitDefinitionError = (HTTPValidationError);
 
-export type GetDefinitionContestsDefinitionsIdGetData = {
+export type GetDefinitionData = {
     path: {
         id: number;
     };
 };
 
-export type GetDefinitionContestsDefinitionsIdGetResponse = (Definition);
+export type GetDefinitionResponse = (Definition);
 
-export type GetDefinitionContestsDefinitionsIdGetError = (HTTPValidationError);
+export type GetDefinitionError = (HTTPValidationError);
 
-export type UpdateDefinitionContestsDefinitionsIdPatchData = {
+export type UpdateDefinitionData = {
     body: Definition;
     path: {
         id: number;
     };
 };
 
-export type UpdateDefinitionContestsDefinitionsIdPatchResponse = (DefinitionORM);
+export type UpdateDefinitionResponse = (DefinitionORM);
 
-export type UpdateDefinitionContestsDefinitionsIdPatchError = (HTTPValidationError);
+export type UpdateDefinitionError = (HTTPValidationError);
 
-export type SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostData = {
+export type SubmitContestSubmissionData = {
     body: ContestSubmission;
     path: {
         id: number;
@@ -145,11 +145,11 @@ export type SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostData = {
     };
 };
 
-export type SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostResponse = (Array<TaskResultORM>);
+export type SubmitContestSubmissionResponse = (Array<TaskResultORM>);
 
-export type SubmitContestSubmissionContestsDefinitionsIdSubmissionsPostError = (HTTPValidationError);
+export type SubmitContestSubmissionError = (HTTPValidationError);
 
-export type GetSubmissionContestsSubmissionsSubmissionIdGetData = {
+export type GetSubmissionData = {
     path: {
         submission_id: number;
     };
@@ -158,6 +158,6 @@ export type GetSubmissionContestsSubmissionsSubmissionIdGetData = {
     };
 };
 
-export type GetSubmissionContestsSubmissionsSubmissionIdGetResponse = (Array<TaskResultORM>);
+export type GetSubmissionResponse = (Array<TaskResultORM>);
 
-export type GetSubmissionContestsSubmissionsSubmissionIdGetError = (HTTPValidationError);
+export type GetSubmissionError = (HTTPValidationError);

@@ -1,3 +1,10 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleAlert } from "lucide-react";
+import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+
 import TextareaField from "@/components/form/fields/textarea-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -5,12 +12,6 @@ import { Form } from "@/components/ui/form";
 import { useCreateDefinition } from "@/features/definitions/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 import { json } from "@/utils/json";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleAlert } from "lucide-react";
-import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { z } from "zod";
 
 const definitionFormSchema = z.object({
   definition: z

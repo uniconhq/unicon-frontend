@@ -1,18 +1,19 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { CircleAlert } from "lucide-react";
-import { Box } from "@/components/ui/box";
-import TextField from "@/components/form/fields/text-field";
-import PasswordField from "@/components/form/fields/password-field";
 import { useEffect, useState } from "react";
-import { loginAuthTokenPost } from "@/api";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+
+import { login } from "@/api";
+import PasswordField from "@/components/form/fields/password-field";
+import TextField from "@/components/form/fields/text-field";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Box } from "@/components/ui/box";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useUserStore } from "@/store/user/user-store-provider";
-import { useNavigate } from "react-router-dom";
 
 const loginFormSchema = z.object({
   username: z.string().min(1, "Username required"),
@@ -47,7 +48,7 @@ const Login = () => {
   }
 
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
-    const response = await loginAuthTokenPost({
+    const response = await login({
       body: data,
       headers: undefined,
       withCredentials: true,

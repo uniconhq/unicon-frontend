@@ -1,10 +1,13 @@
+import { ChevronUp, Home, User2 } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+import { logout } from "@/api";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User2, ChevronUp, Home } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,8 +19,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useUserStore } from "@/store/user/user-store-provider";
-import { logoutAuthLogoutGet } from "@/api";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const SIDEBAR_ITEMS = [
   {
@@ -37,7 +38,7 @@ const AppSidebar = () => {
   }
 
   const signout = async () => {
-    await logoutAuthLogoutGet({ withCredentials: true });
+    await logout({ withCredentials: true });
     setUser();
     navigate("/login");
   };

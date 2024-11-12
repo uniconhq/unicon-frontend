@@ -1,26 +1,27 @@
-import { useMemo, useState } from "react";
+import "@xyflow/react/dist/style.css";
+
+import { Editor } from "@monaco-editor/react";
 import {
-  ReactFlow,
-  Controls,
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
   Background,
   BackgroundVariant,
-  Node as FlowNode,
-  applyNodeChanges,
-  applyEdgeChanges,
-  addEdge,
-  NodeChange,
-  EdgeChange,
-  Edge as FlowEdge,
   Connection,
+  Controls,
+  Edge as FlowEdge,
+  EdgeChange,
   MiniMap,
+  Node as FlowNode,
+  NodeChange,
+  ReactFlow,
 } from "@xyflow/react";
+import { useMemo, useState } from "react";
 import { AiOutlinePython } from "react-icons/ai";
 
-import "@xyflow/react/dist/style.css";
 import { Node } from "@/components/node-graph/components/Node";
-import { NodeData } from "./lib/types";
-import { Editor } from "@monaco-editor/react";
-import { testEdges, testNodes } from "./data/test";
+import { testEdges, testNodes } from "@/data/test";
+import { NodeData } from "@/lib/types";
 
 export default function App() {
   const nodeTypes = useMemo(() => ({ custom: Node }), []);

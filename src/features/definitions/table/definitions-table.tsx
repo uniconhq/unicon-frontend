@@ -1,6 +1,7 @@
-import { DataTable } from "@/components/ui/data-table";
-import { columns } from "./columns";
 import { DefinitionORM } from "@/api";
+import { DataTable } from "@/components/ui/data-table";
+
+import { columns } from "./columns";
 
 type OwnProps = {
   data: DefinitionORM[];
