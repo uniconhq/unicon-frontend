@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { type Params, useParams } from "react-router-dom";
 
-import { getDefinitionById } from "@/features/definitions/queries";
 import { ProgrammingTask } from "@/api";
 import ProgrammingTaskDisplay from "@/features/definitions/components/tasks/ProgrammingTask";
+import { getDefinitionById } from "@/features/definitions/queries";
 
 const Contest = () => {
   const { id } = useParams<Params<"id">>();

@@ -17,8 +17,8 @@ import {
 } from "@xyflow/react";
 import { useMemo, useState } from "react";
 
-import { StepNode } from "@/components/node-graph/components/StepNode";
 import { GraphEdge, Step } from "@/api";
+import { StepNode } from "@/components/node-graph/components/StepNode";
 
 type OwnProps = {
   steps: Step[];
