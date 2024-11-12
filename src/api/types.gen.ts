@@ -20,6 +20,12 @@ export type Definition = {
     tasks: Array<Task>;
 };
 
+export type DefinitionDTO = {
+    name: string;
+    description: string;
+    tasks: Array<(ProgrammingTask | MultipleChoiceTask | ShortAnswerTask)>;
+};
+
 export type DefinitionORM = {
     id: number;
     name: string;
@@ -31,9 +37,91 @@ export type ExpectedAnswer = {
     expected_answer: unknown;
 };
 
+export type File = {
+    file_name: string;
+    content: string;
+};
+
+export type GraphEdge = {
+    id: number;
+    from_node_id: number;
+    from_socket_id: string;
+    to_node_id: number;
+    to_socket_id: string;
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
+
+export type MultipleChoiceTask = {
+    id: number;
+    type: TaskType;
+    autograde?: boolean;
+    question: string;
+    choices: Array<(string)>;
+};
+
+export type ProgrammingLanguage = 'PYTHON';
+
+export type ProgrammingTask = {
+    id: number;
+    type: TaskType;
+    autograde?: boolean;
+    question: string;
+    environment: RunnerEnvironment;
+    required_inputs: Array<RequiredInput>;
+    testcases: Array<Testcase>;
+};
+
+export type RequiredInput = {
+    id: string;
+    data: (string | number | boolean | File);
+};
+
+export type RunnerEnvironment = {
+    language: ProgrammingLanguage;
+    time_limit: number;
+    memory_limit: number;
+    extra_options?: ({
+    [key: string]: unknown;
+} | null);
+};
+
+export type ShortAnswerTask = {
+    id: number;
+    type: TaskType;
+    autograde?: boolean;
+    question: string;
+};
+
+export type Step = {
+    id: number;
+    inputs: Array<StepSocket>;
+    outputs: Array<StepSocket>;
+    type: StepType;
+};
+
+/**
+ * A socket that is used to connect steps to each other.
+ *
+ * Socket ID Format: <TYPE>.<DIRECTION>.<NAME>.<INDEX>
+ * - <NAME>.<INDEX> is optional and is used to differentiate between multiple sockets of the same type
+ * - Collectively, <NAME>.<INDEX> is referred to as the "label"
+ *
+ * There can be 2 types of sockets:
+ *
+ * 1. Control Sockets: Used to control the flow of the program
+ * - e.g. CONTROL.IN.<NAME>.<INDEX>
+ * 2. Data Sockets: Used to pass data between steps
+ * - e.g. DATA.OUT.<NAME>.<INDEX>
+ */
+export type StepSocket = {
+    id: string;
+    data?: (string | number | boolean | File | null);
+};
+
+export type StepType = 'PY_RUN_FUNCTION_STEP' | 'OBJECT_ACCESS_STEP' | 'INPUT_STEP' | 'OUTPUT_STEP' | 'LOOP_STEP' | 'IF_ELSE_STEP' | 'STRING_MATCH_STEP';
 
 export type Task = {
     id: number;
@@ -59,6 +147,12 @@ export type TaskResultORM = {
 };
 
 export type TaskType = 'MULTIPLE_CHOICE_TASK' | 'MULTIPLE_RESPONSE_TASK' | 'SHORT_ANSWER_TASK' | 'PROGRAMMING_TASK';
+
+export type Testcase = {
+    nodes: Array<Step>;
+    edges: Array<GraphEdge>;
+    id: number;
+};
 
 export type Token = {
     access_token: string;
@@ -120,7 +214,7 @@ export type GetDefinitionData = {
     };
 };
 
-export type GetDefinitionResponse = (Definition);
+export type GetDefinitionResponse = (DefinitionDTO);
 
 export type GetDefinitionError = (HTTPValidationError);
 

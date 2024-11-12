@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PropsWithChildren, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
-import { getUserProfile } from "@/queries/user";
+import { getUserProfile } from "@/features/auth/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
 import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
