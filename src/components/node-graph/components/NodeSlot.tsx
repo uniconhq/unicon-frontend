@@ -12,7 +12,7 @@ export function NodeSlot({ id, label, type }: NodeSlotProps) {
     <div
       className={twJoin(
         "my-1 flex items-center space-x-2",
-        type === "target" && "flex-row-reverse space-x-reverse",
+        type === "source" && "flex-row-reverse space-x-reverse",
       )}
     >
       <Handle
@@ -25,7 +25,7 @@ export function NodeSlot({ id, label, type }: NodeSlotProps) {
         id={id}
         type={type}
         position={
-          type === "source" ? HandlePosition.Left : HandlePosition.Right
+          type === "target" ? HandlePosition.Left : HandlePosition.Right
         }
       />
       <span>{label}</span>
