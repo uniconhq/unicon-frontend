@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 import AppSidebar from "@/components/layout/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { getUserProfile } from "@/queries/user";
+import { getUserProfile } from "@/features/auth/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
 const Layout: React.FC<PropsWithChildren> = () => {
