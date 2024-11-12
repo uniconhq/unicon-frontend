@@ -1,11 +1,14 @@
 import { queryOptions } from "@tanstack/react-query";
 
 import { getUser } from "@/api";
-import { QueryKeys } from "@/features/definitions/queries";
+
+export enum UserQueryKeys {
+  UserProfile = "user_profile",
+}
 
 export const getUserProfile = () => {
   return queryOptions({
-    queryKey: [QueryKeys.UserProfile],
+    queryKey: [UserQueryKeys.UserProfile],
     queryFn: () =>
       getUser({ withCredentials: true }).then((response) => response.data),
   });

@@ -7,8 +7,7 @@ import {
   submitDefinition,
 } from "@/api";
 
-export enum QueryKeys {
-  UserProfile = "user_profile",
+export enum ContestQueryKeys {
   Definitions = "definitions",
   Definition = "definition",
   Submissions = "submissions",
@@ -16,7 +15,7 @@ export enum QueryKeys {
 
 export const getAllDefinitions = () => {
   return queryOptions({
-    queryKey: [QueryKeys.Definitions],
+    queryKey: [ContestQueryKeys.Definitions],
     queryFn: () => getDefinitions().then((response) => response.data),
   });
 };
@@ -29,7 +28,7 @@ export const useCreateDefinition = () => {
 
 export const getDefinitionById = (id: number) => {
   return queryOptions({
-    queryKey: [QueryKeys.Definition, id],
+    queryKey: [ContestQueryKeys.Definition, id],
     queryFn: () =>
       getDefinition({ path: { id } }).then((response) => response.data),
   });
