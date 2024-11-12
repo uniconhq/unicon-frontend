@@ -25,7 +25,7 @@ export function StepNode({ data }: { data: Step }) {
                 key={stepSocket.id}
                 id={stepSocket.id}
                 label={stepSocket.id}
-                type="source"
+                type="target"
               />
             ))}
           </NodeSlotGroup>
@@ -35,7 +35,7 @@ export function StepNode({ data }: { data: Step }) {
                 key={stepSocket.id}
                 id={stepSocket.id}
                 label={stepSocket.id}
-                type="target"
+                type="source"
               />
             ))}
           </NodeSlotGroup>
