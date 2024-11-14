@@ -32,7 +32,10 @@ const SubmissionResults = () => {
   const { id } = useParams<{ id: string }>();
   // TODO: This is a super naive way of refreshing the data, refactor this in the future to only
   // refetch the data when there are pending tasks.
-  const { data } = useQuery({...getSubmissionById(Number(id)), refetchInterval: 5000});
+  const { data } = useQuery({
+    ...getSubmissionById(Number(id)),
+    refetchInterval: 5000,
+  });
 
   const contest_id: number = data ? data[0].definition_id : 0;
 

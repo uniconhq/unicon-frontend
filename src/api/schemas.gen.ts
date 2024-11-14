@@ -89,7 +89,29 @@ export const DefinitionSchema = {
         },
         tasks: {
             items: {
-                '$ref': '#/components/schemas/Task'
+                oneOf: [
+                    {
+                        '$ref': '#/components/schemas/ProgrammingTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleChoiceTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleResponseTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/ShortAnswerTask'
+                    }
+                ],
+                discriminator: {
+                    propertyName: 'type',
+                    mapping: {
+                        MULTIPLE_CHOICE_TASK: '#/components/schemas/MultipleChoiceTask',
+                        MULTIPLE_RESPONSE_TASK: '#/components/schemas/MultipleResponseTask',
+                        PROGRAMMING_TASK: '#/components/schemas/ProgrammingTask',
+                        SHORT_ANSWER_TASK: '#/components/schemas/ShortAnswerTask'
+                    }
+                }
             },
             type: 'array',
             title: 'Tasks'
@@ -98,39 +120,6 @@ export const DefinitionSchema = {
     type: 'object',
     required: ['name', 'description', 'tasks'],
     title: 'Definition'
-} as const;
-
-export const DefinitionDTOSchema = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        description: {
-            type: 'string',
-            title: 'Description'
-        },
-        tasks: {
-            items: {
-                anyOf: [
-                    {
-                        '$ref': '#/components/schemas/ProgrammingTask'
-                    },
-                    {
-                        '$ref': '#/components/schemas/MultipleChoiceTask'
-                    },
-                    {
-                        '$ref': '#/components/schemas/ShortAnswerTask'
-                    }
-                ]
-            },
-            type: 'array',
-            title: 'Tasks'
-        }
-    },
-    type: 'object',
-    required: ['name', 'description', 'tasks'],
-    title: 'DefinitionDTO'
 } as const;
 
 export const DefinitionORMSchema = {
@@ -233,7 +222,10 @@ export const MultipleChoiceTaskSchema = {
             title: 'Id'
         },
         type: {
-            '$ref': '#/components/schemas/TaskType'
+            type: 'string',
+            enum: ['MULTIPLE_CHOICE_TASK'],
+            const: 'MULTIPLE_CHOICE_TASK',
+            title: 'Type'
         },
         autograde: {
             type: 'boolean',
@@ -252,10 +244,43 @@ export const MultipleChoiceTaskSchema = {
             title: 'Choices'
         }
     },
-    additionalProperties: false,
     type: 'object',
     required: ['id', 'type', 'question', 'choices'],
     title: 'MultipleChoiceTask'
+} as const;
+
+export const MultipleResponseTaskSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        type: {
+            type: 'string',
+            enum: ['MULTIPLE_RESPONSE_TASK'],
+            const: 'MULTIPLE_RESPONSE_TASK',
+            title: 'Type'
+        },
+        autograde: {
+            type: 'boolean',
+            title: 'Autograde',
+            default: true
+        },
+        question: {
+            type: 'string',
+            title: 'Question'
+        },
+        choices: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Choices'
+        }
+    },
+    type: 'object',
+    required: ['id', 'type', 'question', 'choices'],
+    title: 'MultipleResponseTask'
 } as const;
 
 export const ProgrammingLanguageSchema = {
@@ -272,7 +297,10 @@ export const ProgrammingTaskSchema = {
             title: 'Id'
         },
         type: {
-            '$ref': '#/components/schemas/TaskType'
+            type: 'string',
+            enum: ['PROGRAMMING_TASK'],
+            const: 'PROGRAMMING_TASK',
+            title: 'Type'
         },
         autograde: {
             type: 'boolean',
@@ -301,7 +329,6 @@ export const ProgrammingTaskSchema = {
             title: 'Testcases'
         }
     },
-    additionalProperties: false,
     type: 'object',
     required: ['id', 'type', 'question', 'environment', 'required_inputs', 'testcases'],
     title: 'ProgrammingTask'
@@ -376,7 +403,10 @@ export const ShortAnswerTaskSchema = {
             title: 'Id'
         },
         type: {
-            '$ref': '#/components/schemas/TaskType'
+            type: 'string',
+            enum: ['SHORT_ANSWER_TASK'],
+            const: 'SHORT_ANSWER_TASK',
+            title: 'Type'
         },
         autograde: {
             type: 'boolean',
@@ -388,7 +418,6 @@ export const ShortAnswerTaskSchema = {
             title: 'Question'
         }
     },
-    additionalProperties: false,
     type: 'object',
     required: ['id', 'type', 'question'],
     title: 'ShortAnswerTask'
@@ -477,25 +506,38 @@ export const StepTypeSchema = {
     title: 'StepType'
 } as const;
 
-export const TaskSchema = {
+export const SubmissionORMSchema = {
     properties: {
         id: {
             type: 'integer',
             title: 'Id'
         },
-        type: {
-            '$ref': '#/components/schemas/TaskType'
+        definition_id: {
+            type: 'integer',
+            title: 'Definition Id'
         },
-        autograde: {
-            type: 'boolean',
-            title: 'Autograde',
-            default: true
+        status: {
+            '$ref': '#/components/schemas/SubmissionStatus'
+        },
+        submitted_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Submitted At'
+        },
+        other_fields: {
+            type: 'object',
+            title: 'Other Fields'
         }
     },
-    additionalProperties: false,
     type: 'object',
-    required: ['id', 'type'],
-    title: 'Task'
+    required: ['id', 'definition_id', 'status', 'submitted_at'],
+    title: 'SubmissionORM'
+} as const;
+
+export const SubmissionStatusSchema = {
+    type: 'string',
+    enum: ['PENDING', 'OK'],
+    title: 'SubmissionStatus'
 } as const;
 
 export const TaskEvalStatusSchema = {
@@ -572,12 +614,6 @@ export const TaskResultORMSchema = {
     type: 'object',
     required: ['id', 'submission_id', 'definition_id', 'task_id', 'started_at', 'completed_at', 'job_id', 'status', 'error'],
     title: 'TaskResultORM'
-} as const;
-
-export const TaskTypeSchema = {
-    type: 'string',
-    enum: ['MULTIPLE_CHOICE_TASK', 'MULTIPLE_RESPONSE_TASK', 'SHORT_ANSWER_TASK', 'PROGRAMMING_TASK'],
-    title: 'TaskType'
 } as const;
 
 export const TestcaseSchema = {

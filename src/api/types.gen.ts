@@ -17,13 +17,7 @@ export type ContestSubmission = {
 export type Definition = {
     name: string;
     description: string;
-    tasks: Array<Task>;
-};
-
-export type DefinitionDTO = {
-    name: string;
-    description: string;
-    tasks: Array<(ProgrammingTask | MultipleChoiceTask | ShortAnswerTask)>;
+    tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
 };
 
 export type DefinitionORM = {
@@ -56,23 +50,37 @@ export type HTTPValidationError = {
 
 export type MultipleChoiceTask = {
     id: number;
-    type: TaskType;
+    type: 'MULTIPLE_CHOICE_TASK';
     autograde?: boolean;
     question: string;
     choices: Array<(string)>;
 };
 
+export type type = 'MULTIPLE_CHOICE_TASK';
+
+export type MultipleResponseTask = {
+    id: number;
+    type: 'MULTIPLE_RESPONSE_TASK';
+    autograde?: boolean;
+    question: string;
+    choices: Array<(string)>;
+};
+
+export type type2 = 'MULTIPLE_RESPONSE_TASK';
+
 export type ProgrammingLanguage = 'PYTHON';
 
 export type ProgrammingTask = {
     id: number;
-    type: TaskType;
+    type: 'PROGRAMMING_TASK';
     autograde?: boolean;
     question: string;
     environment: RunnerEnvironment;
     required_inputs: Array<RequiredInput>;
     testcases: Array<Testcase>;
 };
+
+export type type3 = 'PROGRAMMING_TASK';
 
 export type RequiredInput = {
     id: string;
@@ -90,10 +98,12 @@ export type RunnerEnvironment = {
 
 export type ShortAnswerTask = {
     id: number;
-    type: TaskType;
+    type: 'SHORT_ANSWER_TASK';
     autograde?: boolean;
     question: string;
 };
+
+export type type4 = 'SHORT_ANSWER_TASK';
 
 export type Step = {
     id: number;
@@ -123,11 +133,17 @@ export type StepSocket = {
 
 export type StepType = 'PY_RUN_FUNCTION_STEP' | 'OBJECT_ACCESS_STEP' | 'INPUT_STEP' | 'OUTPUT_STEP' | 'LOOP_STEP' | 'IF_ELSE_STEP' | 'STRING_MATCH_STEP';
 
-export type Task = {
+export type SubmissionORM = {
     id: number;
-    type: TaskType;
-    autograde?: boolean;
+    definition_id: number;
+    status: SubmissionStatus;
+    submitted_at: string;
+    other_fields?: {
+        [key: string]: unknown;
+    };
 };
+
+export type SubmissionStatus = 'PENDING' | 'OK';
 
 export type TaskEvalStatus = 'SUCCESS' | 'PENDING' | 'SKIPPED' | 'FAILED';
 
@@ -145,8 +161,6 @@ export type TaskResultORM = {
     };
     error: (string | null);
 };
-
-export type TaskType = 'MULTIPLE_CHOICE_TASK' | 'MULTIPLE_RESPONSE_TASK' | 'SHORT_ANSWER_TASK' | 'PROGRAMMING_TASK';
 
 export type Testcase = {
     nodes: Array<Step>;
@@ -214,7 +228,7 @@ export type GetDefinitionData = {
     };
 };
 
-export type GetDefinitionResponse = (DefinitionDTO);
+export type GetDefinitionResponse = (Definition);
 
 export type GetDefinitionError = (HTTPValidationError);
 
@@ -239,9 +253,15 @@ export type SubmitContestSubmissionData = {
     };
 };
 
-export type SubmitContestSubmissionResponse = (Array<TaskResultORM>);
+export type SubmitContestSubmissionResponse = (SubmissionORM);
 
 export type SubmitContestSubmissionError = (HTTPValidationError);
+
+export type GetSubmissionsData = unknown;
+
+export type GetSubmissionsResponse = (Array<SubmissionORM>);
+
+export type GetSubmissionsError = (HTTPValidationError);
 
 export type GetSubmissionData = {
     path: {

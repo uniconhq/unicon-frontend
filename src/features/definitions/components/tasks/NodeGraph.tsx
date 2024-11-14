@@ -125,14 +125,15 @@ const NodeGraph: React.FC<OwnProps> = ({ steps, edges }) => {
   useEffect(() => {
     if (initialized && !ran) {
       onLayout(); // Trigger layout once nodes are initialized
+      setTimeout(fitView, 100);
       setRan(true);
     }
   }, [initialized]);
   // const [, , dragEvents] = useLayoutedElements();
 
   return (
-    <div className="grid grid-cols-6 gap-1">
-      <div className="col-span-4 h-[60vh] w-full">
+    <div className="grid gap-1">
+      <div className="h-[60vh] w-full">
         {reactFlowNodes && (
           <ReactFlow
             nodeTypes={nodeTypes}

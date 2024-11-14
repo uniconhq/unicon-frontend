@@ -1,5 +1,5 @@
 import { ProgrammingTask } from "@/api";
-import { Button } from "@/components/ui/button";
+import Testcase from "@/features/definitions/components/tasks/Testcase";
 
 export function Programming({ task }: { task: ProgrammingTask }) {
   return (
@@ -20,10 +20,8 @@ export function Programming({ task }: { task: ProgrammingTask }) {
       </div>
       <span className="text-xs font-medium text-gray-300">TESTCASES</span>
       <div className="flex flex-row gap-2 font-mono">
-        {task.testcases.map((_, index) => (
-          <Button key={index} className="hover:text-purple-500">
-            Testcase #{index + 1}
-          </Button>
+        {task.testcases.map((testcase, index) => (
+          <Testcase testcase={testcase} index={index} />
         ))}
       </div>
     </div>
