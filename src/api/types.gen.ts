@@ -133,6 +133,18 @@ export type StepSocket = {
 
 export type StepType = 'PY_RUN_FUNCTION_STEP' | 'OBJECT_ACCESS_STEP' | 'INPUT_STEP' | 'OUTPUT_STEP' | 'LOOP_STEP' | 'IF_ELSE_STEP' | 'STRING_MATCH_STEP';
 
+export type SubmissionORM = {
+    id: number;
+    definition_id: number;
+    status: SubmissionStatus;
+    submitted_at: string;
+    other_fields?: {
+        [key: string]: unknown;
+    };
+};
+
+export type SubmissionStatus = 'PENDING' | 'OK';
+
 export type TaskEvalStatus = 'SUCCESS' | 'PENDING' | 'SKIPPED' | 'FAILED';
 
 export type TaskResultORM = {
@@ -241,9 +253,15 @@ export type SubmitContestSubmissionData = {
     };
 };
 
-export type SubmitContestSubmissionResponse = (Array<TaskResultORM>);
+export type SubmitContestSubmissionResponse = (SubmissionORM);
 
 export type SubmitContestSubmissionError = (HTTPValidationError);
+
+export type GetSubmissionsData = unknown;
+
+export type GetSubmissionsResponse = (Array<SubmissionORM>);
+
+export type GetSubmissionsError = (HTTPValidationError);
 
 export type GetSubmissionData = {
     path: {

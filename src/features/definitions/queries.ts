@@ -6,6 +6,7 @@ import {
   getDefinition,
   getDefinitions,
   getSubmission,
+  getSubmissions,
   submitContestSubmission,
   submitDefinition,
 } from "@/api";
@@ -34,6 +35,13 @@ export const getDefinitionById = (id: number) => {
     queryKey: [ContestQueryKeys.Definition, id],
     queryFn: () =>
       getDefinition({ path: { id } }).then((response) => response.data),
+  });
+};
+
+export const getAllSubmissions = () => {
+  return queryOptions({
+    queryKey: [ContestQueryKeys.Submissions],
+    queryFn: () => getSubmissions().then((response) => response.data),
   });
 };
 

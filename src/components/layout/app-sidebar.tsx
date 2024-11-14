@@ -1,4 +1,4 @@
-import { ChevronUp, Home, User2 } from "lucide-react";
+import { ChevronUp, Home, ListChecks, User2 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { logout } from "@/api";
@@ -24,7 +24,12 @@ const SIDEBAR_ITEMS = [
   {
     path: "/",
     icon: <Home />,
-    label: "Home",
+    label: "Contests",
+  },
+  {
+    path: "/submissions",
+    icon: <ListChecks />,
+    label: "Submissions",
   },
 ];
 

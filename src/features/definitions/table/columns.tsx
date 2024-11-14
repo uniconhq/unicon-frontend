@@ -6,7 +6,7 @@ import { DefinitionORM } from "@/api";
 export const columns: ColumnDef<DefinitionORM>[] = [
   {
     accessorKey: "id",
-    header: "ID",
+    header: "Contest ID",
   },
   {
     accessorKey: "name",

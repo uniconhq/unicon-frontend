@@ -13,6 +13,7 @@ import Error from "@/pages/Error.tsx";
 import Home from "@/pages/Home.tsx";
 import Login from "@/pages/Login.tsx";
 import SubmissionResults from "@/pages/SubmissionResults";
+import Submissions from "@/pages/Submissions";
 import { StoreProvider } from "@/store/store-provider.tsx";
 
 const router = createBrowserRouter([
@@ -23,10 +24,11 @@ const router = createBrowserRouter([
       { path: "/old", element: <App /> },
       { path: "/login", element: <Login /> },
       { path: "/", element: <Home /> },
+      { path: "/submissions", element: <Submissions /> },
       { path: "/contests/new", element: <CreateContest /> },
       { path: "/contests/:id", element: <Contest /> },
       { path: "/contests/:id/submit", element: <CreateSubmission /> },
-      { path: "/submissions/:id/results", element: <SubmissionResults /> },
+      { path: "/submissions/:id", element: <SubmissionResults /> },
     ],
     errorElement: <Error />,
   },

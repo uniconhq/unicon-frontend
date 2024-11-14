@@ -61,7 +61,7 @@ const CreateSubmission = () => {
           return;
         }
         if (response.status === 200) {
-          navigate(`/submissions/${response.data![0].submission_id}/results`);
+          navigate(`/submissions/${response.data?.id}`);
         }
       },
     });

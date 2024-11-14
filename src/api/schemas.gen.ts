@@ -506,6 +506,40 @@ export const StepTypeSchema = {
     title: 'StepType'
 } as const;
 
+export const SubmissionORMSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        definition_id: {
+            type: 'integer',
+            title: 'Definition Id'
+        },
+        status: {
+            '$ref': '#/components/schemas/SubmissionStatus'
+        },
+        submitted_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Submitted At'
+        },
+        other_fields: {
+            type: 'object',
+            title: 'Other Fields'
+        }
+    },
+    type: 'object',
+    required: ['id', 'definition_id', 'status', 'submitted_at'],
+    title: 'SubmissionORM'
+} as const;
+
+export const SubmissionStatusSchema = {
+    type: 'string',
+    enum: ['PENDING', 'OK'],
+    title: 'SubmissionStatus'
+} as const;
+
 export const TaskEvalStatusSchema = {
     type: 'string',
     enum: ['SUCCESS', 'PENDING', 'SKIPPED', 'FAILED'],
