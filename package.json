@@ -34,6 +34,8 @@
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "d3-force": "^3.0.0",
+    "d3-quadtree": "^3.0.1",
     "lucide-react": "^0.454.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -48,6 +50,7 @@
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@hey-api/openapi-ts": "^0.54.2",
+    "@types/d3-force": "^3.0.10",
     "@types/node": "^22.9.0",
     "@types/qs": "^6.9.16",
     "@types/react": "^18.3.3",
