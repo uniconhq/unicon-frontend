@@ -37,7 +37,6 @@ const CreateSubmission = () => {
   const createContestSubmissionMutation = useCreateSubmission(Number(id));
   const navigate = useNavigate();
 
-  // @ts-expect-error - it is infinitely deep because of the definition in json.ts
   const form = useForm<SubmissionFormType>({
     resolver: zodResolver(submissionFormSchema),
     defaultValues: submissionFormDefault,
