@@ -8,9 +8,11 @@ import App from "@/App.tsx";
 import Layout from "@/components/layout/layout.tsx";
 import Contest from "@/pages/Contest";
 import CreateContest from "@/pages/CreateContest.tsx";
+import CreateSubmission from "@/pages/CreateSubmission";
 import Error from "@/pages/Error.tsx";
 import Home from "@/pages/Home.tsx";
 import Login from "@/pages/Login.tsx";
+import SubmissionResults from "@/pages/SubmissionResults";
 import { StoreProvider } from "@/store/store-provider.tsx";
 
 const router = createBrowserRouter([
@@ -23,6 +25,8 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/contests/new", element: <CreateContest /> },
       { path: "/contests/:id", element: <Contest /> },
+      { path: "/contests/:id/submit", element: <CreateSubmission /> },
+      { path: "/submissions/:id/results", element: <SubmissionResults /> },
     ],
     errorElement: <Error />,
   },

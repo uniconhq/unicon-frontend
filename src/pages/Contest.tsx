@@ -29,11 +29,11 @@ const Contest = () => {
       </div>
       <div className="flex flex-col gap-8">
         {data?.tasks.map((task, index) => (
-          <Card className="bg-inherit">
+          <Card key={index} className="bg-inherit">
             <CardHeader>
               <CardTitle className="flex items-center gap-4 font-mono">
-                <span className="text-lg font-medium">Task #{index + 1}</span>
-                <div className="flex items-center gap-2 text-xs text-gray-300">
+                <span className="text-lg font-medium">Task #{task.id + 1}</span>
+                <div className="flex items-center gap-2 text-sm text-gray-300">
                   <span className="rounded-md border border-blue-700 p-2">
                     {task.type}
                   </span>
