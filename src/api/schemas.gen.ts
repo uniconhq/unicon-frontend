@@ -89,7 +89,29 @@ export const DefinitionSchema = {
         },
         tasks: {
             items: {
-                '$ref': '#/components/schemas/Task'
+                oneOf: [
+                    {
+                        '$ref': '#/components/schemas/ProgrammingTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleChoiceTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleResponseTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/ShortAnswerTask'
+                    }
+                ],
+                discriminator: {
+                    propertyName: 'type',
+                    mapping: {
+                        MULTIPLE_CHOICE_TASK: '#/components/schemas/MultipleChoiceTask',
+                        MULTIPLE_RESPONSE_TASK: '#/components/schemas/MultipleResponseTask',
+                        PROGRAMMING_TASK: '#/components/schemas/ProgrammingTask',
+                        SHORT_ANSWER_TASK: '#/components/schemas/ShortAnswerTask'
+                    }
+                }
             },
             type: 'array',
             title: 'Tasks'
@@ -135,6 +157,50 @@ export const ExpectedAnswerSchema = {
     title: 'ExpectedAnswer'
 } as const;
 
+export const FileSchema = {
+    properties: {
+        file_name: {
+            type: 'string',
+            title: 'File Name'
+        },
+        content: {
+            type: 'string',
+            title: 'Content'
+        }
+    },
+    type: 'object',
+    required: ['file_name', 'content'],
+    title: 'File'
+} as const;
+
+export const GraphEdgeSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        from_node_id: {
+            type: 'integer',
+            title: 'From Node Id'
+        },
+        from_socket_id: {
+            type: 'string',
+            title: 'From Socket Id'
+        },
+        to_node_id: {
+            type: 'integer',
+            title: 'To Node Id'
+        },
+        to_socket_id: {
+            type: 'string',
+            title: 'To Socket Id'
+        }
+    },
+    type: 'object',
+    required: ['id', 'from_node_id', 'from_socket_id', 'to_node_id', 'to_socket_id'],
+    title: 'GraphEdge'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -149,25 +215,295 @@ export const HTTPValidationErrorSchema = {
     title: 'HTTPValidationError'
 } as const;
 
-export const TaskSchema = {
+export const MultipleChoiceTaskSchema = {
     properties: {
         id: {
             type: 'integer',
             title: 'Id'
         },
         type: {
-            '$ref': '#/components/schemas/TaskType'
+            type: 'string',
+            enum: ['MULTIPLE_CHOICE_TASK'],
+            const: 'MULTIPLE_CHOICE_TASK',
+            title: 'Type'
         },
         autograde: {
             type: 'boolean',
             title: 'Autograde',
             default: true
+        },
+        question: {
+            type: 'string',
+            title: 'Question'
+        },
+        choices: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Choices'
+        }
+    },
+    type: 'object',
+    required: ['id', 'type', 'question', 'choices'],
+    title: 'MultipleChoiceTask'
+} as const;
+
+export const MultipleResponseTaskSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        type: {
+            type: 'string',
+            enum: ['MULTIPLE_RESPONSE_TASK'],
+            const: 'MULTIPLE_RESPONSE_TASK',
+            title: 'Type'
+        },
+        autograde: {
+            type: 'boolean',
+            title: 'Autograde',
+            default: true
+        },
+        question: {
+            type: 'string',
+            title: 'Question'
+        },
+        choices: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Choices'
+        }
+    },
+    type: 'object',
+    required: ['id', 'type', 'question', 'choices'],
+    title: 'MultipleResponseTask'
+} as const;
+
+export const ProgrammingLanguageSchema = {
+    type: 'string',
+    enum: ['PYTHON'],
+    const: 'PYTHON',
+    title: 'ProgrammingLanguage'
+} as const;
+
+export const ProgrammingTaskSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        type: {
+            type: 'string',
+            enum: ['PROGRAMMING_TASK'],
+            const: 'PROGRAMMING_TASK',
+            title: 'Type'
+        },
+        autograde: {
+            type: 'boolean',
+            title: 'Autograde',
+            default: true
+        },
+        question: {
+            type: 'string',
+            title: 'Question'
+        },
+        environment: {
+            '$ref': '#/components/schemas/RunnerEnvironment'
+        },
+        required_inputs: {
+            items: {
+                '$ref': '#/components/schemas/RequiredInput'
+            },
+            type: 'array',
+            title: 'Required Inputs'
+        },
+        testcases: {
+            items: {
+                '$ref': '#/components/schemas/Testcase'
+            },
+            type: 'array',
+            title: 'Testcases'
+        }
+    },
+    type: 'object',
+    required: ['id', 'type', 'question', 'environment', 'required_inputs', 'testcases'],
+    title: 'ProgrammingTask'
+} as const;
+
+export const RequiredInputSchema = {
+    properties: {
+        id: {
+            type: 'string',
+            title: 'Id'
+        },
+        data: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'boolean'
+                },
+                {
+                    '$ref': '#/components/schemas/File'
+                }
+            ],
+            title: 'Data'
+        }
+    },
+    type: 'object',
+    required: ['id', 'data'],
+    title: 'RequiredInput'
+} as const;
+
+export const RunnerEnvironmentSchema = {
+    properties: {
+        language: {
+            '$ref': '#/components/schemas/ProgrammingLanguage'
+        },
+        time_limit: {
+            type: 'integer',
+            title: 'Time Limit'
+        },
+        memory_limit: {
+            type: 'integer',
+            title: 'Memory Limit'
+        },
+        extra_options: {
+            anyOf: [
+                {
+                    type: 'object'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Extra Options'
+        }
+    },
+    type: 'object',
+    required: ['language', 'time_limit', 'memory_limit'],
+    title: 'RunnerEnvironment'
+} as const;
+
+export const ShortAnswerTaskSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        type: {
+            type: 'string',
+            enum: ['SHORT_ANSWER_TASK'],
+            const: 'SHORT_ANSWER_TASK',
+            title: 'Type'
+        },
+        autograde: {
+            type: 'boolean',
+            title: 'Autograde',
+            default: false
+        },
+        question: {
+            type: 'string',
+            title: 'Question'
+        }
+    },
+    type: 'object',
+    required: ['id', 'type', 'question'],
+    title: 'ShortAnswerTask'
+} as const;
+
+export const StepSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        inputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Inputs'
+        },
+        outputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Outputs'
+        },
+        type: {
+            '$ref': '#/components/schemas/StepType'
         }
     },
     additionalProperties: false,
     type: 'object',
-    required: ['id', 'type'],
-    title: 'Task'
+    required: ['id', 'inputs', 'outputs', 'type'],
+    title: 'Step'
+} as const;
+
+export const StepSocketSchema = {
+    properties: {
+        id: {
+            type: 'string',
+            title: 'Id'
+        },
+        data: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'boolean'
+                },
+                {
+                    '$ref': '#/components/schemas/File'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Data'
+        }
+    },
+    type: 'object',
+    required: ['id'],
+    title: 'StepSocket',
+    description: `A socket that is used to connect steps to each other.
+
+Socket ID Format: <TYPE>.<DIRECTION>.<NAME>.<INDEX>
+- <NAME>.<INDEX> is optional and is used to differentiate between multiple sockets of the same type
+    - Collectively, <NAME>.<INDEX> is referred to as the "label"
+
+There can be 2 types of sockets:
+
+1. Control Sockets: Used to control the flow of the program
+    - e.g. CONTROL.IN.<NAME>.<INDEX>
+2. Data Sockets: Used to pass data between steps
+    - e.g. DATA.OUT.<NAME>.<INDEX>`
+} as const;
+
+export const StepTypeSchema = {
+    type: 'string',
+    enum: ['PY_RUN_FUNCTION_STEP', 'OBJECT_ACCESS_STEP', 'INPUT_STEP', 'OUTPUT_STEP', 'LOOP_STEP', 'IF_ELSE_STEP', 'STRING_MATCH_STEP'],
+    title: 'StepType'
 } as const;
 
 export const TaskEvalStatusSchema = {
@@ -246,10 +582,30 @@ export const TaskResultORMSchema = {
     title: 'TaskResultORM'
 } as const;
 
-export const TaskTypeSchema = {
-    type: 'string',
-    enum: ['MULTIPLE_CHOICE_TASK', 'MULTIPLE_RESPONSE_TASK', 'SHORT_ANSWER_TASK', 'PROGRAMMING_TASK'],
-    title: 'TaskType'
+export const TestcaseSchema = {
+    properties: {
+        nodes: {
+            items: {
+                '$ref': '#/components/schemas/Step'
+            },
+            type: 'array',
+            title: 'Nodes'
+        },
+        edges: {
+            items: {
+                '$ref': '#/components/schemas/GraphEdge'
+            },
+            type: 'array',
+            title: 'Edges'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['nodes', 'edges', 'id'],
+    title: 'Testcase'
 } as const;
 
 export const TokenSchema = {

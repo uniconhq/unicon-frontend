@@ -2,11 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { PropsWithChildren, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
+import AppSidebar from "@/components/layout/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getUserProfile } from "@/queries/user";
 import { useUserStore } from "@/store/user/user-store-provider";
-
-import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
-import AppSidebar from "./app-sidebar";
 
 const Layout: React.FC<PropsWithChildren> = () => {
   const { data: userProfile } = useQuery(getUserProfile());
