@@ -16,7 +16,6 @@ const submissionFormSchema = z.object({
     .string()
     .min(1, "Submission cannot be empty")
     .transform((str, ctx): z.infer<ReturnType<typeof json>> => {
-      console.log({ str });
       try {
         return JSON.parse(str);
       } catch {

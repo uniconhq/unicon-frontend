@@ -7,7 +7,9 @@ import {
   BackgroundVariant,
   Connection,
   Controls,
+  Edge,
   MiniMap,
+  Node,
   ReactFlow,
   ReactFlowProvider,
   useEdgesState,
@@ -20,17 +22,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { GraphEdge, Step } from "@/api";
 import { StepNode } from "@/components/node-graph/components/StepNode";
 
-const getLayoutedElements = (nodes, edges) => {
+function getLayoutedElements<T extends Record<string, unknown>>(
+  nodes: Node<T>[],
+  edges: Edge<T>[],
+) {
   const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
   g.setGraph({
     rankdir: "LR",
   });
 
-  nodes = nodes.map((node) => {
+  const measuredNodes = nodes.map((node) => {
     const domNode = document.querySelector(`[data-id="${node?.id}"]`);
     if (!domNode) {
-      console.log("could not find node: ", node.id);
-      return;
+      throw Error("could not find node: " + node.id);
     }
     const { width, height } = domNode.getBoundingClientRect();
     // There is a scale of 0.5 on the graph element
@@ -38,8 +42,7 @@ const getLayoutedElements = (nodes, edges) => {
   });
 
   edges.forEach((edge) => g.setEdge(edge.source, edge.target));
-  nodes.forEach((node) => {
-    // TODO: fix measurements to node's measurement
+  measuredNodes.forEach((node) => {
     const domNode = document.querySelector(`[data-id="${node?.id}"]`);
     if (!domNode) {
       return;
@@ -62,13 +65,11 @@ const getLayoutedElements = (nodes, edges) => {
       const x = position.x - (node.measured?.width ?? 0) / 2;
       const y = position.y - (node.measured?.height ?? 0) / 2;
 
-      console.log({ ...node, position: { x, y } });
-
       return { ...node, position: { x, y } };
     }),
     edges,
   };
-};
+}
 
 type OwnProps = {
   steps: Step[];
@@ -82,7 +83,7 @@ const NodeGraph: React.FC<OwnProps> = ({ steps, edges }) => {
 
   const nodeTypes = useMemo(() => ({ step: StepNode }), []);
 
-  const nodeData = useMemo(
+  const nodeData: Node<Step>[] = useMemo(
     () =>
       steps.map((step) => ({
         id: step.id.toString(),
@@ -93,7 +94,7 @@ const NodeGraph: React.FC<OwnProps> = ({ steps, edges }) => {
     [steps],
   );
 
-  const edgeData = useMemo(
+  const edgeData: Edge[] = useMemo(
     () =>
       edges.map((edge) => ({
         id: edge.id.toString(),
@@ -143,8 +144,7 @@ const NodeGraph: React.FC<OwnProps> = ({ steps, edges }) => {
       setTimeout(fitView, 100);
       setRan(true);
     }
-  }, [initialized]);
-  // const [, , dragEvents] = useLayoutedElements();
+  }, [fitView, initialized, onLayout, ran]);
 
   return (
     <div className="grid gap-1">

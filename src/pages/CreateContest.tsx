@@ -18,7 +18,6 @@ const definitionFormSchema = z.object({
     .string()
     .min(1, "Definition cannot be empty")
     .transform((str, ctx): z.infer<ReturnType<typeof json>> => {
-      console.log({ str });
       try {
         return JSON.parse(str);
       } catch {
