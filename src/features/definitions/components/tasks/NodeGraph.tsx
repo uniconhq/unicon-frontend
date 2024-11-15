@@ -24,18 +24,30 @@ const getLayoutedElements = (nodes, edges) => {
   const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
   g.setGraph({
     rankdir: "LR",
-    ranksep: 100,
-    nodesep: 100,
-    ranker: "tight-tree",
+  });
+
+  nodes = nodes.map((node) => {
+    const domNode = document.querySelector(`[data-id="${node?.id}"]`);
+    if (!domNode) {
+      console.log("could not find node: ", node.id);
+      return;
+    }
+    const { width, height } = domNode.getBoundingClientRect();
+    // There is a scale of 0.5 on the graph element
+    return { ...node, measured: { width: width * 0.5, height: height * 0.5 } };
   });
 
   edges.forEach((edge) => g.setEdge(edge.source, edge.target));
   nodes.forEach((node) => {
     // TODO: fix measurements to node's measurement
+    const domNode = document.querySelector(`[data-id="${node?.id}"]`);
+    if (!domNode) {
+      return;
+    }
     g.setNode(node.id, {
       ...node,
-      width: node.measured?.width ?? 100,
-      height: node.measured?.height ?? 50,
+      width: node.measured?.width,
+      height: node.measured?.height,
     });
   });
 
@@ -44,10 +56,13 @@ const getLayoutedElements = (nodes, edges) => {
   return {
     nodes: nodes.map((node) => {
       const position = g.node(node.id);
+
       // We are shifting the dagre node position (anchor=center center) to the top left
       // so it matches the React Flow node anchor point (top left).
       const x = position.x - (node.measured?.width ?? 0) / 2;
       const y = position.y - (node.measured?.height ?? 0) / 2;
+
+      console.log({ ...node, position: { x, y } });
 
       return { ...node, position: { x, y } };
     }),
