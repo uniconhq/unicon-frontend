@@ -1,14 +1,16 @@
 import {
-  type NodeProps as FlowNodeProps,
   type Node as FlowNode,
+  type NodeProps as FlowNodeProps,
 } from "@xyflow/react";
-import { NodeData, NodeType } from "../lib/types";
 import { GoDotFill } from "react-icons/go";
-import { NodeColorMap } from "../lib/colors";
-import { UserNode } from "./UserNode";
+
+import { NodeColorMap } from "@/lib/colors";
+import { NodeData, NodeType } from "@/lib/types";
+
+import { ArtifactNode } from "./ArtifactNode";
 import { GroupNode } from "./GroupNode";
 import { TaskNode } from "./TaskNode";
-import { ArtifactNode } from "./ArtifactNode";
+import { UserNode } from "./UserNode";
 
 export function Node({ data }: FlowNodeProps<FlowNode<NodeData>>) {
   return (

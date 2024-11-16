@@ -1,5 +1,6 @@
+import { Edge as FlowEdge, Node as FlowNode } from "@xyflow/react";
+
 import { NodeData, NodeType } from "../lib/types";
-import { Node as FlowNode, Edge as FlowEdge } from "@xyflow/react";
 
 export const testNodes: FlowNode<NodeData>[] = [
   {

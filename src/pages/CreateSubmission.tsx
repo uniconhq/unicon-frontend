@@ -1,0 +1,92 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Params, useNavigate, useParams } from "react-router-dom";
+import { z } from "zod";
+
+import TextareaField from "@/components/form/fields/textarea-field";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { useCreateSubmission } from "@/features/definitions/queries";
+import { useUserStore } from "@/store/user/user-store-provider";
+import { json } from "@/utils/json";
+
+const submissionFormSchema = z.object({
+  submission: z
+    .string()
+    .min(1, "Submission cannot be empty")
+    .transform((str, ctx): z.infer<ReturnType<typeof json>> => {
+      try {
+        return JSON.parse(str);
+      } catch {
+        ctx.addIssue({ code: "custom", message: "Invalid JSON" });
+        return z.NEVER;
+      }
+    }),
+});
+
+type SubmissionFormType = z.infer<typeof submissionFormSchema>;
+const submissionFormDefault = {
+  submission: "",
+};
+
+const CreateSubmission = () => {
+  const { id } = useParams<Params<"id">>();
+  const { user, isLoading } = useUserStore((store) => store);
+  const createContestSubmissionMutation = useCreateSubmission(Number(id));
+  const navigate = useNavigate();
+
+  const form = useForm<SubmissionFormType>({
+    resolver: zodResolver(submissionFormSchema),
+    defaultValues: submissionFormDefault,
+  });
+
+  useEffect(() => {
+    if (!user && !isLoading) {
+      navigate("/login");
+    }
+  }, [user, navigate, isLoading]);
+
+  if (!user) {
+    return;
+  }
+
+  const onSubmit: SubmitHandler<SubmissionFormType> = async (data) => {
+    // @ts-expect-error - just let the backend validate it
+    createContestSubmissionMutation.mutate(data.submission, {
+      onSettled: (response) => {
+        if (!response) {
+          // this should not happen
+          return;
+        }
+        if (response.status === 200) {
+          navigate(`/submissions/${response.data?.id}`);
+        }
+      },
+    });
+  };
+
+  return (
+    <div className="flex w-full flex-col gap-8 px-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Create a new submission</h1>
+      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <TextareaField
+            label="Contest Submission"
+            name="submission"
+            rows={20}
+          />
+          <div className="mt-12">
+            <Button className="bg-purple-600 text-white hover:bg-purple-600 hover:bg-opacity-80">
+              Submit
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+};
+
+export default CreateSubmission;
