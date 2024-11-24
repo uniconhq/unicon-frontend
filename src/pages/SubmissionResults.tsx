@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -23,19 +24,26 @@ const taskStatusToColor = (status: string) => {
   }
 };
 
-const parseDateTIme = (dateTimeString: string) => {
+const parseDateTime = (dateTimeString: string) => {
   const date = new Date(dateTimeString);
   return date.toLocaleString();
 };
 
 const SubmissionResults = () => {
   const { id } = useParams<{ id: string }>();
-  // TODO: This is a super naive way of refreshing the data, refactor this in the future to only
-  // refetch the data when there are pending tasks.
+
+  const [pending, setPending] = useState(true);
+
   const { data } = useQuery({
     ...getSubmissionById(Number(id)),
-    refetchInterval: 5000,
+    refetchInterval: pending ? 5000 : false,
   });
+
+  useEffect(() => {
+    if (data && pending && data.every((task) => task.status !== "PENDING")) {
+      setPending(false);
+    }
+  }, [data, pending]);
 
   const contest_id: number = data ? data[0].definition_id : 0;
 
@@ -73,15 +81,15 @@ const SubmissionResults = () => {
                   ></span>
                 </span>
                 <span className="text-lg font-medium">
-                  Task #{taskResult.task_id}
+                  Task #{taskResult.task_id + 1}
                 </span>
               </CardTitle>
               {taskResult.status != "SKIPPED" && (
                 <CardDescription className="flex flex-col gap-1 py-2 font-mono text-sm">
-                  <span>STARTED: {parseDateTIme(taskResult.started_at)}</span>
+                  <span>STARTED: {parseDateTime(taskResult.started_at)}</span>
                   {taskResult.completed_at && (
                     <span>
-                      FINISHED: {parseDateTIme(taskResult.completed_at)}
+                      FINISHED: {parseDateTime(taskResult.completed_at)}
                     </span>
                   )}
                 </CardDescription>
