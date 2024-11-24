@@ -249,6 +249,82 @@ export const MultipleChoiceTaskSchema = {
     title: 'MultipleChoiceTask'
 } as const;
 
+export const MultipleChoiceTaskResultSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        submission_id: {
+            type: 'integer',
+            title: 'Submission Id'
+        },
+        definition_id: {
+            type: 'integer',
+            title: 'Definition Id'
+        },
+        task_id: {
+            type: 'integer',
+            title: 'Task Id'
+        },
+        task_type: {
+            '$ref': '#/components/schemas/TaskType'
+        },
+        started_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Started At'
+        },
+        completed_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Completed At'
+        },
+        job_id: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Job Id'
+        },
+        status: {
+            '$ref': '#/components/schemas/TaskEvalStatus'
+        },
+        result: {
+            type: 'boolean',
+            title: 'Result'
+        },
+        error: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Error'
+        },
+        task: {
+            '$ref': '#/components/schemas/TaskORM'
+        }
+    },
+    type: 'object',
+    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    title: 'MultipleChoiceTaskResult'
+} as const;
+
 export const MultipleResponseTaskSchema = {
     properties: {
         id: {
@@ -281,6 +357,114 @@ export const MultipleResponseTaskSchema = {
     type: 'object',
     required: ['id', 'type', 'question', 'choices'],
     title: 'MultipleResponseTask'
+} as const;
+
+export const MultipleResponseTaskResultSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        submission_id: {
+            type: 'integer',
+            title: 'Submission Id'
+        },
+        definition_id: {
+            type: 'integer',
+            title: 'Definition Id'
+        },
+        task_id: {
+            type: 'integer',
+            title: 'Task Id'
+        },
+        task_type: {
+            '$ref': '#/components/schemas/TaskType'
+        },
+        started_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Started At'
+        },
+        completed_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Completed At'
+        },
+        job_id: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Job Id'
+        },
+        status: {
+            '$ref': '#/components/schemas/TaskEvalStatus'
+        },
+        result: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/MultipleResponseTaskResultType'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        error: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Error'
+        },
+        task: {
+            '$ref': '#/components/schemas/TaskORM'
+        }
+    },
+    type: 'object',
+    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    title: 'MultipleResponseTaskResult'
+} as const;
+
+export const MultipleResponseTaskResultTypeSchema = {
+    properties: {
+        correct_choices: {
+            items: {
+                type: 'integer'
+            },
+            type: 'array',
+            title: 'Correct Choices'
+        },
+        incorrect_choices: {
+            items: {
+                type: 'integer'
+            },
+            type: 'array',
+            title: 'Incorrect Choices'
+        },
+        num_choices: {
+            type: 'integer',
+            title: 'Num Choices'
+        }
+    },
+    type: 'object',
+    required: ['correct_choices', 'incorrect_choices', 'num_choices'],
+    title: 'MultipleResponseTaskResultType'
 } as const;
 
 export const ProgrammingLanguageSchema = {
@@ -332,6 +516,85 @@ export const ProgrammingTaskSchema = {
     type: 'object',
     required: ['id', 'type', 'question', 'environment', 'required_inputs', 'testcases'],
     title: 'ProgrammingTask'
+} as const;
+
+export const ProgrammingTaskResultSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        submission_id: {
+            type: 'integer',
+            title: 'Submission Id'
+        },
+        definition_id: {
+            type: 'integer',
+            title: 'Definition Id'
+        },
+        task_id: {
+            type: 'integer',
+            title: 'Task Id'
+        },
+        task_type: {
+            '$ref': '#/components/schemas/TaskType'
+        },
+        started_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Started At'
+        },
+        completed_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Completed At'
+        },
+        job_id: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Job Id'
+        },
+        status: {
+            '$ref': '#/components/schemas/TaskEvalStatus'
+        },
+        result: {
+            items: {
+                type: 'object'
+            },
+            type: 'array',
+            title: 'Result'
+        },
+        error: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Error'
+        },
+        task: {
+            '$ref': '#/components/schemas/TaskORM'
+        }
+    },
+    type: 'object',
+    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    title: 'ProgrammingTaskResult'
 } as const;
 
 export const RequiredInputSchema = {
@@ -421,6 +684,89 @@ export const ShortAnswerTaskSchema = {
     type: 'object',
     required: ['id', 'type', 'question'],
     title: 'ShortAnswerTask'
+} as const;
+
+export const ShortAnswerTaskResultSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        submission_id: {
+            type: 'integer',
+            title: 'Submission Id'
+        },
+        definition_id: {
+            type: 'integer',
+            title: 'Definition Id'
+        },
+        task_id: {
+            type: 'integer',
+            title: 'Task Id'
+        },
+        task_type: {
+            '$ref': '#/components/schemas/TaskType'
+        },
+        started_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Started At'
+        },
+        completed_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Completed At'
+        },
+        job_id: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Job Id'
+        },
+        status: {
+            '$ref': '#/components/schemas/TaskEvalStatus'
+        },
+        result: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Result'
+        },
+        error: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Error'
+        },
+        task: {
+            '$ref': '#/components/schemas/TaskORM'
+        }
+    },
+    type: 'object',
+    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    title: 'ShortAnswerTaskResult'
 } as const;
 
 export const StepSchema = {
@@ -534,6 +880,41 @@ export const SubmissionORMSchema = {
     title: 'SubmissionORM'
 } as const;
 
+export const SubmissionPublicSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        definition_id: {
+            type: 'integer',
+            title: 'Definition Id'
+        },
+        status: {
+            '$ref': '#/components/schemas/SubmissionStatus'
+        },
+        submitted_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Submitted At'
+        },
+        other_fields: {
+            type: 'object',
+            title: 'Other Fields'
+        },
+        task_results: {
+            items: {
+                '$ref': '#/components/schemas/TaskResult'
+            },
+            type: 'array',
+            title: 'Task Results'
+        }
+    },
+    type: 'object',
+    required: ['id', 'definition_id', 'status', 'submitted_at', 'task_results'],
+    title: 'SubmissionPublic'
+} as const;
+
 export const SubmissionStatusSchema = {
     type: 'string',
     enum: ['PENDING', 'OK'],
@@ -546,74 +927,54 @@ export const TaskEvalStatusSchema = {
     title: 'TaskEvalStatus'
 } as const;
 
-export const TaskResultORMSchema = {
+export const TaskORMSchema = {
     properties: {
         id: {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
-            type: 'integer',
-            title: 'Submission Id'
+        type: {
+            '$ref': '#/components/schemas/TaskType'
+        },
+        autograde: {
+            type: 'boolean',
+            title: 'Autograde'
+        },
+        other_fields: {
+            type: 'object',
+            title: 'Other Fields'
         },
         definition_id: {
             type: 'integer',
             title: 'Definition Id'
-        },
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
-        },
-        started_at: {
-            type: 'string',
-            format: 'date-time',
-            title: 'Started At'
-        },
-        completed_at: {
-            anyOf: [
-                {
-                    type: 'string',
-                    format: 'date-time'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Completed At'
-        },
-        job_id: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Job Id'
-        },
-        status: {
-            '$ref': '#/components/schemas/TaskEvalStatus'
-        },
-        result: {
-            type: 'object',
-            title: 'Result'
-        },
-        error: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Error'
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'definition_id', 'task_id', 'started_at', 'completed_at', 'job_id', 'status', 'error'],
-    title: 'TaskResultORM'
+    required: ['id', 'type', 'autograde', 'definition_id'],
+    title: 'TaskORM'
+} as const;
+
+export const TaskResultSchema = {
+    anyOf: [
+        {
+            '$ref': '#/components/schemas/MultipleChoiceTaskResult'
+        },
+        {
+            '$ref': '#/components/schemas/MultipleResponseTaskResult'
+        },
+        {
+            '$ref': '#/components/schemas/ProgrammingTaskResult'
+        },
+        {
+            '$ref': '#/components/schemas/ShortAnswerTaskResult'
+        }
+    ]
+} as const;
+
+export const TaskTypeSchema = {
+    type: 'string',
+    enum: ['MULTIPLE_CHOICE_TASK', 'MULTIPLE_RESPONSE_TASK', 'SHORT_ANSWER_TASK', 'PROGRAMMING_TASK'],
+    title: 'TaskType'
 } as const;
 
 export const TestcaseSchema = {
