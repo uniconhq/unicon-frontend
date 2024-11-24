@@ -58,6 +58,21 @@ export type MultipleChoiceTask = {
 
 export type type = 'MULTIPLE_CHOICE_TASK';
 
+export type MultipleChoiceTaskResult = {
+    id: number;
+    submission_id: number;
+    definition_id: number;
+    task_id: number;
+    task_type: TaskType;
+    started_at: string;
+    completed_at: (string | null);
+    job_id: (string | null);
+    status: TaskEvalStatus;
+    result: boolean;
+    error: (string | null);
+    task: TaskORM;
+};
+
 export type MultipleResponseTask = {
     id: number;
     type: 'MULTIPLE_RESPONSE_TASK';
@@ -67,6 +82,27 @@ export type MultipleResponseTask = {
 };
 
 export type type2 = 'MULTIPLE_RESPONSE_TASK';
+
+export type MultipleResponseTaskResult = {
+    id: number;
+    submission_id: number;
+    definition_id: number;
+    task_id: number;
+    task_type: TaskType;
+    started_at: string;
+    completed_at: (string | null);
+    job_id: (string | null);
+    status: TaskEvalStatus;
+    result: (MultipleResponseTaskResultType | null);
+    error: (string | null);
+    task: TaskORM;
+};
+
+export type MultipleResponseTaskResultType = {
+    correct_choices: Array<(number)>;
+    incorrect_choices: Array<(number)>;
+    num_choices: number;
+};
 
 export type ProgrammingLanguage = 'PYTHON';
 
@@ -81,6 +117,23 @@ export type ProgrammingTask = {
 };
 
 export type type3 = 'PROGRAMMING_TASK';
+
+export type ProgrammingTaskResult = {
+    id: number;
+    submission_id: number;
+    definition_id: number;
+    task_id: number;
+    task_type: TaskType;
+    started_at: string;
+    completed_at: (string | null);
+    job_id: (string | null);
+    status: TaskEvalStatus;
+    result: Array<{
+        [key: string]: unknown;
+    }>;
+    error: (string | null);
+    task: TaskORM;
+};
 
 export type RequiredInput = {
     id: string;
@@ -104,6 +157,21 @@ export type ShortAnswerTask = {
 };
 
 export type type4 = 'SHORT_ANSWER_TASK';
+
+export type ShortAnswerTaskResult = {
+    id: number;
+    submission_id: number;
+    definition_id: number;
+    task_id: number;
+    task_type: TaskType;
+    started_at: string;
+    completed_at: (string | null);
+    job_id: (string | null);
+    status: TaskEvalStatus;
+    result: (string | null);
+    error: (string | null);
+    task: TaskORM;
+};
 
 export type Step = {
     id: number;
@@ -143,24 +211,34 @@ export type SubmissionORM = {
     };
 };
 
+export type SubmissionPublic = {
+    id: number;
+    definition_id: number;
+    status: SubmissionStatus;
+    submitted_at: string;
+    other_fields?: {
+        [key: string]: unknown;
+    };
+    task_results: Array<TaskResult>;
+};
+
 export type SubmissionStatus = 'PENDING' | 'OK';
 
 export type TaskEvalStatus = 'SUCCESS' | 'PENDING' | 'SKIPPED' | 'FAILED';
 
-export type TaskResultORM = {
+export type TaskORM = {
     id: number;
-    submission_id: number;
-    definition_id: number;
-    task_id: number;
-    started_at: string;
-    completed_at: (string | null);
-    job_id: (string | null);
-    status: TaskEvalStatus;
-    result?: {
+    type: TaskType;
+    autograde: boolean;
+    other_fields?: {
         [key: string]: unknown;
     };
-    error: (string | null);
+    definition_id: number;
 };
+
+export type TaskResult = MultipleChoiceTaskResult | MultipleResponseTaskResult | ProgrammingTaskResult | ShortAnswerTaskResult;
+
+export type TaskType = 'MULTIPLE_CHOICE_TASK' | 'MULTIPLE_RESPONSE_TASK' | 'SHORT_ANSWER_TASK' | 'PROGRAMMING_TASK';
 
 export type Testcase = {
     nodes: Array<Step>;
@@ -272,6 +350,6 @@ export type GetSubmissionData = {
     };
 };
 
-export type GetSubmissionResponse = (Array<TaskResultORM>);
+export type GetSubmissionResponse = (SubmissionPublic);
 
 export type GetSubmissionError = (HTTPValidationError);
