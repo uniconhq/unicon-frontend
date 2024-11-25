@@ -7,6 +7,7 @@ import {
   Connection,
   Controls,
   Edge,
+  MarkerType,
   MiniMap,
   Node,
   ReactFlow,
@@ -53,7 +54,11 @@ const NodeGraph: React.FC<OwnProps> = ({ steps, edges }) => {
         sourceHandle: edge.from_socket_id,
         target: edge.to_node_id.toString(),
         targetHandle: edge.to_socket_id,
-        animated: true,
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 20,
+          height: 20,
+        },
       })),
     [edges],
   );

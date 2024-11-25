@@ -7,12 +7,12 @@ import { NodeSlot, NodeSlotGroup } from "./NodeSlot";
 
 export function StepNode({ data }: { data: Step }) {
   return (
-    <div className="flex min-w-48 flex-col rounded bg-[#141414] pb-2 font-mono text-slate-300 outline outline-[0.08rem] outline-neutral-500">
+    <div className="flex min-w-52 flex-col rounded bg-[#141414] pb-2 font-mono text-slate-300 outline outline-[0.08rem] outline-neutral-500">
       {/* Node header */}
-      <div className="mb-2 flex items-center rounded-t px-2 py-1 text-sm font-medium uppercase">
+      <div className="mb-2 flex items-center gap-1 rounded-t py-2 pl-1 pr-4 font-medium uppercase">
         <GoDotFill
           style={{ color: `${StepNodeColorMap[data.type]}` }}
-          className="mr-1"
+          className="h-5 w-5"
         />
         {data.type}
       </div>

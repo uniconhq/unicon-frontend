@@ -19,7 +19,7 @@ export function Programming({ task }: { task: ProgrammingTask }) {
         )}
       </div>
       <span className="text-xs font-medium text-gray-300">TESTCASES</span>
-      <div className="flex flex-row gap-2 font-mono">
+      <div className="flex gap-2 font-mono">
         {task.testcases.map((testcase, index) => (
           <Testcase testcase={testcase} index={index} />
         ))}

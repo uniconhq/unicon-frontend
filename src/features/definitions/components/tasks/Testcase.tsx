@@ -26,14 +26,14 @@ const TestcaseDisplay: React.FC<OwnProps> = ({ testcase, index }) => {
       onOpenChange={setIsOpen}
       className="w-full space-y-2"
     >
-      <div className="flex items-center justify-between space-x-4 px-4">
+      <div className="flex items-center justify-between">
         <CollapsibleTrigger asChild>
           <Button key={index} className="hover:text-purple-500">
             Testcase #{index + 1}
           </Button>
         </CollapsibleTrigger>
       </div>
-      <CollapsibleContent className="space-y-2">
+      <CollapsibleContent className="space-y-4">
         <NodeGraph steps={testcase.nodes} edges={testcase.edges} />
       </CollapsibleContent>
     </Collapsible>
