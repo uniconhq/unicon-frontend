@@ -7,7 +7,9 @@ interface NodeSlotProps {
   type: HandleType;
 }
 
-export function NodeSlot({ id, label, type }: NodeSlotProps) {
+export function NodeSlot({ id, type }: NodeSlotProps) {
+  const [slotType, slotDirection, ...name] = id.split(".");
+
   return (
     <div
       className={twJoin(
@@ -28,7 +30,9 @@ export function NodeSlot({ id, label, type }: NodeSlotProps) {
           type === "target" ? HandlePosition.Left : HandlePosition.Right
         }
       />
-      <span>{label}</span>
+      <span className="text-xs">
+        {name.length ? name.join(".") : `${slotType}.${slotDirection}`}
+      </span>
     </div>
   );
 }
