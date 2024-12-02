@@ -16,6 +16,13 @@ import SubmissionResults from "@/pages/SubmissionResults";
 import Submissions from "@/pages/Submissions";
 import { StoreProvider } from "@/store/store-provider.tsx";
 
+import CreateOrganisation from "./pages/organisations/CreateOrganisation";
+import Organisation from "./pages/organisations/Organisation";
+import Organisations from "./pages/organisations/Organisations";
+import CreateProject from "./pages/projects/CreateProject";
+import Project from "./pages/projects/Project";
+import Projects from "./pages/projects/Projects";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,6 +36,12 @@ const router = createBrowserRouter([
       { path: "/contests/:id", element: <Contest /> },
       { path: "/contests/:id/submit", element: <CreateSubmission /> },
       { path: "/submissions/:id", element: <SubmissionResults /> },
+      { path: "/organisations", element: <Organisations /> },
+      { path: "/organisations/:id", element: <Organisation /> },
+      { path: "/organisations/new", element: <CreateOrganisation /> },
+      { path: "/projects", element: <Projects /> },
+      { path: "/projects/:id", element: <Project /> },
+      { path: "/organisations/:id/projects/new", element: <CreateProject /> },
     ],
     errorElement: <Error />,
   },

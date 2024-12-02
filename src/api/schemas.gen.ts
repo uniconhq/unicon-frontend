@@ -215,6 +215,23 @@ export const HTTPValidationErrorSchema = {
     title: 'HTTPValidationError'
 } as const;
 
+export const InvitationKeyPublicSchema = {
+    properties: {
+        key: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Key'
+        },
+        enabled: {
+            type: 'boolean',
+            title: 'Enabled',
+            default: true
+        }
+    },
+    type: 'object',
+    title: 'InvitationKeyPublic'
+} as const;
+
 export const MultipleChoiceTaskSchema = {
     properties: {
         id: {
@@ -467,6 +484,123 @@ export const MultipleResponseTaskResultTypeSchema = {
     title: 'MultipleResponseTaskResultType'
 } as const;
 
+export const OrganisationSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Id'
+        },
+        owner_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Owner Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'owner_id'],
+    title: 'Organisation'
+} as const;
+
+export const OrganisationCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description'],
+    title: 'OrganisationCreate'
+} as const;
+
+export const OrganisationPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'id'],
+    title: 'OrganisationPublic'
+} as const;
+
+export const OrganisationPublicWithProjectsSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        projects: {
+            items: {
+                '$ref': '#/components/schemas/ProjectPublic'
+            },
+            type: 'array',
+            title: 'Projects'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'id', 'projects'],
+    title: 'OrganisationPublicWithProjects'
+} as const;
+
+export const OrganisationUpdateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description'],
+    title: 'OrganisationUpdate'
+} as const;
+
 export const ProgrammingLanguageSchema = {
     type: 'string',
     enum: ['PYTHON'],
@@ -597,6 +731,53 @@ export const ProgrammingTaskResultSchema = {
     title: 'ProgrammingTaskResult'
 } as const;
 
+export const ProjectCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'ProjectCreate'
+} as const;
+
+export const ProjectPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        roles: {
+            items: {
+                '$ref': '#/components/schemas/RolePublic'
+            },
+            type: 'array',
+            title: 'Roles'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'roles'],
+    title: 'ProjectPublic'
+} as const;
+
+export const ProjectUpdateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'ProjectUpdate'
+} as const;
+
 export const RequiredInputSchema = {
     properties: {
         id: {
@@ -627,6 +808,69 @@ export const RequiredInputSchema = {
     type: 'object',
     required: ['id', 'data'],
     title: 'RequiredInput'
+} as const;
+
+export const RoleBaseSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'RoleBase'
+} as const;
+
+export const RoleCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'RoleCreate'
+} as const;
+
+export const RolePublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id'],
+    title: 'RolePublic'
+} as const;
+
+export const RolePublicWithInvitationKeysSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        invitation_keys: {
+            items: {
+                '$ref': '#/components/schemas/InvitationKeyPublic'
+            },
+            type: 'array',
+            title: 'Invitation Keys'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'invitation_keys'],
+    title: 'RolePublicWithInvitationKeys'
 } as const;
 
 export const RunnerEnvironmentSchema = {
@@ -1022,6 +1266,27 @@ export const TokenSchema = {
     title: 'Token'
 } as const;
 
+export const UserCreateSchema = {
+    properties: {
+        username: {
+            type: 'string',
+            title: 'Username'
+        },
+        password: {
+            type: 'string',
+            minLength: 8,
+            title: 'Password'
+        },
+        confirm_password: {
+            type: 'string',
+            title: 'Confirm Password'
+        }
+    },
+    type: 'object',
+    required: ['username', 'password', 'confirm_password'],
+    title: 'UserCreate'
+} as const;
+
 export const UserInputSchema = {
     properties: {
         task_id: {
@@ -1051,6 +1316,29 @@ export const UserPublicSchema = {
     type: 'object',
     required: ['id', 'username'],
     title: 'UserPublic'
+} as const;
+
+export const UserPublicWithRolesSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        username: {
+            type: 'string',
+            title: 'Username'
+        },
+        roles: {
+            items: {
+                '$ref': '#/components/schemas/RolePublic'
+            },
+            type: 'array',
+            title: 'Roles'
+        }
+    },
+    type: 'object',
+    required: ['id', 'username', 'roles'],
+    title: 'UserPublicWithRoles'
 } as const;
 
 export const ValidationErrorSchema = {
