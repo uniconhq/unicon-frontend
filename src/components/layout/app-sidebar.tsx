@@ -52,7 +52,7 @@ const AppSidebar = () => {
   };
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="bg-[#2e2931]">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Unicon</SidebarGroupLabel>

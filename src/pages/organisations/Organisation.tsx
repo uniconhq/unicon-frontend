@@ -28,7 +28,7 @@ const Organisation = () => {
       </div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Projects</h2>
-        <Link to="/organisations/new" className="flex gap-1">
+        <Link to={`/organisations/${id}/projects/new`} className="flex gap-1">
           <Button variant="ghost" className="hover:text-purple-300">
             <Plus /> New Project
           </Button>
@@ -38,7 +38,7 @@ const Organisation = () => {
         {organisation.projects?.map((project) => (
           <Link to={`/projects/${project.id}`} key={project.id}>
             <Card className="group flex justify-between p-4 hover:opacity-80">
-              <CardTitle>{organisation.name}</CardTitle>
+              <CardTitle>{project.name}</CardTitle>
               <ArrowRight className="hidden h-4 w-4 group-hover:block" />
             </Card>
           </Link>

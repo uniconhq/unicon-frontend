@@ -19,6 +19,9 @@ import { StoreProvider } from "@/store/store-provider.tsx";
 import CreateOrganisation from "./pages/organisations/CreateOrganisation";
 import Organisation from "./pages/organisations/Organisation";
 import Organisations from "./pages/organisations/Organisations";
+import CreateProject from "./pages/projects/CreateProject";
+import Project from "./pages/projects/Project";
+import Projects from "./pages/projects/Projects";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +39,9 @@ const router = createBrowserRouter([
       { path: "/organisations", element: <Organisations /> },
       { path: "/organisations/:id", element: <Organisation /> },
       { path: "/organisations/new", element: <CreateOrganisation /> },
+      { path: "/projects", element: <Projects /> },
+      { path: "/projects/:id", element: <Project /> },
+      { path: "/organisations/:id/projects/new", element: <CreateProject /> },
     ],
     errorElement: <Error />,
   },
