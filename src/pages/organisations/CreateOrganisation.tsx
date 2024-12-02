@@ -41,8 +41,7 @@ const CreateOrganisation = () => {
         setError(error.message);
       },
       onSuccess: (response) => {
-        console.log(response);
-        navigate(`/organisations/${response.data.id}`);
+        navigate(`/organisations/${response.data?.id}`);
       },
     });
   };
