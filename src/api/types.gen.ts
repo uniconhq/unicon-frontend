@@ -562,7 +562,7 @@ export type JoinProjectData = {
     };
 };
 
-export type JoinProjectResponse = (unknown);
+export type JoinProjectResponse = (ProjectPublic);
 
 export type JoinProjectError = (HTTPValidationError);
 
