@@ -48,6 +48,11 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type InvitationKeyPublic = {
+    key?: string;
+    enabled?: boolean;
+};
+
 export type MultipleChoiceTask = {
     id: number;
     type: 'MULTIPLE_CHOICE_TASK';
@@ -104,6 +109,36 @@ export type MultipleResponseTaskResultType = {
     num_choices: number;
 };
 
+export type Organisation = {
+    name: string;
+    description: string;
+    id?: (number | null);
+    owner_id: (number | null);
+};
+
+export type OrganisationCreate = {
+    name: string;
+    description: string;
+};
+
+export type OrganisationPublic = {
+    name: string;
+    description: string;
+    id: number;
+};
+
+export type OrganisationPublicWithProjects = {
+    name: string;
+    description: string;
+    id: number;
+    projects: Array<ProjectPublic>;
+};
+
+export type OrganisationUpdate = {
+    name: string;
+    description: string;
+};
+
 export type ProgrammingLanguage = 'PYTHON';
 
 export type ProgrammingTask = {
@@ -135,9 +170,42 @@ export type ProgrammingTaskResult = {
     task: TaskORM;
 };
 
+export type ProjectCreate = {
+    name: string;
+};
+
+export type ProjectPublic = {
+    name: string;
+    id: number;
+    roles: Array<RolePublic>;
+};
+
+export type ProjectUpdate = {
+    name: string;
+};
+
 export type RequiredInput = {
     id: string;
     data: (string | number | boolean | File);
+};
+
+export type RoleBase = {
+    name: string;
+};
+
+export type RoleCreate = {
+    name: string;
+};
+
+export type RolePublic = {
+    name: string;
+    id: number;
+};
+
+export type RolePublicWithInvitationKeys = {
+    name: string;
+    id: number;
+    invitation_keys: Array<InvitationKeyPublic>;
 };
 
 export type RunnerEnvironment = {
@@ -252,6 +320,12 @@ export type Token = {
     user: UserPublic;
 };
 
+export type UserCreate = {
+    username: string;
+    password: string;
+    confirm_password: string;
+};
+
 export type UserInput = {
     task_id: number;
     user_input: unknown;
@@ -260,6 +334,12 @@ export type UserInput = {
 export type UserPublic = {
     id: number;
     username: string;
+};
+
+export type UserPublicWithRoles = {
+    id: number;
+    username: string;
+    roles: Array<RolePublic>;
 };
 
 export type ValidationError = {
@@ -275,6 +355,14 @@ export type LoginData = {
 export type LoginResponse = (Token);
 
 export type LoginError = (HTTPValidationError);
+
+export type SignupData = {
+    body: UserCreate;
+};
+
+export type SignupResponse = (unknown);
+
+export type SignupError = (HTTPValidationError);
 
 export type LogoutResponse = (unknown);
 
@@ -353,3 +441,168 @@ export type GetSubmissionData = {
 export type GetSubmissionResponse = (SubmissionPublic);
 
 export type GetSubmissionError = (HTTPValidationError);
+
+export type GetAllOrganisationsData = unknown;
+
+export type GetAllOrganisationsResponse = (Array<Organisation>);
+
+export type GetAllOrganisationsError = (HTTPValidationError);
+
+export type CreateOrganisationData = {
+    body: OrganisationCreate;
+};
+
+export type CreateOrganisationResponse = (OrganisationPublic);
+
+export type CreateOrganisationError = (HTTPValidationError);
+
+export type UpdateOrganisationData = {
+    body: OrganisationUpdate;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateOrganisationResponse = (OrganisationPublic);
+
+export type UpdateOrganisationError = (HTTPValidationError);
+
+export type DeleteOrganisationData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteOrganisationResponse = (unknown);
+
+export type DeleteOrganisationError = (HTTPValidationError);
+
+export type GetOrganisationData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetOrganisationResponse = (OrganisationPublicWithProjects);
+
+export type GetOrganisationError = (HTTPValidationError);
+
+export type CreateProjectData = {
+    body: ProjectCreate;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateProjectResponse = (ProjectPublic);
+
+export type CreateProjectError = (HTTPValidationError);
+
+export type GetAllProjectsData = unknown;
+
+export type GetAllProjectsResponse = (Array<ProjectPublic>);
+
+export type GetAllProjectsError = (HTTPValidationError);
+
+export type GetProjectData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetProjectResponse = (ProjectPublic);
+
+export type GetProjectError = (HTTPValidationError);
+
+export type UpdateProjectData = {
+    body: ProjectUpdate;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateProjectResponse = (ProjectPublic);
+
+export type UpdateProjectError = (HTTPValidationError);
+
+export type GetProjectRolesData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetProjectRolesResponse = (Array<RolePublicWithInvitationKeys>);
+
+export type GetProjectRolesError = (HTTPValidationError);
+
+export type CreateRoleData = {
+    body: RoleCreate;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateRoleResponse = (RolePublic);
+
+export type CreateRoleError = (HTTPValidationError);
+
+export type GetProjectUsersData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetProjectUsersResponse = (Array<UserPublicWithRoles>);
+
+export type GetProjectUsersError = (HTTPValidationError);
+
+export type JoinProjectData = {
+    path: {
+        key: string;
+    };
+};
+
+export type JoinProjectResponse = (unknown);
+
+export type JoinProjectError = (HTTPValidationError);
+
+export type UpdateRoleData = {
+    body: RoleBase;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateRoleResponse = (unknown);
+
+export type UpdateRoleError = (HTTPValidationError);
+
+export type DeleteRoleData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteRoleResponse = (unknown);
+
+export type DeleteRoleError = (HTTPValidationError);
+
+export type CreateInvitationKeyData = {
+    path: {
+        id: number;
+    };
+};
+
+export type CreateInvitationKeyResponse = (unknown);
+
+export type CreateInvitationKeyError = (HTTPValidationError);
+
+export type DeleteInvitationKeyData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteInvitationKeyResponse = (unknown);
+
+export type DeleteInvitationKeyError = (HTTPValidationError);

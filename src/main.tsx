@@ -16,6 +16,10 @@ import SubmissionResults from "@/pages/SubmissionResults";
 import Submissions from "@/pages/Submissions";
 import { StoreProvider } from "@/store/store-provider.tsx";
 
+import CreateOrganisation from "./pages/organisations/CreateOrganisation";
+import Organisation from "./pages/organisations/Organisation";
+import Organisations from "./pages/organisations/Organisations";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,6 +33,9 @@ const router = createBrowserRouter([
       { path: "/contests/:id", element: <Contest /> },
       { path: "/contests/:id/submit", element: <CreateSubmission /> },
       { path: "/submissions/:id", element: <SubmissionResults /> },
+      { path: "/organisations", element: <Organisations /> },
+      { path: "/organisations/:id", element: <Organisation /> },
+      { path: "/organisations/new", element: <CreateOrganisation /> },
     ],
     errorElement: <Error />,
   },

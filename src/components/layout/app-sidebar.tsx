@@ -1,4 +1,5 @@
 import { ChevronUp, Home, ListChecks, User2 } from "lucide-react";
+import { GoPeople, GoProject } from "react-icons/go";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { logout } from "@/api";
@@ -24,8 +25,10 @@ const SIDEBAR_ITEMS = [
   {
     path: "/",
     icon: <Home />,
-    label: "Contests",
+    label: "Home",
   },
+  { path: "/organisations", icon: <GoPeople />, label: "Organisations" },
+  { path: "/projects", icon: <GoProject />, label: "Projects" },
   {
     path: "/submissions",
     icon: <ListChecks />,
