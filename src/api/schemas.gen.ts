@@ -122,26 +122,6 @@ export const DefinitionSchema = {
     title: 'Definition'
 } as const;
 
-export const DefinitionORMSchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        description: {
-            type: 'string',
-            title: 'Description'
-        }
-    },
-    type: 'object',
-    required: ['id', 'name', 'description'],
-    title: 'DefinitionORM'
-} as const;
-
 export const ExpectedAnswerSchema = {
     properties: {
         task_id: {
@@ -272,17 +252,9 @@ export const MultipleChoiceTaskResultSchema = {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
+        task_attempt_id: {
             type: 'integer',
-            title: 'Submission Id'
-        },
-        definition_id: {
-            type: 'integer',
-            title: 'Definition Id'
-        },
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
+            title: 'Task Attempt Id'
         },
         task_type: {
             '$ref': '#/components/schemas/TaskType'
@@ -332,13 +304,10 @@ export const MultipleChoiceTaskResultSchema = {
                 }
             ],
             title: 'Error'
-        },
-        task: {
-            '$ref': '#/components/schemas/TaskORM'
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    required: ['id', 'task_attempt_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error'],
     title: 'MultipleChoiceTaskResult'
 } as const;
 
@@ -382,17 +351,9 @@ export const MultipleResponseTaskResultSchema = {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
+        task_attempt_id: {
             type: 'integer',
-            title: 'Submission Id'
-        },
-        definition_id: {
-            type: 'integer',
-            title: 'Definition Id'
-        },
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
+            title: 'Task Attempt Id'
         },
         task_type: {
             '$ref': '#/components/schemas/TaskType'
@@ -448,13 +409,10 @@ export const MultipleResponseTaskResultSchema = {
                 }
             ],
             title: 'Error'
-        },
-        task: {
-            '$ref': '#/components/schemas/TaskORM'
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    required: ['id', 'task_attempt_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error'],
     title: 'MultipleResponseTaskResult'
 } as const;
 
@@ -601,6 +559,30 @@ export const OrganisationUpdateSchema = {
     title: 'OrganisationUpdate'
 } as const;
 
+export const ProblemORMSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        project_id: {
+            type: 'integer',
+            title: 'Project Id'
+        }
+    },
+    type: 'object',
+    required: ['id', 'name', 'description', 'project_id'],
+    title: 'ProblemORM'
+} as const;
+
 export const ProgrammingLanguageSchema = {
     type: 'string',
     enum: ['PYTHON'],
@@ -658,17 +640,9 @@ export const ProgrammingTaskResultSchema = {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
+        task_attempt_id: {
             type: 'integer',
-            title: 'Submission Id'
-        },
-        definition_id: {
-            type: 'integer',
-            title: 'Definition Id'
-        },
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
+            title: 'Task Attempt Id'
         },
         task_type: {
             '$ref': '#/components/schemas/TaskType'
@@ -721,13 +695,10 @@ export const ProgrammingTaskResultSchema = {
                 }
             ],
             title: 'Error'
-        },
-        task: {
-            '$ref': '#/components/schemas/TaskORM'
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    required: ['id', 'task_attempt_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error'],
     title: 'ProgrammingTaskResult'
 } as const;
 
@@ -764,6 +735,36 @@ export const ProjectPublicSchema = {
     type: 'object',
     required: ['name', 'id', 'roles'],
     title: 'ProjectPublic'
+} as const;
+
+export const ProjectPublicWithProblemsSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        roles: {
+            items: {
+                '$ref': '#/components/schemas/RolePublic'
+            },
+            type: 'array',
+            title: 'Roles'
+        },
+        problems: {
+            items: {
+                '$ref': '#/components/schemas/ProblemORM'
+            },
+            type: 'array',
+            title: 'Problems'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'roles', 'problems'],
+    title: 'ProjectPublicWithProblems'
 } as const;
 
 export const ProjectUpdateSchema = {
@@ -936,17 +937,9 @@ export const ShortAnswerTaskResultSchema = {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
+        task_attempt_id: {
             type: 'integer',
-            title: 'Submission Id'
-        },
-        definition_id: {
-            type: 'integer',
-            title: 'Definition Id'
-        },
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
+            title: 'Task Attempt Id'
         },
         task_type: {
             '$ref': '#/components/schemas/TaskType'
@@ -1003,13 +996,10 @@ export const ShortAnswerTaskResultSchema = {
                 }
             ],
             title: 'Error'
-        },
-        task: {
-            '$ref': '#/components/schemas/TaskORM'
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    required: ['id', 'task_attempt_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error'],
     title: 'ShortAnswerTaskResult'
 } as const;
 
@@ -1102,9 +1092,13 @@ export const SubmissionORMSchema = {
             type: 'integer',
             title: 'Id'
         },
-        definition_id: {
+        problem_id: {
             type: 'integer',
-            title: 'Definition Id'
+            title: 'Problem Id'
+        },
+        user_id: {
+            type: 'integer',
+            title: 'User Id'
         },
         status: {
             '$ref': '#/components/schemas/SubmissionStatus'
@@ -1120,7 +1114,7 @@ export const SubmissionORMSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'definition_id', 'status', 'submitted_at'],
+    required: ['id', 'problem_id', 'user_id', 'status', 'submitted_at'],
     title: 'SubmissionORM'
 } as const;
 
@@ -1130,9 +1124,13 @@ export const SubmissionPublicSchema = {
             type: 'integer',
             title: 'Id'
         },
-        definition_id: {
+        problem_id: {
             type: 'integer',
-            title: 'Definition Id'
+            title: 'Problem Id'
+        },
+        user_id: {
+            type: 'integer',
+            title: 'User Id'
         },
         status: {
             '$ref': '#/components/schemas/SubmissionStatus'
@@ -1155,7 +1153,7 @@ export const SubmissionPublicSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'definition_id', 'status', 'submitted_at', 'task_results'],
+    required: ['id', 'problem_id', 'user_id', 'status', 'submitted_at', 'task_results'],
     title: 'SubmissionPublic'
 } as const;
 
@@ -1169,33 +1167,6 @@ export const TaskEvalStatusSchema = {
     type: 'string',
     enum: ['SUCCESS', 'PENDING', 'SKIPPED', 'FAILED'],
     title: 'TaskEvalStatus'
-} as const;
-
-export const TaskORMSchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        type: {
-            '$ref': '#/components/schemas/TaskType'
-        },
-        autograde: {
-            type: 'boolean',
-            title: 'Autograde'
-        },
-        other_fields: {
-            type: 'object',
-            title: 'Other Fields'
-        },
-        definition_id: {
-            type: 'integer',
-            title: 'Definition Id'
-        }
-    },
-    type: 'object',
-    required: ['id', 'type', 'autograde', 'definition_id'],
-    title: 'TaskORM'
 } as const;
 
 export const TaskResultSchema = {

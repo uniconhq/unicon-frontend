@@ -20,12 +20,6 @@ export type Definition = {
     tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
 };
 
-export type DefinitionORM = {
-    id: number;
-    name: string;
-    description: string;
-};
-
 export type ExpectedAnswer = {
     task_id: number;
     expected_answer: unknown;
@@ -65,9 +59,7 @@ export type type = 'MULTIPLE_CHOICE_TASK';
 
 export type MultipleChoiceTaskResult = {
     id: number;
-    submission_id: number;
-    definition_id: number;
-    task_id: number;
+    task_attempt_id: number;
     task_type: TaskType;
     started_at: string;
     completed_at: (string | null);
@@ -75,7 +67,6 @@ export type MultipleChoiceTaskResult = {
     status: TaskEvalStatus;
     result: boolean;
     error: (string | null);
-    task: TaskORM;
 };
 
 export type MultipleResponseTask = {
@@ -90,9 +81,7 @@ export type type2 = 'MULTIPLE_RESPONSE_TASK';
 
 export type MultipleResponseTaskResult = {
     id: number;
-    submission_id: number;
-    definition_id: number;
-    task_id: number;
+    task_attempt_id: number;
     task_type: TaskType;
     started_at: string;
     completed_at: (string | null);
@@ -100,7 +89,6 @@ export type MultipleResponseTaskResult = {
     status: TaskEvalStatus;
     result: (MultipleResponseTaskResultType | null);
     error: (string | null);
-    task: TaskORM;
 };
 
 export type MultipleResponseTaskResultType = {
@@ -139,6 +127,13 @@ export type OrganisationUpdate = {
     description: string;
 };
 
+export type ProblemORM = {
+    id: number;
+    name: string;
+    description: string;
+    project_id: number;
+};
+
 export type ProgrammingLanguage = 'PYTHON';
 
 export type ProgrammingTask = {
@@ -155,9 +150,7 @@ export type type3 = 'PROGRAMMING_TASK';
 
 export type ProgrammingTaskResult = {
     id: number;
-    submission_id: number;
-    definition_id: number;
-    task_id: number;
+    task_attempt_id: number;
     task_type: TaskType;
     started_at: string;
     completed_at: (string | null);
@@ -167,7 +160,6 @@ export type ProgrammingTaskResult = {
         [key: string]: unknown;
     }>;
     error: (string | null);
-    task: TaskORM;
 };
 
 export type ProjectCreate = {
@@ -178,6 +170,13 @@ export type ProjectPublic = {
     name: string;
     id: number;
     roles: Array<RolePublic>;
+};
+
+export type ProjectPublicWithProblems = {
+    name: string;
+    id: number;
+    roles: Array<RolePublic>;
+    problems: Array<ProblemORM>;
 };
 
 export type ProjectUpdate = {
@@ -228,9 +227,7 @@ export type type4 = 'SHORT_ANSWER_TASK';
 
 export type ShortAnswerTaskResult = {
     id: number;
-    submission_id: number;
-    definition_id: number;
-    task_id: number;
+    task_attempt_id: number;
     task_type: TaskType;
     started_at: string;
     completed_at: (string | null);
@@ -238,7 +235,6 @@ export type ShortAnswerTaskResult = {
     status: TaskEvalStatus;
     result: (string | null);
     error: (string | null);
-    task: TaskORM;
 };
 
 export type Step = {
@@ -271,7 +267,8 @@ export type StepType = 'PY_RUN_FUNCTION_STEP' | 'OBJECT_ACCESS_STEP' | 'INPUT_ST
 
 export type SubmissionORM = {
     id: number;
-    definition_id: number;
+    problem_id: number;
+    user_id: number;
     status: SubmissionStatus;
     submitted_at: string;
     other_fields?: {
@@ -281,7 +278,8 @@ export type SubmissionORM = {
 
 export type SubmissionPublic = {
     id: number;
-    definition_id: number;
+    problem_id: number;
+    user_id: number;
     status: SubmissionStatus;
     submitted_at: string;
     other_fields?: {
@@ -293,16 +291,6 @@ export type SubmissionPublic = {
 export type SubmissionStatus = 'PENDING' | 'OK';
 
 export type TaskEvalStatus = 'SUCCESS' | 'PENDING' | 'SKIPPED' | 'FAILED';
-
-export type TaskORM = {
-    id: number;
-    type: TaskType;
-    autograde: boolean;
-    other_fields?: {
-        [key: string]: unknown;
-    };
-    definition_id: number;
-};
 
 export type TaskResult = MultipleChoiceTaskResult | MultipleResponseTaskResult | ProgrammingTaskResult | ShortAnswerTaskResult;
 
@@ -376,17 +364,9 @@ export type GetUserError = (HTTPValidationError);
 
 export type GetDefinitionsData = unknown;
 
-export type GetDefinitionsResponse = (Array<DefinitionORM>);
+export type GetDefinitionsResponse = (Array<ProblemORM>);
 
 export type GetDefinitionsError = (HTTPValidationError);
-
-export type SubmitDefinitionData = {
-    body: Definition;
-};
-
-export type SubmitDefinitionResponse = (DefinitionORM);
-
-export type SubmitDefinitionError = (HTTPValidationError);
 
 export type GetDefinitionData = {
     path: {
@@ -405,7 +385,7 @@ export type UpdateDefinitionData = {
     };
 };
 
-export type UpdateDefinitionResponse = (DefinitionORM);
+export type UpdateDefinitionResponse = (ProblemORM);
 
 export type UpdateDefinitionError = (HTTPValidationError);
 
@@ -510,7 +490,7 @@ export type GetProjectData = {
     };
 };
 
-export type GetProjectResponse = (ProjectPublic);
+export type GetProjectResponse = (ProjectPublicWithProblems);
 
 export type GetProjectError = (HTTPValidationError);
 
@@ -565,6 +545,17 @@ export type JoinProjectData = {
 export type JoinProjectResponse = (ProjectPublic);
 
 export type JoinProjectError = (HTTPValidationError);
+
+export type CreateProblemData = {
+    body: Definition;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateProblemResponse = (ProblemORM);
+
+export type CreateProblemError = (HTTPValidationError);
 
 export type UpdateRoleData = {
     body: RoleBase;

@@ -2,14 +2,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Params, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 
 import TextareaField from "@/components/form/fields/textarea-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useCreateDefinition } from "@/features/definitions/queries";
+import { useCreateProblem } from "@/features/definitions/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 import { json } from "@/utils/json";
 
@@ -33,8 +33,11 @@ const definitionFormDefault = {
 };
 
 const CreateContest = () => {
+  const { id } = useParams<Params<"id">>();
+  const idNumber = Number(id);
+
   const { user, isLoading } = useUserStore((store) => store);
-  const createDefinitionMutation = useCreateDefinition();
+  const createDefinitionMutation = useCreateProblem(idNumber);
   const navigate = useNavigate();
 
   // @ts-expect-error - it is infinitely deep because of the definition in json.ts

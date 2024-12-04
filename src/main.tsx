@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <Login /> },
       { path: "/", element: <Home /> },
       { path: "/submissions", element: <Submissions /> },
-      { path: "/contests/new", element: <CreateContest /> },
+      { path: "/projects/:id/problems/new", element: <CreateContest /> },
       { path: "/contests/:id", element: <Contest /> },
       { path: "/contests/:id/submit", element: <CreateSubmission /> },
       { path: "/submissions/:id", element: <SubmissionResults /> },
