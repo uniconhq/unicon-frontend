@@ -679,10 +679,17 @@ export const ProgrammingTaskResultSchema = {
             '$ref': '#/components/schemas/TaskEvalStatus'
         },
         result: {
-            items: {
-                type: 'object'
-            },
-            type: 'array',
+            anyOf: [
+                {
+                    items: {
+                        type: 'object'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
             title: 'Result'
         },
         error: {
@@ -1144,16 +1151,16 @@ export const SubmissionPublicSchema = {
             type: 'object',
             title: 'Other Fields'
         },
-        task_results: {
+        task_attempts: {
             items: {
-                '$ref': '#/components/schemas/TaskResult'
+                '$ref': '#/components/schemas/TaskAttemptPublic'
             },
             type: 'array',
-            title: 'Task Results'
+            title: 'Task Attempts'
         }
     },
     type: 'object',
-    required: ['id', 'problem_id', 'user_id', 'status', 'submitted_at', 'task_results'],
+    required: ['id', 'problem_id', 'user_id', 'status', 'submitted_at', 'task_attempts'],
     title: 'SubmissionPublic'
 } as const;
 
@@ -1163,10 +1170,74 @@ export const SubmissionStatusSchema = {
     title: 'SubmissionStatus'
 } as const;
 
+export const TaskAttemptPublicSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        submission_id: {
+            type: 'integer',
+            title: 'Submission Id'
+        },
+        task_id: {
+            type: 'integer',
+            title: 'Task Id'
+        },
+        task_type: {
+            '$ref': '#/components/schemas/TaskType'
+        },
+        other_fields: {
+            type: 'object',
+            title: 'Other Fields'
+        },
+        task_results: {
+            items: {
+                '$ref': '#/components/schemas/TaskResult'
+            },
+            type: 'array',
+            title: 'Task Results'
+        },
+        task: {
+            '$ref': '#/components/schemas/TaskORM'
+        }
+    },
+    type: 'object',
+    required: ['id', 'submission_id', 'task_id', 'task_type', 'other_fields', 'task_results', 'task'],
+    title: 'TaskAttemptPublic'
+} as const;
+
 export const TaskEvalStatusSchema = {
     type: 'string',
     enum: ['SUCCESS', 'PENDING', 'SKIPPED', 'FAILED'],
     title: 'TaskEvalStatus'
+} as const;
+
+export const TaskORMSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        type: {
+            '$ref': '#/components/schemas/TaskType'
+        },
+        autograde: {
+            type: 'boolean',
+            title: 'Autograde'
+        },
+        other_fields: {
+            type: 'object',
+            title: 'Other Fields'
+        },
+        problem_id: {
+            type: 'integer',
+            title: 'Problem Id'
+        }
+    },
+    type: 'object',
+    required: ['id', 'type', 'autograde', 'problem_id'],
+    title: 'TaskORM'
 } as const;
 
 export const TaskResultSchema = {

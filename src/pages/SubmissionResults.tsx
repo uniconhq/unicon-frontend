@@ -16,15 +16,23 @@ const SubmissionResults = () => {
     refetchInterval: pending ? 5000 : false,
   });
 
-  const tasks = submission?.task_results;
+  const task_attempts = submission?.task_attempts;
 
   useEffect(() => {
-    if (tasks && pending && tasks.every((task) => task.status !== "PENDING")) {
+    if (
+      task_attempts &&
+      pending &&
+      task_attempts.every(
+        (task_attempt) => task_attempt.task_results[0]?.status !== "PENDING",
+      )
+    ) {
       setPending(false);
     }
-  }, [tasks, pending]);
+  }, [task_attempts, pending]);
 
-  const contest_id: number = tasks ? tasks[0].definition_id : 0;
+  const contest_id: number = task_attempts
+    ? task_attempts[0].task.problem_id
+    : 0;
 
   return (
     <div className="flex w-full flex-col gap-8 py-6">
@@ -40,9 +48,12 @@ const SubmissionResults = () => {
         </Link>
       </div>
       <div className="flex flex-col gap-8">
-        {tasks?.map((taskResult) => (
-          <TaskResult key={taskResult.task_id} taskResult={taskResult} />
-        ))}
+        {task_attempts?.map(
+          (task_attempt) =>
+            task_attempt.task_results.length > 0 && (
+              <TaskResult key={task_attempt.id} taskAttempt={task_attempt} />
+            ),
+        )}
       </div>
     </div>
   );

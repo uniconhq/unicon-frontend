@@ -156,9 +156,9 @@ export type ProgrammingTaskResult = {
     completed_at: (string | null);
     job_id: (string | null);
     status: TaskEvalStatus;
-    result: Array<{
-        [key: string]: unknown;
-    }>;
+    result: (Array<{
+    [key: string]: unknown;
+}> | null);
     error: (string | null);
 };
 
@@ -285,12 +285,34 @@ export type SubmissionPublic = {
     other_fields?: {
         [key: string]: unknown;
     };
-    task_results: Array<TaskResult>;
+    task_attempts: Array<TaskAttemptPublic>;
 };
 
 export type SubmissionStatus = 'PENDING' | 'OK';
 
+export type TaskAttemptPublic = {
+    id: number;
+    submission_id: number;
+    task_id: number;
+    task_type: TaskType;
+    other_fields: {
+        [key: string]: unknown;
+    };
+    task_results: Array<TaskResult>;
+    task: TaskORM;
+};
+
 export type TaskEvalStatus = 'SUCCESS' | 'PENDING' | 'SKIPPED' | 'FAILED';
+
+export type TaskORM = {
+    id: number;
+    type: TaskType;
+    autograde: boolean;
+    other_fields?: {
+        [key: string]: unknown;
+    };
+    problem_id: number;
+};
 
 export type TaskResult = MultipleChoiceTaskResult | MultipleResponseTaskResult | ProgrammingTaskResult | ShortAnswerTaskResult;
 
