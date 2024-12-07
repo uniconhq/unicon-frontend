@@ -10,7 +10,7 @@ import { getDefinitionById } from "@/features/definitions/queries";
 const Contest = () => {
   const { id, projectId } = useParams<Params<"id" | "projectId">>();
   const { data } = useQuery(getDefinitionById(Number(id)));
-  const submitLink = `/project/${projectId}/problems/${id}/submit`;
+  const submitLink = `/projects/${projectId}/problems/${id}/submit`;
 
   return (
     <div className="flex w-full flex-col gap-8 py-6">
