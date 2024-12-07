@@ -22,7 +22,7 @@ export const columns: ColumnDef<ProblemORM>[] = [
       const id = row.original.id;
       return (
         <Link
-          to={`/contests/${id}`}
+          to={`/projects/${row.original.project_id}/problems/${id}`}
           className="hover:text-purple-300 hover:underline"
         >
           View

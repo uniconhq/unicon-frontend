@@ -34,8 +34,11 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/submissions", element: <Submissions /> },
       { path: "/projects/:id/problems/new", element: <CreateContest /> },
-      { path: "/contests/:id", element: <Contest /> },
-      { path: "/contests/:id/submit", element: <CreateSubmission /> },
+      { path: "/projects/:projectId/problems/:id", element: <Contest /> },
+      {
+        path: "/projects/:projectId/problems/:id/submit",
+        element: <CreateSubmission />,
+      },
       { path: "/submissions/:id", element: <SubmissionResults /> },
       { path: "/organisations", element: <Organisations /> },
       { path: "/organisations/:id", element: <Organisation /> },

@@ -8,9 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDefinitionById } from "@/features/definitions/queries";
 
 const Contest = () => {
-  const { id } = useParams<Params<"id">>();
+  const { id, projectId } = useParams<Params<"id" | "projectId">>();
   const { data } = useQuery(getDefinitionById(Number(id)));
-  const submitLink = `/contests/${id}/submit`;
+  const submitLink = `/project/${projectId}/problems/${id}/submit`;
 
   return (
     <div className="flex w-full flex-col gap-8 py-6">
