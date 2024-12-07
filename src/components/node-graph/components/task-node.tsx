@@ -1,7 +1,7 @@
 import { TaskNodeData } from "@/lib/types";
 import { range } from "@/utils";
 
-import { NodeSlot, NodeSlotGroup } from "./NodeSlot";
+import { NodeSlot, NodeSlotGroup } from "./node-slot";
 
 export function TaskNode({
   participants,

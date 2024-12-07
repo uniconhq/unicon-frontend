@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import TaskResult from "@/components/tasks/submission-results/TaskResult";
+import TaskResult from "@/components/tasks/submission-results/task-result";
 import { Button } from "@/components/ui/button";
 import { getSubmissionById } from "@/features/definitions/queries";
 

@@ -6,10 +6,8 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
+import { JoinProjectDialog } from "@/features/projects/components/join-project-dialog";
 import { getProjects } from "@/features/projects/queries";
-
-import { JoinProjectDialog } from "../../features/projects/components/JoinProjectDialog";
-// import { JoinProjectDialog } from "./components/JoinProjectDialog";
 
 const Projects = () => {
   const { data: projects, isLoading } = useQuery(getProjects());

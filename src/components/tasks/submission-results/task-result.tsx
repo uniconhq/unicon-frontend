@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-import MultipleChoiceResult from "./result-types/MultipleChoiceResult";
-import MultipleResponseResult from "./result-types/MultipleResponseResult";
-import ProgrammingResult from "./result-types/ProgrammingResult";
+import MultipleChoiceResult from "./result-types/multiple-choice-result";
+import MultipleResponseResult from "./result-types/multiple-response-result";
+import ProgrammingResult from "./result-types/programming-result";
 
 type OwnProps = {
   taskAttempt: TaskAttemptPublic;
