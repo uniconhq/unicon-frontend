@@ -851,10 +851,14 @@ export const RolePublicSchema = {
         id: {
             type: 'integer',
             title: 'Id'
+        },
+        project_id: {
+            type: 'integer',
+            title: 'Project Id'
         }
     },
     type: 'object',
-    required: ['name', 'id'],
+    required: ['name', 'id', 'project_id'],
     title: 'RolePublic'
 } as const;
 
@@ -868,6 +872,10 @@ export const RolePublicWithInvitationKeysSchema = {
             type: 'integer',
             title: 'Id'
         },
+        project_id: {
+            type: 'integer',
+            title: 'Project Id'
+        },
         invitation_keys: {
             items: {
                 '$ref': '#/components/schemas/InvitationKeyPublic'
@@ -877,7 +885,7 @@ export const RolePublicWithInvitationKeysSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'invitation_keys'],
+    required: ['name', 'id', 'project_id', 'invitation_keys'],
     title: 'RolePublicWithInvitationKeys'
 } as const;
 

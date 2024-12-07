@@ -21,6 +21,7 @@ import Organisation from "./pages/organisations/Organisation";
 import Organisations from "./pages/organisations/Organisations";
 import CreateProject from "./pages/projects/CreateProject";
 import Project from "./pages/projects/Project";
+import ProjectRoles from "./pages/projects/ProjectRoles";
 import Projects from "./pages/projects/Projects";
 
 const router = createBrowserRouter([
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
       { path: "/organisations/new", element: <CreateOrganisation /> },
       { path: "/projects", element: <Projects /> },
       { path: "/projects/:id", element: <Project /> },
+      { path: "/projects/:id/roles", element: <ProjectRoles /> },
       { path: "/organisations/:id/projects/new", element: <CreateProject /> },
     ],
     errorElement: <Error />,

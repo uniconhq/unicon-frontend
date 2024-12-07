@@ -1,5 +1,14 @@
-import { ChevronUp, Home, ListChecks, User2 } from "lucide-react";
-import { GoPeople, GoProject } from "react-icons/go";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ChevronDown,
+  ChevronUp,
+  FileQuestion,
+  Home,
+  ListChecks,
+  User2,
+} from "lucide-react";
+import { AiFillSecurityScan } from "react-icons/ai";
+import { GoPeople, GoProject, GoProjectSymlink } from "react-icons/go";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { logout } from "@/api";
@@ -19,6 +28,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { getProjects } from "@/features/projects/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
 const SIDEBAR_ITEMS = [
@@ -36,14 +46,41 @@ const SIDEBAR_ITEMS = [
   },
 ];
 
+const PROJECT_SIDEBAR_ITEMS = [
+  {
+    path: "",
+    icon: <FileQuestion />,
+    label: "Problems",
+  },
+  {
+    path: "/users",
+    icon: <GoPeople />,
+    label: "Users",
+  },
+  {
+    path: "/roles",
+    icon: <AiFillSecurityScan />,
+    label: "Roles",
+  },
+];
+
 const AppSidebar = () => {
   const { user, setUser } = useUserStore((store) => store);
   const navigate = useNavigate();
-  const location = useLocation();
-  const pathname = location.pathname;
+
+  const { pathname } = useLocation();
+  const isProjectPath = pathname.match(/\/projects\/\d+.*/)?.length ?? 0 > 0;
+
+  const { data: projects } = useQuery(getProjects());
+
   if (!user) {
     return;
   }
+
+  const currentProjectId = isProjectPath ? Number(pathname.split("/")[2]) : -1;
+  const currentProject = projects?.find(
+    (project) => project.id == currentProjectId,
+  );
 
   const signout = async () => {
     await logout({ withCredentials: true });
@@ -69,6 +106,42 @@ const AppSidebar = () => {
             ))}
           </SidebarMenu>
         </SidebarGroup>
+        {currentProject && (
+          <SidebarGroup>
+            <SidebarMenu>
+              <SidebarMenuItem key={"projects"}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton>
+                      {<GoProjectSymlink />}
+                      {currentProject.name}
+                      <ChevronDown className="ml-auto" />
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
+                    {projects?.map((project) => (
+                      <DropdownMenuItem>
+                        <Link to={`/projects/${project.id}`}>
+                          {project.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+              {PROJECT_SIDEBAR_ITEMS.map(({ icon, label, path }) => (
+                <SidebarMenuItem key={path}>
+                  <SidebarMenuButton asChild isActive={pathname === path}>
+                    <Link to={`/projects/${currentProjectId}${path}`}>
+                      {icon}
+                      <span>{label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

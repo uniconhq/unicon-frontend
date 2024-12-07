@@ -199,11 +199,13 @@ export type RoleCreate = {
 export type RolePublic = {
     name: string;
     id: number;
+    project_id: number;
 };
 
 export type RolePublicWithInvitationKeys = {
     name: string;
     id: number;
+    project_id: number;
     invitation_keys: Array<InvitationKeyPublic>;
 };
 
