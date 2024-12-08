@@ -220,7 +220,6 @@ export const MultipleChoiceTaskSchema = {
         },
         type: {
             type: 'string',
-            enum: ['MULTIPLE_CHOICE_TASK'],
             const: 'MULTIPLE_CHOICE_TASK',
             title: 'Type'
         },
@@ -319,7 +318,6 @@ export const MultipleResponseTaskSchema = {
         },
         type: {
             type: 'string',
-            enum: ['MULTIPLE_RESPONSE_TASK'],
             const: 'MULTIPLE_RESPONSE_TASK',
             title: 'Type'
         },
@@ -559,6 +557,30 @@ export const OrganisationUpdateSchema = {
     title: 'OrganisationUpdate'
 } as const;
 
+export const ProblemBaseSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        project_id: {
+            type: 'integer',
+            title: 'Project Id'
+        }
+    },
+    type: 'object',
+    required: ['id', 'name', 'description', 'project_id'],
+    title: 'ProblemBase'
+} as const;
+
 export const ProblemORMSchema = {
     properties: {
         id: {
@@ -586,7 +608,6 @@ export const ProblemORMSchema = {
 export const ProgrammingLanguageSchema = {
     type: 'string',
     enum: ['PYTHON'],
-    const: 'PYTHON',
     title: 'ProgrammingLanguage'
 } as const;
 
@@ -598,7 +619,6 @@ export const ProgrammingTaskSchema = {
         },
         type: {
             type: 'string',
-            enum: ['PROGRAMMING_TASK'],
             const: 'PROGRAMMING_TASK',
             title: 'Type'
         },
@@ -763,7 +783,7 @@ export const ProjectPublicWithProblemsSchema = {
         },
         problems: {
             items: {
-                '$ref': '#/components/schemas/ProblemORM'
+                '$ref': '#/components/schemas/ProblemBase'
             },
             type: 'array',
             title: 'Problems'
@@ -927,7 +947,6 @@ export const ShortAnswerTaskSchema = {
         },
         type: {
             type: 'string',
-            enum: ['SHORT_ANSWER_TASK'],
             const: 'SHORT_ANSWER_TASK',
             title: 'Type'
         },
@@ -1083,16 +1102,16 @@ export const StepSocketSchema = {
     title: 'StepSocket',
     description: `A socket that is used to connect steps to each other.
 
-Socket ID Format: <TYPE>.<DIRECTION>.<NAME>.<INDEX>
+Socket ID Format: <TYPE>.<NAME>.<INDEX>
 - <NAME>.<INDEX> is optional and is used to differentiate between multiple sockets of the same type
     - Collectively, <NAME>.<INDEX> is referred to as the "label"
 
 There can be 2 types of sockets:
 
 1. Control Sockets: Used to control the flow of the program
-    - e.g. CONTROL.IN.<NAME>.<INDEX>
+    - e.g. CONTROL.<NAME>.<INDEX>
 2. Data Sockets: Used to pass data between steps
-    - e.g. DATA.OUT.<NAME>.<INDEX>`
+    - e.g. DATA.<NAME>.<INDEX>`
 } as const;
 
 export const StepTypeSchema = {

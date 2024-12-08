@@ -24,6 +24,7 @@ import { StoreProvider } from "@/store/store-provider.tsx";
 
 import CreateOrganisation from "./pages/organisations/create-organisation";
 import ProjectUsers from "./pages/projects/project-users";
+import SignUp from "./pages/signup";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/old", element: <App /> },
       { path: "/login", element: <Login /> },
+      { path: "/signup", element: <SignUp /> },
       { path: "/", element: <Home /> },
       { path: "/submissions", element: <Submissions /> },
       { path: "/projects/:id/problems/new", element: <CreateContest /> },

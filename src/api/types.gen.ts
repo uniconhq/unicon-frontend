@@ -49,13 +49,11 @@ export type InvitationKeyPublic = {
 
 export type MultipleChoiceTask = {
     id: number;
-    type: 'MULTIPLE_CHOICE_TASK';
+    type: "MULTIPLE_CHOICE_TASK";
     autograde?: boolean;
     question: string;
     choices: Array<(string)>;
 };
-
-export type type = 'MULTIPLE_CHOICE_TASK';
 
 export type MultipleChoiceTaskResult = {
     id: number;
@@ -71,13 +69,11 @@ export type MultipleChoiceTaskResult = {
 
 export type MultipleResponseTask = {
     id: number;
-    type: 'MULTIPLE_RESPONSE_TASK';
+    type: "MULTIPLE_RESPONSE_TASK";
     autograde?: boolean;
     question: string;
     choices: Array<(string)>;
 };
-
-export type type2 = 'MULTIPLE_RESPONSE_TASK';
 
 export type MultipleResponseTaskResult = {
     id: number;
@@ -127,6 +123,13 @@ export type OrganisationUpdate = {
     description: string;
 };
 
+export type ProblemBase = {
+    id: number;
+    name: string;
+    description: string;
+    project_id: number;
+};
+
 export type ProblemORM = {
     id: number;
     name: string;
@@ -138,15 +141,13 @@ export type ProgrammingLanguage = 'PYTHON';
 
 export type ProgrammingTask = {
     id: number;
-    type: 'PROGRAMMING_TASK';
+    type: "PROGRAMMING_TASK";
     autograde?: boolean;
     question: string;
     environment: RunnerEnvironment;
     required_inputs: Array<RequiredInput>;
     testcases: Array<Testcase>;
 };
-
-export type type3 = 'PROGRAMMING_TASK';
 
 export type ProgrammingTaskResult = {
     id: number;
@@ -176,7 +177,7 @@ export type ProjectPublicWithProblems = {
     name: string;
     id: number;
     roles: Array<RolePublic>;
-    problems: Array<ProblemORM>;
+    problems: Array<ProblemBase>;
 };
 
 export type ProjectUpdate = {
@@ -220,12 +221,10 @@ export type RunnerEnvironment = {
 
 export type ShortAnswerTask = {
     id: number;
-    type: 'SHORT_ANSWER_TASK';
+    type: "SHORT_ANSWER_TASK";
     autograde?: boolean;
     question: string;
 };
-
-export type type4 = 'SHORT_ANSWER_TASK';
 
 export type ShortAnswerTaskResult = {
     id: number;
@@ -249,16 +248,16 @@ export type Step = {
 /**
  * A socket that is used to connect steps to each other.
  *
- * Socket ID Format: <TYPE>.<DIRECTION>.<NAME>.<INDEX>
+ * Socket ID Format: <TYPE>.<NAME>.<INDEX>
  * - <NAME>.<INDEX> is optional and is used to differentiate between multiple sockets of the same type
  * - Collectively, <NAME>.<INDEX> is referred to as the "label"
  *
  * There can be 2 types of sockets:
  *
  * 1. Control Sockets: Used to control the flow of the program
- * - e.g. CONTROL.IN.<NAME>.<INDEX>
+ * - e.g. CONTROL.<NAME>.<INDEX>
  * 2. Data Sockets: Used to pass data between steps
- * - e.g. DATA.OUT.<NAME>.<INDEX>
+ * - e.g. DATA.<NAME>.<INDEX>
  */
 export type StepSocket = {
     id: string;
@@ -372,7 +371,7 @@ export type SignupData = {
     body: UserCreate;
 };
 
-export type SignupResponse = (unknown);
+export type SignupResponse = (Token);
 
 export type SignupError = (HTTPValidationError);
 
@@ -409,7 +408,7 @@ export type UpdateDefinitionData = {
     };
 };
 
-export type UpdateDefinitionResponse = (ProblemORM);
+export type UpdateDefinitionResponse = (Definition);
 
 export type UpdateDefinitionError = (HTTPValidationError);
 
@@ -429,7 +428,7 @@ export type SubmitContestSubmissionError = (HTTPValidationError);
 
 export type GetSubmissionsData = unknown;
 
-export type GetSubmissionsResponse = (Array<SubmissionORM>);
+export type GetSubmissionsResponse = (Array<SubmissionPublic>);
 
 export type GetSubmissionsError = (HTTPValidationError);
 
