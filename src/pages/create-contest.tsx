@@ -67,7 +67,7 @@ const CreateContest = () => {
           return;
         }
         if (response.status === 200) {
-          navigate(`/contests/${response.data?.id}`);
+          navigate(`/projects/${id}/problems/${response.data?.id}`);
         } else {
           setError(JSON.stringify(response.error));
         }

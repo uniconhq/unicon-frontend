@@ -23,6 +23,7 @@ import Submissions from "@/pages/submissions";
 import { StoreProvider } from "@/store/store-provider.tsx";
 
 import CreateOrganisation from "./pages/organisations/create-organisation";
+import ProjectUsers from "./pages/projects/project-users";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: "/projects", element: <Projects /> },
       { path: "/projects/:id", element: <Project /> },
       { path: "/projects/:id/roles", element: <ProjectRoles /> },
+      { path: "/projects/:id/users", element: <ProjectUsers /> },
       { path: "/organisations/:id/projects/new", element: <CreateProject /> },
     ],
     errorElement: <Error />,

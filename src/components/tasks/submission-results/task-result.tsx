@@ -1,6 +1,5 @@
 import {
   MultipleChoiceTaskResult,
-  MultipleResponseTaskResult,
   ProgrammingTaskResult,
   TaskAttemptPublic,
   TaskResult,
@@ -93,9 +92,7 @@ const TaskResultCard: React.FC<OwnProps> = ({ taskAttempt }) => {
               </pre>
             )}
             {taskAttempt.task.type === "MULTIPLE_RESPONSE_TASK" && (
-              <MultipleResponseResult
-                taskResult={taskResult as MultipleResponseTaskResult}
-              />
+              <MultipleResponseResult taskAttempt={taskAttempt} />
             )}
           </>
         )}

@@ -11,6 +11,7 @@ import {
   getAllProjects,
   getProject,
   getProjectRoles,
+  getProjectUsers,
   joinProject,
   ProjectCreate,
 } from "@/api";
@@ -18,6 +19,7 @@ import {
 export enum ProjectQueryKeys {
   Project = "Project",
   Role = "Role",
+  User = "User",
 }
 
 export const getProjects = () => {
@@ -40,6 +42,14 @@ export const getProjectRolesById = (id: number) => {
     queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.Role],
     queryFn: () =>
       getProjectRoles({ path: { id } }).then((response) => response.data),
+  });
+};
+
+export const getProjectUsersById = (id: number) => {
+  return queryOptions({
+    queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.User],
+    queryFn: () =>
+      getProjectUsers({ path: { id } }).then((response) => response.data),
   });
 };
 
