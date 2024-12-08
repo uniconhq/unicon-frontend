@@ -129,16 +129,19 @@ const AppSidebar = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </SidebarMenuItem>
-              {PROJECT_SIDEBAR_ITEMS.map(({ icon, label, path }) => (
-                <SidebarMenuItem key={path}>
-                  <SidebarMenuButton asChild isActive={pathname === path}>
-                    <Link to={`/projects/${currentProjectId}${path}`}>
-                      {icon}
-                      <span>{label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {PROJECT_SIDEBAR_ITEMS.map(({ icon, label, path }) => {
+                const fullPath = `/projects/${currentProjectId}${path}`;
+                return (
+                  <SidebarMenuItem key={path}>
+                    <SidebarMenuButton asChild isActive={pathname === fullPath}>
+                      <Link to={fullPath}>
+                        {icon}
+                        <span>{label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroup>
         )}
