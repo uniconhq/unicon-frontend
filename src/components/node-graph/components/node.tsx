@@ -7,10 +7,10 @@ import { GoDotFill } from "react-icons/go";
 import { NodeColorMap } from "@/lib/colors";
 import { NodeData, NodeType } from "@/lib/types";
 
-import { ArtifactNode } from "./ArtifactNode";
-import { GroupNode } from "./GroupNode";
-import { TaskNode } from "./TaskNode";
-import { UserNode } from "./UserNode";
+import { ArtifactNode } from "./artifact-node";
+import { GroupNode } from "./group-node";
+import { TaskNode } from "./task-node";
+import { UserNode } from "./user-node";
 
 export function Node({ data }: FlowNodeProps<FlowNode<NodeData>>) {
   return (

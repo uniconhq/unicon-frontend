@@ -4,10 +4,10 @@ import {
   ProgrammingTask,
   ShortAnswerTask,
 } from "@/api";
-import { MultipleChoice } from "@/components/tasks/MultipleChoice";
-import { MultipleResponse } from "@/components/tasks/MultiResponse";
-import { Programming } from "@/components/tasks/Programming";
-import { ShortAnswer } from "@/components/tasks/ShortAnswer";
+import { MultipleResponse } from "@/components/tasks/multi-response";
+import { MultipleChoice } from "@/components/tasks/multiple-choice";
+import { Programming } from "@/components/tasks/programming";
+import { ShortAnswer } from "@/components/tasks/short-answer";
 
 export function Task({
   task,

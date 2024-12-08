@@ -1,7 +1,7 @@
 import {
   MultipleChoiceTaskResult,
-  MultipleResponseTaskResult,
   ProgrammingTaskResult,
+  TaskAttemptPublic,
   TaskResult,
 } from "@/api";
 import {
@@ -13,12 +13,12 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-import MultipleChoiceResult from "./result-types/MultipleChoiceResult";
-import MultipleResponseResult from "./result-types/MultipleResponseResult";
-import ProgrammingResult from "./result-types/ProgrammingResult";
+import MultipleChoiceResult from "./result-types/multiple-choice-result";
+import MultipleResponseResult from "./result-types/multiple-response-result";
+import ProgrammingResult from "./result-types/programming-result";
 
 type OwnProps = {
-  taskResult: TaskResult;
+  taskAttempt: TaskAttemptPublic;
 };
 
 const taskStatusToColor = (status: string) => {
@@ -37,7 +37,8 @@ const parseDateTime = (dateTimeString: string) => {
   return date.toLocaleString();
 };
 
-const TaskResultCard: React.FC<OwnProps> = ({ taskResult }) => {
+const TaskResultCard: React.FC<OwnProps> = ({ taskAttempt }) => {
+  const taskResult = taskAttempt.task_results[0] as TaskResult;
   return (
     <Card>
       <CardHeader>
@@ -58,7 +59,7 @@ const TaskResultCard: React.FC<OwnProps> = ({ taskResult }) => {
             ></span>
           </span>
           <span className="text-lg font-medium">
-            Task #{taskResult.task_id + 1}
+            Task #{taskAttempt.task_id + 1}
           </span>
         </CardTitle>
         {taskResult.status != "SKIPPED" && (
@@ -75,25 +76,23 @@ const TaskResultCard: React.FC<OwnProps> = ({ taskResult }) => {
           <span className="text-gray-300">Manual grading is required!</span>
         ) : (
           <>
-            {taskResult.task.type === "PROGRAMMING_TASK" && (
+            {taskAttempt.task.type === "PROGRAMMING_TASK" && (
               <ProgrammingResult
                 taskResult={taskResult as ProgrammingTaskResult}
               />
             )}
-            {taskResult.task.type === "MULTIPLE_CHOICE_TASK" && (
+            {taskAttempt.task.type === "MULTIPLE_CHOICE_TASK" && (
               <MultipleChoiceResult
                 taskResult={taskResult as MultipleChoiceTaskResult}
               />
             )}
-            {taskResult.task.type === "SHORT_ANSWER_TASK" && (
+            {taskAttempt.task.type === "SHORT_ANSWER_TASK" && (
               <pre className="whitespace-pre-wrap rounded-md bg-gray-900 p-4 text-gray-100">
                 {JSON.stringify(taskResult.result, null, 2)}
               </pre>
             )}
-            {taskResult.task.type === "MULTIPLE_RESPONSE_TASK" && (
-              <MultipleResponseResult
-                taskResult={taskResult as MultipleResponseTaskResult}
-              />
+            {taskAttempt.task.type === "MULTIPLE_RESPONSE_TASK" && (
+              <MultipleResponseResult taskAttempt={taskAttempt} />
             )}
           </>
         )}

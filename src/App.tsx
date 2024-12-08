@@ -19,7 +19,7 @@ import {
 import { useMemo, useState } from "react";
 import { AiOutlinePython } from "react-icons/ai";
 
-import { Node } from "@/components/node-graph/components/Node";
+import { Node } from "@/components/node-graph/components/node";
 import { testEdges, testNodes } from "@/data/test";
 import { NodeData } from "@/lib/types";
 

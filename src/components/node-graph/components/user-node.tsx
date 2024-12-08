@@ -1,6 +1,6 @@
 import { UserNodeData } from "@/lib/types";
 
-import { NodeSlot } from "./NodeSlot";
+import { NodeSlot } from "./node-slot";
 
 export function UserNode({ course }: Pick<UserNodeData, "course">) {
   return (

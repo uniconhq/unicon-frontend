@@ -2,13 +2,13 @@ import { queryOptions, useMutation } from "@tanstack/react-query";
 
 import {
   ContestSubmission,
+  createProblem,
   Definition,
   getDefinition,
   getDefinitions,
   getSubmission,
   getSubmissions,
   submitContestSubmission,
-  submitDefinition,
 } from "@/api";
 
 export enum ContestQueryKeys {
@@ -24,9 +24,10 @@ export const getAllDefinitions = () => {
   });
 };
 
-export const useCreateDefinition = () => {
+export const useCreateProblem = (project_id: number) => {
   return useMutation({
-    mutationFn: (data: Definition) => submitDefinition({ body: data }),
+    mutationFn: (data: Definition) =>
+      createProblem({ body: data, path: { id: project_id } }),
   });
 };
 

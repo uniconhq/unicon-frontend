@@ -3,7 +3,7 @@ import { GoDotFill } from "react-icons/go";
 import { Step, StepSocket } from "@/api";
 import { StepNodeColorMap } from "@/lib/colors";
 
-import { NodeSlot, NodeSlotGroup } from "./NodeSlot";
+import { NodeSlot, NodeSlotGroup } from "./node-slot";
 
 export function StepNode({ data }: { data: Step }) {
   return (
