@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { login } from "@/api";
@@ -10,7 +10,7 @@ import PasswordField from "@/components/form/fields/password-field";
 import TextField from "@/components/form/fields/text-field";
 import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useUserStore } from "@/store/user/user-store-provider";
 
@@ -100,6 +100,11 @@ const Login = () => {
               </Form>
             </Box>
           </CardContent>
+          <CardFooter className="flex justify-center">
+            <Link to="/signup" className="text-violet-300 hover:opacity-80">
+              Don't have an account? Sign up.
+            </Link>
+          </CardFooter>
         </Card>
       </div>
     </div>
