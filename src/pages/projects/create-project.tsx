@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleAlert } from "lucide-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Params, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 
+import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useCreateProject } from "@/features/projects/queries";
@@ -50,14 +49,7 @@ const CreateProject = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Create new project</h1>
       </div>
-      {error && (
-        <Alert variant="destructive">
-          <div>
-            <CircleAlert className="h-5 w-5" />
-          </div>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+      {error && <ErrorAlert message={error} />}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

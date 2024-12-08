@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleAlert } from "lucide-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
+import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -68,14 +67,7 @@ export function JoinProjectDialog({ open, onOpenChange }: OwnProps) {
               <DialogDescription>
                 Enter your project's invitation key.
               </DialogDescription>
-              {error && (
-                <Alert variant="destructive">
-                  <div>
-                    <CircleAlert className="h-5 w-5" />
-                  </div>
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
+              {error && <ErrorAlert message={error} />}
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <TextField name="invitation_key" label="Invitation key" />

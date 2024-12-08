@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Params, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 
+import ErrorAlert from "@/components/form/fields/error-alert";
 import TextareaField from "@/components/form/fields/textarea-field";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useCreateProblem } from "@/features/definitions/queries";
@@ -80,14 +79,7 @@ const CreateContest = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Create new contest</h1>
       </div>
-      {error && (
-        <Alert variant="destructive">
-          <div>
-            <CircleAlert className="h-5 w-5" />
-          </div>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+      {error && <ErrorAlert message={error} />}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <TextareaField

@@ -1,14 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { login } from "@/api";
+import ErrorAlert from "@/components/form/fields/error-alert";
 import PasswordField from "@/components/form/fields/password-field";
 import TextField from "@/components/form/fields/text-field";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -76,14 +75,11 @@ const Login = () => {
           <CardContent>
             <Box className="space-y-6">
               {isError && (
-                <Alert variant="destructive">
-                  <div>
-                    <CircleAlert className="h-5 w-5" />
-                  </div>
-                  <AlertDescription>
-                    Your username or password is incorrect. Please try again.
-                  </AlertDescription>
-                </Alert>
+                <ErrorAlert
+                  message={
+                    " Your username or password is incorrect. Please try again."
+                  }
+                />
               )}
               <Form {...form}>
                 <form
