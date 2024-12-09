@@ -20,7 +20,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { GraphEdge, Step } from "@/api";
-import { StepNode } from "@/components/node-graph/components/StepNode";
+import { StepNode } from "@/components/node-graph/components/step-node";
 import getLayoutedElements from "@/utils/graph";
 
 type OwnProps = {

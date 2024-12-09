@@ -10,7 +10,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-import NodeGraph from "./NodeGraph";
+import NodeGraph from "./node-graph";
 
 type OwnProps = {
   testcase: Testcase;

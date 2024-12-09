@@ -15,7 +15,7 @@ const columns: ColumnDef<SubmissionORM>[] = [
     accessorKey: "definition",
     header: "Contest ID",
     cell: ({ row }) => {
-      const contestId = row.original.definition_id;
+      const contestId = row.original.problem_id;
       return (
         <Link
           to={`/contests/${contestId}`}

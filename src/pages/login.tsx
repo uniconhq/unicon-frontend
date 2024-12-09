@@ -1,17 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { login } from "@/api";
+import ErrorAlert from "@/components/form/fields/error-alert";
 import PasswordField from "@/components/form/fields/password-field";
 import TextField from "@/components/form/fields/text-field";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useUserStore } from "@/store/user/user-store-provider";
 
@@ -76,14 +75,11 @@ const Login = () => {
           <CardContent>
             <Box className="space-y-6">
               {isError && (
-                <Alert variant="destructive">
-                  <div>
-                    <CircleAlert className="h-5 w-5" />
-                  </div>
-                  <AlertDescription>
-                    Your username or password is incorrect. Please try again.
-                  </AlertDescription>
-                </Alert>
+                <ErrorAlert
+                  message={
+                    " Your username or password is incorrect. Please try again."
+                  }
+                />
               )}
               <Form {...form}>
                 <form
@@ -104,6 +100,11 @@ const Login = () => {
               </Form>
             </Box>
           </CardContent>
+          <CardFooter className="flex justify-center">
+            <Link to="/signup" className="text-violet-300 hover:opacity-80">
+              Don't have an account? Sign up.
+            </Link>
+          </CardFooter>
         </Card>
       </div>
     </div>
