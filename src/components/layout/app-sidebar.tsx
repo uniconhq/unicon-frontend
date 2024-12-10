@@ -123,7 +123,7 @@ const AppSidebar: React.FC<OwnProps> = ({ pathname }) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
                     {projects?.map((project) => (
-                      <DropdownMenuItem>
+                      <DropdownMenuItem asChild>
                         <Link to={`/projects/${project.id}`}>
                           {project.name}
                         </Link>
@@ -137,7 +137,7 @@ const AppSidebar: React.FC<OwnProps> = ({ pathname }) => {
                 return (
                   <SidebarMenuItem key={path}>
                     <SidebarMenuButton asChild isActive={pathname === fullPath}>
-                      <Link to={fullPath} onClick={(e) => e.stopPropagation()}>
+                      <Link to={fullPath}>
                         {icon}
                         <span>{label}</span>
                       </Link>
