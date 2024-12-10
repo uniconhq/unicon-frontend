@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 import { RolePublicWithInvitationKeys } from "@/api";
+import ConfirmationDialog from "@/components/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 
 import { useDeleteInvitationKey } from "../../queries";
@@ -13,13 +16,20 @@ const DeleteInvitationKeyButton: React.FC<OwnProps> = ({ role }) => {
     role.id,
   );
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
-    <Button
-      variant="destructive"
-      onClick={() => deleteInvitationKeyMutation.mutate()}
-    >
-      delete
-    </Button>
+    <>
+      {dialogOpen && (
+        <ConfirmationDialog
+          setOpen={setDialogOpen}
+          onConfirm={() => deleteInvitationKeyMutation.mutate()}
+        />
+      )}
+      <Button variant="destructive" onClick={() => setDialogOpen(true)}>
+        delete
+      </Button>
+    </>
   );
 };
 

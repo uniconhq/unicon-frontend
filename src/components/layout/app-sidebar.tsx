@@ -123,7 +123,7 @@ const AppSidebar: React.FC<OwnProps> = ({ pathname }) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
                     {projects?.map((project) => (
-                      <DropdownMenuItem asChild>
+                      <DropdownMenuItem asChild key={project.id}>
                         <Link to={`/projects/${project.id}`}>
                           {project.name}
                         </Link>
