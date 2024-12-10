@@ -373,7 +373,7 @@ export type SignupData = {
     body: UserCreate;
 };
 
-export type SignupResponse = (unknown);
+export type SignupResponse = (Token);
 
 export type SignupError = (HTTPValidationError);
 

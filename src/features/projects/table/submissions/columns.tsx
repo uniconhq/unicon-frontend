@@ -22,6 +22,10 @@ export const columns: ColumnDef<SubmissionORM>[] = [
     accessorKey: "submitted_at",
     header: "Submitted At",
     cell: ({ row }) => {
+      // This should happen if the submission is not submitted yet
+      if (!row.original.submitted_at) {
+        return "-";
+      }
       return new Date(row.original.submitted_at).toLocaleString();
     },
   },

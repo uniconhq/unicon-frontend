@@ -137,7 +137,7 @@ const AppSidebar: React.FC<OwnProps> = ({ pathname }) => {
                 return (
                   <SidebarMenuItem key={path}>
                     <SidebarMenuButton asChild isActive={pathname === fullPath}>
-                      <Link to={fullPath}>
+                      <Link to={fullPath} onClick={(e) => e.stopPropagation()}>
                         {icon}
                         <span>{label}</span>
                       </Link>
