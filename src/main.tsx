@@ -35,14 +35,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <SignUp /> },
       { path: "/", element: <Home /> },
-      { path: "/submissions", element: <Submissions /> },
-      { path: "/projects/:id/problems/new", element: <CreateContest /> },
-      { path: "/projects/:projectId/problems/:id", element: <Contest /> },
-      {
-        path: "/projects/:projectId/problems/:id/submit",
-        element: <CreateSubmission />,
-      },
-      { path: "/submissions/:id", element: <SubmissionResults /> },
+
       { path: "/organisations", element: <Organisations /> },
       { path: "/organisations/:id", element: <Organisation /> },
       { path: "/organisations/new", element: <CreateOrganisation /> },
@@ -50,6 +43,17 @@ const router = createBrowserRouter([
       { path: "/projects/:id", element: <Project /> },
       { path: "/projects/:id/roles", element: <ProjectRoles /> },
       { path: "/projects/:id/users", element: <ProjectUsers /> },
+      { path: "/projects/:id/problems/new", element: <CreateContest /> },
+      { path: "/projects/:projectId/problems/:id", element: <Contest /> },
+      {
+        path: "/projects/:projectId/problems/:id/submit",
+        element: <CreateSubmission />,
+      },
+      { path: "/projects/:projectId/submissions", element: <Submissions /> },
+      {
+        path: "/projects/:projectId/submissions/:id",
+        element: <SubmissionResults />,
+      },
       { path: "/organisations/:id/projects/new", element: <CreateProject /> },
     ],
     errorElement: <Error />,

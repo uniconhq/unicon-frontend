@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { AiFillSecurityScan } from "react-icons/ai";
 import { GoPeople, GoProject, GoProjectSymlink } from "react-icons/go";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { logout } from "@/api";
 import {
@@ -39,11 +39,6 @@ const SIDEBAR_ITEMS = [
   },
   { path: "/organisations", icon: <GoPeople />, label: "Organisations" },
   { path: "/projects", icon: <GoProject />, label: "Projects" },
-  {
-    path: "/submissions",
-    icon: <ListChecks />,
-    label: "Submissions",
-  },
 ];
 
 const PROJECT_SIDEBAR_ITEMS = [
@@ -51,6 +46,11 @@ const PROJECT_SIDEBAR_ITEMS = [
     path: "",
     icon: <FileQuestion />,
     label: "Problems",
+  },
+  {
+    path: "/submissions",
+    icon: <ListChecks />,
+    label: "Submissions",
   },
   {
     path: "/users",
@@ -64,11 +64,14 @@ const PROJECT_SIDEBAR_ITEMS = [
   },
 ];
 
-const AppSidebar = () => {
+type OwnProps = {
+  pathname: string;
+};
+
+const AppSidebar: React.FC<OwnProps> = ({ pathname }) => {
   const { user, setUser } = useUserStore((store) => store);
   const navigate = useNavigate();
 
-  const { pathname } = useLocation();
   const isProjectPath = pathname.match(/\/projects\/\d+.*/)?.length ?? 0 > 0;
 
   const { data: projects } = useQuery(getProjects());

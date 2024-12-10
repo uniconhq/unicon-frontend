@@ -5,9 +5,11 @@ import { Link, useParams } from "react-router-dom";
 import TaskResult from "@/components/tasks/submission-results/task-result";
 import { Button } from "@/components/ui/button";
 import { getSubmissionById } from "@/features/definitions/queries";
+import { useProjectId } from "@/features/projects/hooks/use-project-id";
 
 const SubmissionResults = () => {
   const { id } = useParams<{ id: string }>();
+  const projectId = useProjectId();
 
   const [pending, setPending] = useState(true);
 
@@ -38,7 +40,7 @@ const SubmissionResults = () => {
     <div className="flex w-full flex-col gap-8 py-6">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-semibold">Submission (#{id})</h1>
-        <Link to={`/contests/${contest_id}`}>
+        <Link to={`/projects/${projectId}/problems/${contest_id}`}>
           <Button
             variant="outline"
             className="font-mono text-sm hover:text-purple-500"

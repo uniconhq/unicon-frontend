@@ -1137,9 +1137,21 @@ export const SubmissionORMSchema = {
         status: {
             '$ref': '#/components/schemas/SubmissionStatus'
         },
-        submitted_at: {
+        started_at: {
             type: 'string',
             format: 'date-time',
+            title: 'Started At'
+        },
+        submitted_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
             title: 'Submitted At'
         },
         other_fields: {
@@ -1148,7 +1160,7 @@ export const SubmissionORMSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'problem_id', 'user_id', 'status', 'submitted_at'],
+    required: ['id', 'problem_id', 'user_id', 'status', 'started_at', 'submitted_at'],
     title: 'SubmissionORM'
 } as const;
 
@@ -1169,9 +1181,21 @@ export const SubmissionPublicSchema = {
         status: {
             '$ref': '#/components/schemas/SubmissionStatus'
         },
-        submitted_at: {
+        started_at: {
             type: 'string',
             format: 'date-time',
+            title: 'Started At'
+        },
+        submitted_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
             title: 'Submitted At'
         },
         other_fields: {
@@ -1187,7 +1211,7 @@ export const SubmissionPublicSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'problem_id', 'user_id', 'status', 'submitted_at', 'task_attempts'],
+    required: ['id', 'problem_id', 'user_id', 'status', 'started_at', 'submitted_at', 'task_attempts'],
     title: 'SubmissionPublic'
 } as const;
 

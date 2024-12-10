@@ -271,7 +271,8 @@ export type SubmissionORM = {
     problem_id: number;
     user_id: number;
     status: SubmissionStatus;
-    submitted_at: string;
+    started_at: string;
+    submitted_at: (string | null);
     other_fields?: {
         [key: string]: unknown;
     };
@@ -282,7 +283,8 @@ export type SubmissionPublic = {
     problem_id: number;
     user_id: number;
     status: SubmissionStatus;
-    submitted_at: string;
+    started_at: string;
+    submitted_at: (string | null);
     other_fields?: {
         [key: string]: unknown;
     };
@@ -371,7 +373,7 @@ export type SignupData = {
     body: UserCreate;
 };
 
-export type SignupResponse = (Token);
+export type SignupResponse = (unknown);
 
 export type SignupError = (HTTPValidationError);
 
@@ -558,6 +560,19 @@ export type GetProjectUsersData = {
 export type GetProjectUsersResponse = (Array<UserPublicWithRoles>);
 
 export type GetProjectUsersError = (HTTPValidationError);
+
+export type GetProjectSubmissionsData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        all_users?: boolean;
+    };
+};
+
+export type GetProjectSubmissionsResponse = (Array<SubmissionPublic>);
+
+export type GetProjectSubmissionsError = (HTTPValidationError);
 
 export type JoinProjectData = {
     path: {
