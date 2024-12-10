@@ -22,6 +22,7 @@ import SubmissionResults from "@/pages/submission-results";
 import Submissions from "@/pages/submissions";
 import { StoreProvider } from "@/store/store-provider.tsx";
 
+import AuthenticatedPage from "./components/layout/authenticated-page";
 import CreateOrganisation from "./pages/organisations/create-organisation";
 import ProjectUsers from "./pages/projects/project-users";
 import SignUp from "./pages/signup";
@@ -31,30 +32,42 @@ const router = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
+      {
+        path: "/",
+        element: <AuthenticatedPage />,
+        children: [
+          { path: "/", element: <Home /> },
+
+          { path: "/organisations", element: <Organisations /> },
+          { path: "/organisations/:id", element: <Organisation /> },
+          { path: "/organisations/new", element: <CreateOrganisation /> },
+          { path: "/projects", element: <Projects /> },
+          { path: "/projects/:id", element: <Project /> },
+          { path: "/projects/:id/roles", element: <ProjectRoles /> },
+          { path: "/projects/:id/users", element: <ProjectUsers /> },
+          { path: "/projects/:id/problems/new", element: <CreateContest /> },
+          { path: "/projects/:projectId/problems/:id", element: <Contest /> },
+          {
+            path: "/projects/:projectId/problems/:id/submit",
+            element: <CreateSubmission />,
+          },
+          {
+            path: "/projects/:projectId/submissions",
+            element: <Submissions />,
+          },
+          {
+            path: "/projects/:projectId/submissions/:id",
+            element: <SubmissionResults />,
+          },
+          {
+            path: "/organisations/:id/projects/new",
+            element: <CreateProject />,
+          },
+        ],
+      },
       { path: "/old", element: <App /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <SignUp /> },
-      { path: "/", element: <Home /> },
-
-      { path: "/organisations", element: <Organisations /> },
-      { path: "/organisations/:id", element: <Organisation /> },
-      { path: "/organisations/new", element: <CreateOrganisation /> },
-      { path: "/projects", element: <Projects /> },
-      { path: "/projects/:id", element: <Project /> },
-      { path: "/projects/:id/roles", element: <ProjectRoles /> },
-      { path: "/projects/:id/users", element: <ProjectUsers /> },
-      { path: "/projects/:id/problems/new", element: <CreateContest /> },
-      { path: "/projects/:projectId/problems/:id", element: <Contest /> },
-      {
-        path: "/projects/:projectId/problems/:id/submit",
-        element: <CreateSubmission />,
-      },
-      { path: "/projects/:projectId/submissions", element: <Submissions /> },
-      {
-        path: "/projects/:projectId/submissions/:id",
-        element: <SubmissionResults />,
-      },
-      { path: "/organisations/:id/projects/new", element: <CreateProject /> },
     ],
     errorElement: <Error />,
   },

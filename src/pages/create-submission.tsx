@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Params, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
@@ -8,7 +7,6 @@ import TextareaField from "@/components/form/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useCreateSubmission } from "@/features/definitions/queries";
-import { useUserStore } from "@/store/user/user-store-provider";
 import { json } from "@/utils/json";
 
 const submissionFormSchema = z.object({
@@ -32,24 +30,14 @@ const submissionFormDefault = {
 
 const CreateSubmission = () => {
   const { id } = useParams<Params<"id">>();
-  const { user, isLoading } = useUserStore((store) => store);
   const createContestSubmissionMutation = useCreateSubmission(Number(id));
   const navigate = useNavigate();
 
+  // @ts-expect-error - it is infinitely deep because of the definition in json.ts
   const form = useForm<SubmissionFormType>({
     resolver: zodResolver(submissionFormSchema),
     defaultValues: submissionFormDefault,
   });
-
-  useEffect(() => {
-    if (!user && !isLoading) {
-      navigate("/login");
-    }
-  }, [user, navigate, isLoading]);
-
-  if (!user) {
-    return;
-  }
 
   const onSubmit: SubmitHandler<SubmissionFormType> = async (data) => {
     // @ts-expect-error - just let the backend validate it

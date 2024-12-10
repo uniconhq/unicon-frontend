@@ -8,18 +8,21 @@ import { getUserProfile } from "@/features/auth/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
 const Layout: React.FC<PropsWithChildren> = () => {
-  const { data: userProfile } = useQuery(getUserProfile());
+  const { data: userProfile, isLoading } = useQuery(getUserProfile());
 
   const { user, setUser } = useUserStore((store) => store);
   const { pathname } = useLocation();
 
   useEffect(() => {
+    if (isLoading) {
+      return;
+    }
     if (userProfile) {
       setUser(userProfile);
     } else {
       setUser();
     }
-  }, [setUser, userProfile]);
+  }, [setUser, userProfile, isLoading]);
 
   return (
     <main className="flex h-screen w-screen flex-col overflow-y-scroll bg-[#141414] p-4">

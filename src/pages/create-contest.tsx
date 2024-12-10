@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Params, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
@@ -9,7 +9,6 @@ import TextareaField from "@/components/form/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useCreateProblem } from "@/features/definitions/queries";
-import { useUserStore } from "@/store/user/user-store-provider";
 import { json } from "@/utils/json";
 
 const definitionFormSchema = z.object({
@@ -35,7 +34,6 @@ const CreateContest = () => {
   const { id } = useParams<Params<"id">>();
   const idNumber = Number(id);
 
-  const { user, isLoading } = useUserStore((store) => store);
   const createDefinitionMutation = useCreateProblem(idNumber);
   const navigate = useNavigate();
 
@@ -45,17 +43,7 @@ const CreateContest = () => {
     defaultValues: definitionFormDefault,
   });
 
-  useEffect(() => {
-    if (!user && !isLoading) {
-      navigate("/login");
-    }
-  }, [user, navigate, isLoading]);
-
   const [error, setError] = useState("");
-
-  if (!user) {
-    return;
-  }
 
   const onSubmit: SubmitHandler<DefinitionFormType> = async (data) => {
     // @ts-expect-error - just let the backend validate it
