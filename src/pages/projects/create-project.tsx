@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Params, useNavigate, useParams } from "react-router-dom";
@@ -8,7 +9,10 @@ import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useCreateProject } from "@/features/projects/queries";
+import {
+  ProjectQueryKeys,
+  useCreateProject,
+} from "@/features/projects/queries";
 
 const projectFormSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
@@ -32,6 +36,7 @@ const CreateProject = () => {
 
   const createProjectMutation = useCreateProject(parseInt(id!));
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const onSubmit: SubmitHandler<ProjectFormType> = async (data) => {
     createProjectMutation.mutate(data, {
@@ -39,7 +44,9 @@ const CreateProject = () => {
         setError(error.message);
       },
       onSuccess: (response) => {
-        navigate(`/projects/${response.data?.id}`);
+        navigate(`/projects/${response.data?.id}`, {});
+        // Invalidatattion needed to display project in sidebar
+        queryClient.invalidateQueries({ queryKey: [ProjectQueryKeys.Project] });
       },
     });
   };
