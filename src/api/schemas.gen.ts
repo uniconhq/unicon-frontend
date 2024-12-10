@@ -122,26 +122,6 @@ export const DefinitionSchema = {
     title: 'Definition'
 } as const;
 
-export const DefinitionORMSchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        description: {
-            type: 'string',
-            title: 'Description'
-        }
-    },
-    type: 'object',
-    required: ['id', 'name', 'description'],
-    title: 'DefinitionORM'
-} as const;
-
 export const ExpectedAnswerSchema = {
     properties: {
         task_id: {
@@ -215,6 +195,23 @@ export const HTTPValidationErrorSchema = {
     title: 'HTTPValidationError'
 } as const;
 
+export const InvitationKeyPublicSchema = {
+    properties: {
+        key: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Key'
+        },
+        enabled: {
+            type: 'boolean',
+            title: 'Enabled',
+            default: true
+        }
+    },
+    type: 'object',
+    title: 'InvitationKeyPublic'
+} as const;
+
 export const MultipleChoiceTaskSchema = {
     properties: {
         id: {
@@ -223,7 +220,6 @@ export const MultipleChoiceTaskSchema = {
         },
         type: {
             type: 'string',
-            enum: ['MULTIPLE_CHOICE_TASK'],
             const: 'MULTIPLE_CHOICE_TASK',
             title: 'Type'
         },
@@ -255,17 +251,9 @@ export const MultipleChoiceTaskResultSchema = {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
+        task_attempt_id: {
             type: 'integer',
-            title: 'Submission Id'
-        },
-        definition_id: {
-            type: 'integer',
-            title: 'Definition Id'
-        },
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
+            title: 'Task Attempt Id'
         },
         task_type: {
             '$ref': '#/components/schemas/TaskType'
@@ -315,13 +303,10 @@ export const MultipleChoiceTaskResultSchema = {
                 }
             ],
             title: 'Error'
-        },
-        task: {
-            '$ref': '#/components/schemas/TaskORM'
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    required: ['id', 'task_attempt_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error'],
     title: 'MultipleChoiceTaskResult'
 } as const;
 
@@ -333,7 +318,6 @@ export const MultipleResponseTaskSchema = {
         },
         type: {
             type: 'string',
-            enum: ['MULTIPLE_RESPONSE_TASK'],
             const: 'MULTIPLE_RESPONSE_TASK',
             title: 'Type'
         },
@@ -365,17 +349,9 @@ export const MultipleResponseTaskResultSchema = {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
+        task_attempt_id: {
             type: 'integer',
-            title: 'Submission Id'
-        },
-        definition_id: {
-            type: 'integer',
-            title: 'Definition Id'
-        },
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
+            title: 'Task Attempt Id'
         },
         task_type: {
             '$ref': '#/components/schemas/TaskType'
@@ -431,13 +407,10 @@ export const MultipleResponseTaskResultSchema = {
                 }
             ],
             title: 'Error'
-        },
-        task: {
-            '$ref': '#/components/schemas/TaskORM'
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    required: ['id', 'task_attempt_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error'],
     title: 'MultipleResponseTaskResult'
 } as const;
 
@@ -467,10 +440,174 @@ export const MultipleResponseTaskResultTypeSchema = {
     title: 'MultipleResponseTaskResultType'
 } as const;
 
+export const OrganisationSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Id'
+        },
+        owner_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Owner Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'owner_id'],
+    title: 'Organisation'
+} as const;
+
+export const OrganisationCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description'],
+    title: 'OrganisationCreate'
+} as const;
+
+export const OrganisationPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'id'],
+    title: 'OrganisationPublic'
+} as const;
+
+export const OrganisationPublicWithProjectsSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        projects: {
+            items: {
+                '$ref': '#/components/schemas/ProjectPublic'
+            },
+            type: 'array',
+            title: 'Projects'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'id', 'projects'],
+    title: 'OrganisationPublicWithProjects'
+} as const;
+
+export const OrganisationUpdateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description'],
+    title: 'OrganisationUpdate'
+} as const;
+
+export const ProblemBaseSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        project_id: {
+            type: 'integer',
+            title: 'Project Id'
+        }
+    },
+    type: 'object',
+    required: ['id', 'name', 'description', 'project_id'],
+    title: 'ProblemBase'
+} as const;
+
+export const ProblemORMSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        project_id: {
+            type: 'integer',
+            title: 'Project Id'
+        }
+    },
+    type: 'object',
+    required: ['id', 'name', 'description', 'project_id'],
+    title: 'ProblemORM'
+} as const;
+
 export const ProgrammingLanguageSchema = {
     type: 'string',
     enum: ['PYTHON'],
-    const: 'PYTHON',
     title: 'ProgrammingLanguage'
 } as const;
 
@@ -482,7 +619,6 @@ export const ProgrammingTaskSchema = {
         },
         type: {
             type: 'string',
-            enum: ['PROGRAMMING_TASK'],
             const: 'PROGRAMMING_TASK',
             title: 'Type'
         },
@@ -524,17 +660,9 @@ export const ProgrammingTaskResultSchema = {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
+        task_attempt_id: {
             type: 'integer',
-            title: 'Submission Id'
-        },
-        definition_id: {
-            type: 'integer',
-            title: 'Definition Id'
-        },
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
+            title: 'Task Attempt Id'
         },
         task_type: {
             '$ref': '#/components/schemas/TaskType'
@@ -571,10 +699,17 @@ export const ProgrammingTaskResultSchema = {
             '$ref': '#/components/schemas/TaskEvalStatus'
         },
         result: {
-            items: {
-                type: 'object'
-            },
-            type: 'array',
+            anyOf: [
+                {
+                    items: {
+                        type: 'object'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
             title: 'Result'
         },
         error: {
@@ -587,14 +722,88 @@ export const ProgrammingTaskResultSchema = {
                 }
             ],
             title: 'Error'
-        },
-        task: {
-            '$ref': '#/components/schemas/TaskORM'
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    required: ['id', 'task_attempt_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error'],
     title: 'ProgrammingTaskResult'
+} as const;
+
+export const ProjectCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'ProjectCreate'
+} as const;
+
+export const ProjectPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        roles: {
+            items: {
+                '$ref': '#/components/schemas/RolePublic'
+            },
+            type: 'array',
+            title: 'Roles'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'roles'],
+    title: 'ProjectPublic'
+} as const;
+
+export const ProjectPublicWithProblemsSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        roles: {
+            items: {
+                '$ref': '#/components/schemas/RolePublic'
+            },
+            type: 'array',
+            title: 'Roles'
+        },
+        problems: {
+            items: {
+                '$ref': '#/components/schemas/ProblemBase'
+            },
+            type: 'array',
+            title: 'Problems'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'roles', 'problems'],
+    title: 'ProjectPublicWithProblems'
+} as const;
+
+export const ProjectUpdateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'ProjectUpdate'
 } as const;
 
 export const RequiredInputSchema = {
@@ -627,6 +836,77 @@ export const RequiredInputSchema = {
     type: 'object',
     required: ['id', 'data'],
     title: 'RequiredInput'
+} as const;
+
+export const RoleBaseSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'RoleBase'
+} as const;
+
+export const RoleCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'RoleCreate'
+} as const;
+
+export const RolePublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        project_id: {
+            type: 'integer',
+            title: 'Project Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'project_id'],
+    title: 'RolePublic'
+} as const;
+
+export const RolePublicWithInvitationKeysSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        project_id: {
+            type: 'integer',
+            title: 'Project Id'
+        },
+        invitation_keys: {
+            items: {
+                '$ref': '#/components/schemas/InvitationKeyPublic'
+            },
+            type: 'array',
+            title: 'Invitation Keys'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'project_id', 'invitation_keys'],
+    title: 'RolePublicWithInvitationKeys'
 } as const;
 
 export const RunnerEnvironmentSchema = {
@@ -667,7 +947,6 @@ export const ShortAnswerTaskSchema = {
         },
         type: {
             type: 'string',
-            enum: ['SHORT_ANSWER_TASK'],
             const: 'SHORT_ANSWER_TASK',
             title: 'Type'
         },
@@ -692,17 +971,9 @@ export const ShortAnswerTaskResultSchema = {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
+        task_attempt_id: {
             type: 'integer',
-            title: 'Submission Id'
-        },
-        definition_id: {
-            type: 'integer',
-            title: 'Definition Id'
-        },
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
+            title: 'Task Attempt Id'
         },
         task_type: {
             '$ref': '#/components/schemas/TaskType'
@@ -759,13 +1030,10 @@ export const ShortAnswerTaskResultSchema = {
                 }
             ],
             title: 'Error'
-        },
-        task: {
-            '$ref': '#/components/schemas/TaskORM'
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'definition_id', 'task_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error', 'task'],
+    required: ['id', 'task_attempt_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error'],
     title: 'ShortAnswerTaskResult'
 } as const;
 
@@ -834,16 +1102,16 @@ export const StepSocketSchema = {
     title: 'StepSocket',
     description: `A socket that is used to connect steps to each other.
 
-Socket ID Format: <TYPE>.<DIRECTION>.<NAME>.<INDEX>
+Socket ID Format: <TYPE>.<NAME>.<INDEX>
 - <NAME>.<INDEX> is optional and is used to differentiate between multiple sockets of the same type
     - Collectively, <NAME>.<INDEX> is referred to as the "label"
 
 There can be 2 types of sockets:
 
 1. Control Sockets: Used to control the flow of the program
-    - e.g. CONTROL.IN.<NAME>.<INDEX>
+    - e.g. CONTROL.<NAME>.<INDEX>
 2. Data Sockets: Used to pass data between steps
-    - e.g. DATA.OUT.<NAME>.<INDEX>`
+    - e.g. DATA.<NAME>.<INDEX>`
 } as const;
 
 export const StepTypeSchema = {
@@ -858,16 +1126,32 @@ export const SubmissionORMSchema = {
             type: 'integer',
             title: 'Id'
         },
-        definition_id: {
+        problem_id: {
             type: 'integer',
-            title: 'Definition Id'
+            title: 'Problem Id'
+        },
+        user_id: {
+            type: 'integer',
+            title: 'User Id'
         },
         status: {
             '$ref': '#/components/schemas/SubmissionStatus'
         },
-        submitted_at: {
+        started_at: {
             type: 'string',
             format: 'date-time',
+            title: 'Started At'
+        },
+        submitted_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
             title: 'Submitted At'
         },
         other_fields: {
@@ -876,7 +1160,7 @@ export const SubmissionORMSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'definition_id', 'status', 'submitted_at'],
+    required: ['id', 'problem_id', 'user_id', 'status', 'started_at', 'submitted_at'],
     title: 'SubmissionORM'
 } as const;
 
@@ -886,17 +1170,73 @@ export const SubmissionPublicSchema = {
             type: 'integer',
             title: 'Id'
         },
-        definition_id: {
+        problem_id: {
             type: 'integer',
-            title: 'Definition Id'
+            title: 'Problem Id'
+        },
+        user_id: {
+            type: 'integer',
+            title: 'User Id'
         },
         status: {
             '$ref': '#/components/schemas/SubmissionStatus'
         },
-        submitted_at: {
+        started_at: {
             type: 'string',
             format: 'date-time',
+            title: 'Started At'
+        },
+        submitted_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
             title: 'Submitted At'
+        },
+        other_fields: {
+            type: 'object',
+            title: 'Other Fields'
+        },
+        task_attempts: {
+            items: {
+                '$ref': '#/components/schemas/TaskAttemptPublic'
+            },
+            type: 'array',
+            title: 'Task Attempts'
+        }
+    },
+    type: 'object',
+    required: ['id', 'problem_id', 'user_id', 'status', 'started_at', 'submitted_at', 'task_attempts'],
+    title: 'SubmissionPublic'
+} as const;
+
+export const SubmissionStatusSchema = {
+    type: 'string',
+    enum: ['PENDING', 'OK'],
+    title: 'SubmissionStatus'
+} as const;
+
+export const TaskAttemptPublicSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        submission_id: {
+            type: 'integer',
+            title: 'Submission Id'
+        },
+        task_id: {
+            type: 'integer',
+            title: 'Task Id'
+        },
+        task_type: {
+            '$ref': '#/components/schemas/TaskType'
         },
         other_fields: {
             type: 'object',
@@ -908,17 +1248,14 @@ export const SubmissionPublicSchema = {
             },
             type: 'array',
             title: 'Task Results'
+        },
+        task: {
+            '$ref': '#/components/schemas/TaskORM'
         }
     },
     type: 'object',
-    required: ['id', 'definition_id', 'status', 'submitted_at', 'task_results'],
-    title: 'SubmissionPublic'
-} as const;
-
-export const SubmissionStatusSchema = {
-    type: 'string',
-    enum: ['PENDING', 'OK'],
-    title: 'SubmissionStatus'
+    required: ['id', 'submission_id', 'task_id', 'task_type', 'other_fields', 'task_results', 'task'],
+    title: 'TaskAttemptPublic'
 } as const;
 
 export const TaskEvalStatusSchema = {
@@ -944,13 +1281,13 @@ export const TaskORMSchema = {
             type: 'object',
             title: 'Other Fields'
         },
-        definition_id: {
+        problem_id: {
             type: 'integer',
-            title: 'Definition Id'
+            title: 'Problem Id'
         }
     },
     type: 'object',
-    required: ['id', 'type', 'autograde', 'definition_id'],
+    required: ['id', 'type', 'autograde', 'problem_id'],
     title: 'TaskORM'
 } as const;
 
@@ -1022,6 +1359,27 @@ export const TokenSchema = {
     title: 'Token'
 } as const;
 
+export const UserCreateSchema = {
+    properties: {
+        username: {
+            type: 'string',
+            title: 'Username'
+        },
+        password: {
+            type: 'string',
+            minLength: 8,
+            title: 'Password'
+        },
+        confirm_password: {
+            type: 'string',
+            title: 'Confirm Password'
+        }
+    },
+    type: 'object',
+    required: ['username', 'password', 'confirm_password'],
+    title: 'UserCreate'
+} as const;
+
 export const UserInputSchema = {
     properties: {
         task_id: {
@@ -1051,6 +1409,29 @@ export const UserPublicSchema = {
     type: 'object',
     required: ['id', 'username'],
     title: 'UserPublic'
+} as const;
+
+export const UserPublicWithRolesSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        username: {
+            type: 'string',
+            title: 'Username'
+        },
+        roles: {
+            items: {
+                '$ref': '#/components/schemas/RolePublic'
+            },
+            type: 'array',
+            title: 'Roles'
+        }
+    },
+    type: 'object',
+    required: ['id', 'username', 'roles'],
+    title: 'UserPublicWithRoles'
 } as const;
 
 export const ValidationErrorSchema = {
