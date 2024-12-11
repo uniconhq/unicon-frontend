@@ -7,6 +7,7 @@ import TextareaField from "@/components/form/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useCreateSubmission } from "@/features/definitions/queries";
+import { useProjectId } from "@/features/projects/hooks/use-project-id";
 import { json } from "@/utils/json";
 
 const submissionFormSchema = z.object({
@@ -30,6 +31,7 @@ const submissionFormDefault = {
 
 const CreateSubmission = () => {
   const { id } = useParams<Params<"id">>();
+  const projectId = useProjectId();
   const createContestSubmissionMutation = useCreateSubmission(Number(id));
   const navigate = useNavigate();
 
@@ -47,7 +49,7 @@ const CreateSubmission = () => {
           return;
         }
         if (response.status === 200) {
-          navigate(`/submissions/${response.data?.id}`);
+          navigate(`/projects/${projectId}/submissions/${response.data?.id}`);
         }
       },
     });
