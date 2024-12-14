@@ -9,22 +9,6 @@ export type Body_login_auth_token_post = {
     client_secret?: (string | null);
 };
 
-export type ContestSubmission = {
-    expected_answers: Array<ExpectedAnswer>;
-    user_inputs: Array<UserInput>;
-};
-
-export type Definition = {
-    name: string;
-    description: string;
-    tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
-};
-
-export type ExpectedAnswer = {
-    task_id: number;
-    expected_answer: unknown;
-};
-
 export type File = {
     file_name: string;
     content: string;
@@ -121,6 +105,12 @@ export type OrganisationPublicWithProjects = {
 export type OrganisationUpdate = {
     name: string;
     description: string;
+};
+
+export type Problem = {
+    name: string;
+    description: string;
+    tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
 };
 
 export type ProblemBase = {
@@ -266,36 +256,17 @@ export type StepSocket = {
 
 export type StepType = 'PY_RUN_FUNCTION_STEP' | 'OBJECT_ACCESS_STEP' | 'INPUT_STEP' | 'OUTPUT_STEP' | 'LOOP_STEP' | 'IF_ELSE_STEP' | 'STRING_MATCH_STEP';
 
-export type SubmissionORM = {
-    id: number;
-    problem_id: number;
-    user_id: number;
-    status: SubmissionStatus;
-    started_at: string;
-    submitted_at: (string | null);
-    other_fields?: {
-        [key: string]: unknown;
-    };
-};
-
 export type SubmissionPublic = {
     id: number;
     problem_id: number;
     user_id: number;
-    status: SubmissionStatus;
-    started_at: string;
     submitted_at: (string | null);
-    other_fields?: {
-        [key: string]: unknown;
-    };
     task_attempts: Array<TaskAttemptPublic>;
 };
 
-export type SubmissionStatus = 'PENDING' | 'OK';
-
 export type TaskAttemptPublic = {
     id: number;
-    submission_id: number;
+    user_id: number;
     task_id: number;
     task_type: TaskType;
     other_fields: {
@@ -341,7 +312,7 @@ export type UserCreate = {
 
 export type UserInput = {
     task_id: number;
-    user_input: unknown;
+    value: unknown;
 };
 
 export type UserPublic = {
@@ -387,52 +358,49 @@ export type GetUserResponse = (UserPublic);
 
 export type GetUserError = (HTTPValidationError);
 
-export type GetDefinitionsData = unknown;
-
-export type GetDefinitionsResponse = (Array<ProblemORM>);
-
-export type GetDefinitionsError = (HTTPValidationError);
-
-export type GetDefinitionData = {
+export type GetProblemData = {
     path: {
         id: number;
     };
 };
 
-export type GetDefinitionResponse = (Definition);
+export type GetProblemResponse = (Problem);
 
-export type GetDefinitionError = (HTTPValidationError);
+export type GetProblemError = (HTTPValidationError);
 
-export type UpdateDefinitionData = {
-    body: Definition;
+export type UpdateProblemData = {
+    body: Problem;
     path: {
         id: number;
     };
 };
 
-export type UpdateDefinitionResponse = (Definition);
+export type UpdateProblemResponse = (Problem);
 
-export type UpdateDefinitionError = (HTTPValidationError);
+export type UpdateProblemError = (HTTPValidationError);
 
-export type SubmitContestSubmissionData = {
-    body: ContestSubmission;
+export type SubmitProblemTaskAttemptData = {
+    body: UserInput;
     path: {
         id: number;
-    };
-    query?: {
-        task_id?: (number | null);
+        task_id: number;
     };
 };
 
-export type SubmitContestSubmissionResponse = (SubmissionORM);
+export type SubmitProblemTaskAttemptResponse = (TaskAttemptPublic);
 
-export type SubmitContestSubmissionError = (HTTPValidationError);
+export type SubmitProblemTaskAttemptError = (HTTPValidationError);
 
-export type GetSubmissionsData = unknown;
+export type MakeSubmissionData = {
+    body: Array<(number)>;
+    path: {
+        id: number;
+    };
+};
 
-export type GetSubmissionsResponse = (Array<SubmissionPublic>);
+export type MakeSubmissionResponse = (SubmissionPublic);
 
-export type GetSubmissionsError = (HTTPValidationError);
+export type MakeSubmissionError = (HTTPValidationError);
 
 export type GetSubmissionData = {
     path: {
@@ -585,7 +553,7 @@ export type JoinProjectResponse = (ProjectPublic);
 export type JoinProjectError = (HTTPValidationError);
 
 export type CreateProblemData = {
-    body: Definition;
+    body: Problem;
     path: {
         id: number;
     };

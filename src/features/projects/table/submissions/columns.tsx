@@ -1,11 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { SubmissionORM } from "@/api";
+import { SubmissionPublic } from "@/api";
 
 import ViewProblemButton from "./view-problem-button";
 import ViewResultButton from "./view-result-button";
 
-export const columns: ColumnDef<SubmissionORM>[] = [
+export const columns: ColumnDef<SubmissionPublic>[] = [
   {
     accessorKey: "id",
     header: "Submission ID",

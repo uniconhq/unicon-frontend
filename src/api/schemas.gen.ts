@@ -55,88 +55,6 @@ export const Body_login_auth_token_postSchema = {
     title: 'Body_login_auth_token_post'
 } as const;
 
-export const ContestSubmissionSchema = {
-    properties: {
-        expected_answers: {
-            items: {
-                '$ref': '#/components/schemas/ExpectedAnswer'
-            },
-            type: 'array',
-            title: 'Expected Answers'
-        },
-        user_inputs: {
-            items: {
-                '$ref': '#/components/schemas/UserInput'
-            },
-            type: 'array',
-            title: 'User Inputs'
-        }
-    },
-    type: 'object',
-    required: ['expected_answers', 'user_inputs'],
-    title: 'ContestSubmission'
-} as const;
-
-export const DefinitionSchema = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        description: {
-            type: 'string',
-            title: 'Description'
-        },
-        tasks: {
-            items: {
-                oneOf: [
-                    {
-                        '$ref': '#/components/schemas/ProgrammingTask'
-                    },
-                    {
-                        '$ref': '#/components/schemas/MultipleChoiceTask'
-                    },
-                    {
-                        '$ref': '#/components/schemas/MultipleResponseTask'
-                    },
-                    {
-                        '$ref': '#/components/schemas/ShortAnswerTask'
-                    }
-                ],
-                discriminator: {
-                    propertyName: 'type',
-                    mapping: {
-                        MULTIPLE_CHOICE_TASK: '#/components/schemas/MultipleChoiceTask',
-                        MULTIPLE_RESPONSE_TASK: '#/components/schemas/MultipleResponseTask',
-                        PROGRAMMING_TASK: '#/components/schemas/ProgrammingTask',
-                        SHORT_ANSWER_TASK: '#/components/schemas/ShortAnswerTask'
-                    }
-                }
-            },
-            type: 'array',
-            title: 'Tasks'
-        }
-    },
-    type: 'object',
-    required: ['name', 'description', 'tasks'],
-    title: 'Definition'
-} as const;
-
-export const ExpectedAnswerSchema = {
-    properties: {
-        task_id: {
-            type: 'integer',
-            title: 'Task Id'
-        },
-        expected_answer: {
-            title: 'Expected Answer'
-        }
-    },
-    type: 'object',
-    required: ['task_id', 'expected_answer'],
-    title: 'ExpectedAnswer'
-} as const;
-
 export const FileSchema = {
     properties: {
         file_name: {
@@ -555,6 +473,51 @@ export const OrganisationUpdateSchema = {
     type: 'object',
     required: ['name', 'description'],
     title: 'OrganisationUpdate'
+} as const;
+
+export const ProblemSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        tasks: {
+            items: {
+                oneOf: [
+                    {
+                        '$ref': '#/components/schemas/ProgrammingTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleChoiceTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleResponseTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/ShortAnswerTask'
+                    }
+                ],
+                discriminator: {
+                    propertyName: 'type',
+                    mapping: {
+                        MULTIPLE_CHOICE_TASK: '#/components/schemas/MultipleChoiceTask',
+                        MULTIPLE_RESPONSE_TASK: '#/components/schemas/MultipleResponseTask',
+                        PROGRAMMING_TASK: '#/components/schemas/ProgrammingTask',
+                        SHORT_ANSWER_TASK: '#/components/schemas/ShortAnswerTask'
+                    }
+                }
+            },
+            type: 'array',
+            title: 'Tasks'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'tasks'],
+    title: 'Problem'
 } as const;
 
 export const ProblemBaseSchema = {
@@ -1120,50 +1083,6 @@ export const StepTypeSchema = {
     title: 'StepType'
 } as const;
 
-export const SubmissionORMSchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        problem_id: {
-            type: 'integer',
-            title: 'Problem Id'
-        },
-        user_id: {
-            type: 'integer',
-            title: 'User Id'
-        },
-        status: {
-            '$ref': '#/components/schemas/SubmissionStatus'
-        },
-        started_at: {
-            type: 'string',
-            format: 'date-time',
-            title: 'Started At'
-        },
-        submitted_at: {
-            anyOf: [
-                {
-                    type: 'string',
-                    format: 'date-time'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Submitted At'
-        },
-        other_fields: {
-            type: 'object',
-            title: 'Other Fields'
-        }
-    },
-    type: 'object',
-    required: ['id', 'problem_id', 'user_id', 'status', 'started_at', 'submitted_at'],
-    title: 'SubmissionORM'
-} as const;
-
 export const SubmissionPublicSchema = {
     properties: {
         id: {
@@ -1178,14 +1097,6 @@ export const SubmissionPublicSchema = {
             type: 'integer',
             title: 'User Id'
         },
-        status: {
-            '$ref': '#/components/schemas/SubmissionStatus'
-        },
-        started_at: {
-            type: 'string',
-            format: 'date-time',
-            title: 'Started At'
-        },
         submitted_at: {
             anyOf: [
                 {
@@ -1198,10 +1109,6 @@ export const SubmissionPublicSchema = {
             ],
             title: 'Submitted At'
         },
-        other_fields: {
-            type: 'object',
-            title: 'Other Fields'
-        },
         task_attempts: {
             items: {
                 '$ref': '#/components/schemas/TaskAttemptPublic'
@@ -1211,14 +1118,8 @@ export const SubmissionPublicSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'problem_id', 'user_id', 'status', 'started_at', 'submitted_at', 'task_attempts'],
+    required: ['id', 'problem_id', 'user_id', 'submitted_at', 'task_attempts'],
     title: 'SubmissionPublic'
-} as const;
-
-export const SubmissionStatusSchema = {
-    type: 'string',
-    enum: ['PENDING', 'OK'],
-    title: 'SubmissionStatus'
 } as const;
 
 export const TaskAttemptPublicSchema = {
@@ -1227,9 +1128,9 @@ export const TaskAttemptPublicSchema = {
             type: 'integer',
             title: 'Id'
         },
-        submission_id: {
+        user_id: {
             type: 'integer',
-            title: 'Submission Id'
+            title: 'User Id'
         },
         task_id: {
             type: 'integer',
@@ -1254,7 +1155,7 @@ export const TaskAttemptPublicSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'submission_id', 'task_id', 'task_type', 'other_fields', 'task_results', 'task'],
+    required: ['id', 'user_id', 'task_id', 'task_type', 'other_fields', 'task_results', 'task'],
     title: 'TaskAttemptPublic'
 } as const;
 
@@ -1386,12 +1287,12 @@ export const UserInputSchema = {
             type: 'integer',
             title: 'Task Id'
         },
-        user_input: {
-            title: 'User Input'
+        value: {
+            title: 'Value'
         }
     },
     type: 'object',
-    required: ['task_id', 'user_input'],
+    required: ['task_id', 'value'],
     title: 'UserInput'
 } as const;
 

@@ -1,10 +1,10 @@
-import { SubmissionORM } from "@/api";
+import { SubmissionPublic } from "@/api";
 import { DataTable } from "@/components/ui/data-table";
 
 import { columns } from "./columns";
 
 type OwnProps = {
-  data: SubmissionORM[];
+  data: SubmissionPublic[];
 };
 
 const SubmissionsTable: React.FC<OwnProps> = ({ data }) => {
