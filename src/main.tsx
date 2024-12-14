@@ -2,7 +2,11 @@ import "@/index.css";
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 
 import App from "@/App.tsx";
 import Layout from "@/components/layout/layout.tsx";
@@ -10,7 +14,6 @@ import Contest from "@/pages/contest";
 import CreateContest from "@/pages/create-contest";
 import CreateSubmission from "@/pages/create-submission";
 import Error from "@/pages/error";
-import Home from "@/pages/home";
 import Login from "@/pages/login";
 import Organisation from "@/pages/organisations/organisation";
 import Organisations from "@/pages/organisations/organisations";
@@ -36,7 +39,7 @@ const router = createBrowserRouter([
         path: "/",
         element: <AuthenticatedPage />,
         children: [
-          { path: "/", element: <Home /> },
+          { path: "/", element: <Navigate to="/projects" /> },
 
           { path: "/organisations", element: <Organisations /> },
           { path: "/organisations/:id", element: <Organisation /> },

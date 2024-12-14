@@ -3,7 +3,6 @@ import {
   ChevronDown,
   ChevronUp,
   FileQuestion,
-  Home,
   ListChecks,
   User2,
 } from "lucide-react";
@@ -32,11 +31,6 @@ import { getProjects } from "@/features/projects/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
 const SIDEBAR_ITEMS = [
-  {
-    path: "/",
-    icon: <Home />,
-    label: "Home",
-  },
   { path: "/organisations", icon: <GoPeople />, label: "Organisations" },
   { path: "/projects", icon: <GoProject />, label: "Projects" },
 ];
