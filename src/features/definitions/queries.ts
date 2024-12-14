@@ -1,14 +1,14 @@
 import { queryOptions, useMutation } from "@tanstack/react-query";
 
 import {
-  ContestSubmission,
-  Definition,
-  getDefinition,
-  getDefinitions,
+  createProblem,
+  getProblem,
+  getProjectSubmissions,
   getSubmission,
-  getSubmissions,
-  submitContestSubmission,
-  submitDefinition,
+  makeSubmission,
+  Problem,
+  submitProblemTaskAttempt,
+  UserInput,
 } from "@/api";
 
 export enum ContestQueryKeys {
@@ -17,31 +17,30 @@ export enum ContestQueryKeys {
   Submissions = "submissions",
 }
 
-export const getAllDefinitions = () => {
-  return queryOptions({
-    queryKey: [ContestQueryKeys.Definitions],
-    queryFn: () => getDefinitions().then((response) => response.data),
-  });
-};
-
-export const useCreateDefinition = () => {
+export const useCreateProblem = (project_id: number) => {
   return useMutation({
-    mutationFn: (data: Definition) => submitDefinition({ body: data }),
+    mutationFn: (data: Problem) =>
+      createProblem({ body: data, path: { id: project_id } }),
   });
 };
 
-export const getDefinitionById = (id: number) => {
+export const getProblemById = (id: number) => {
   return queryOptions({
     queryKey: [ContestQueryKeys.Definition, id],
     queryFn: () =>
-      getDefinition({ path: { id } }).then((response) => response.data),
+      getProblem({ path: { id } }).then((response) => response.data),
   });
 };
 
-export const getAllSubmissions = () => {
+export const getAllProjectSubmissions = (projectId: number) => {
   return queryOptions({
     queryKey: [ContestQueryKeys.Submissions],
-    queryFn: () => getSubmissions().then((response) => response.data),
+    queryFn: () =>
+      getProjectSubmissions({
+        path: {
+          id: projectId,
+        },
+      }).then((response) => response.data),
   });
 };
 
@@ -55,9 +54,30 @@ export const getSubmissionById = (id: number) => {
   });
 };
 
-export const useCreateSubmission = (definitionId: number) => {
+type Submission = {
+  user_inputs: UserInput[];
+};
+export const useCreateSubmission = (problemId: number) => {
   return useMutation({
-    mutationFn: (data: ContestSubmission) =>
-      submitContestSubmission({ body: data, path: { id: definitionId } }),
+    mutationFn: (data: Submission) => {
+      return Promise.all(
+        data.user_inputs.map((input) =>
+          submitProblemTaskAttempt({
+            body: input,
+            path: {
+              id: problemId,
+              task_id: input.task_id,
+            },
+          }),
+        ),
+      ).then((response) =>
+        makeSubmission({
+          body: response
+            .map((res) => res.data?.id)
+            .filter((id) => id !== undefined),
+          path: { id: problemId },
+        }),
+      );
+    },
   });
 };

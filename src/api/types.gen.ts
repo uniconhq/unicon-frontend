@@ -9,28 +9,6 @@ export type Body_login_auth_token_post = {
     client_secret?: (string | null);
 };
 
-export type ContestSubmission = {
-    expected_answers: Array<ExpectedAnswer>;
-    user_inputs: Array<UserInput>;
-};
-
-export type Definition = {
-    name: string;
-    description: string;
-    tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
-};
-
-export type DefinitionORM = {
-    id: number;
-    name: string;
-    description: string;
-};
-
-export type ExpectedAnswer = {
-    task_id: number;
-    expected_answer: unknown;
-};
-
 export type File = {
     file_name: string;
     content: string;
@@ -48,21 +26,22 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type InvitationKeyPublic = {
+    key?: string;
+    enabled?: boolean;
+};
+
 export type MultipleChoiceTask = {
     id: number;
-    type: 'MULTIPLE_CHOICE_TASK';
+    type: "MULTIPLE_CHOICE_TASK";
     autograde?: boolean;
     question: string;
     choices: Array<(string)>;
 };
 
-export type type = 'MULTIPLE_CHOICE_TASK';
-
 export type MultipleChoiceTaskResult = {
     id: number;
-    submission_id: number;
-    definition_id: number;
-    task_id: number;
+    task_attempt_id: number;
     task_type: TaskType;
     started_at: string;
     completed_at: (string | null);
@@ -70,24 +49,19 @@ export type MultipleChoiceTaskResult = {
     status: TaskEvalStatus;
     result: boolean;
     error: (string | null);
-    task: TaskORM;
 };
 
 export type MultipleResponseTask = {
     id: number;
-    type: 'MULTIPLE_RESPONSE_TASK';
+    type: "MULTIPLE_RESPONSE_TASK";
     autograde?: boolean;
     question: string;
     choices: Array<(string)>;
 };
 
-export type type2 = 'MULTIPLE_RESPONSE_TASK';
-
 export type MultipleResponseTaskResult = {
     id: number;
-    submission_id: number;
-    definition_id: number;
-    task_id: number;
+    task_attempt_id: number;
     task_type: TaskType;
     started_at: string;
     completed_at: (string | null);
@@ -95,7 +69,6 @@ export type MultipleResponseTaskResult = {
     status: TaskEvalStatus;
     result: (MultipleResponseTaskResultType | null);
     error: (string | null);
-    task: TaskORM;
 };
 
 export type MultipleResponseTaskResultType = {
@@ -104,11 +77,61 @@ export type MultipleResponseTaskResultType = {
     num_choices: number;
 };
 
+export type Organisation = {
+    name: string;
+    description: string;
+    id?: (number | null);
+    owner_id: (number | null);
+};
+
+export type OrganisationCreate = {
+    name: string;
+    description: string;
+};
+
+export type OrganisationPublic = {
+    name: string;
+    description: string;
+    id: number;
+};
+
+export type OrganisationPublicWithProjects = {
+    name: string;
+    description: string;
+    id: number;
+    projects: Array<ProjectPublic>;
+};
+
+export type OrganisationUpdate = {
+    name: string;
+    description: string;
+};
+
+export type Problem = {
+    name: string;
+    description: string;
+    tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
+};
+
+export type ProblemBase = {
+    id: number;
+    name: string;
+    description: string;
+    project_id: number;
+};
+
+export type ProblemORM = {
+    id: number;
+    name: string;
+    description: string;
+    project_id: number;
+};
+
 export type ProgrammingLanguage = 'PYTHON';
 
 export type ProgrammingTask = {
     id: number;
-    type: 'PROGRAMMING_TASK';
+    type: "PROGRAMMING_TASK";
     autograde?: boolean;
     question: string;
     environment: RunnerEnvironment;
@@ -116,28 +139,65 @@ export type ProgrammingTask = {
     testcases: Array<Testcase>;
 };
 
-export type type3 = 'PROGRAMMING_TASK';
-
 export type ProgrammingTaskResult = {
     id: number;
-    submission_id: number;
-    definition_id: number;
-    task_id: number;
+    task_attempt_id: number;
     task_type: TaskType;
     started_at: string;
     completed_at: (string | null);
     job_id: (string | null);
     status: TaskEvalStatus;
-    result: Array<{
-        [key: string]: unknown;
-    }>;
+    result: (Array<{
+    [key: string]: unknown;
+}> | null);
     error: (string | null);
-    task: TaskORM;
+};
+
+export type ProjectCreate = {
+    name: string;
+};
+
+export type ProjectPublic = {
+    name: string;
+    id: number;
+    roles: Array<RolePublic>;
+};
+
+export type ProjectPublicWithProblems = {
+    name: string;
+    id: number;
+    roles: Array<RolePublic>;
+    problems: Array<ProblemBase>;
+};
+
+export type ProjectUpdate = {
+    name: string;
 };
 
 export type RequiredInput = {
     id: string;
     data: (string | number | boolean | File);
+};
+
+export type RoleBase = {
+    name: string;
+};
+
+export type RoleCreate = {
+    name: string;
+};
+
+export type RolePublic = {
+    name: string;
+    id: number;
+    project_id: number;
+};
+
+export type RolePublicWithInvitationKeys = {
+    name: string;
+    id: number;
+    project_id: number;
+    invitation_keys: Array<InvitationKeyPublic>;
 };
 
 export type RunnerEnvironment = {
@@ -151,18 +211,14 @@ export type RunnerEnvironment = {
 
 export type ShortAnswerTask = {
     id: number;
-    type: 'SHORT_ANSWER_TASK';
+    type: "SHORT_ANSWER_TASK";
     autograde?: boolean;
     question: string;
 };
 
-export type type4 = 'SHORT_ANSWER_TASK';
-
 export type ShortAnswerTaskResult = {
     id: number;
-    submission_id: number;
-    definition_id: number;
-    task_id: number;
+    task_attempt_id: number;
     task_type: TaskType;
     started_at: string;
     completed_at: (string | null);
@@ -170,7 +226,6 @@ export type ShortAnswerTaskResult = {
     status: TaskEvalStatus;
     result: (string | null);
     error: (string | null);
-    task: TaskORM;
 };
 
 export type Step = {
@@ -183,16 +238,16 @@ export type Step = {
 /**
  * A socket that is used to connect steps to each other.
  *
- * Socket ID Format: <TYPE>.<DIRECTION>.<NAME>.<INDEX>
+ * Socket ID Format: <TYPE>.<NAME>.<INDEX>
  * - <NAME>.<INDEX> is optional and is used to differentiate between multiple sockets of the same type
  * - Collectively, <NAME>.<INDEX> is referred to as the "label"
  *
  * There can be 2 types of sockets:
  *
  * 1. Control Sockets: Used to control the flow of the program
- * - e.g. CONTROL.IN.<NAME>.<INDEX>
+ * - e.g. CONTROL.<NAME>.<INDEX>
  * 2. Data Sockets: Used to pass data between steps
- * - e.g. DATA.OUT.<NAME>.<INDEX>
+ * - e.g. DATA.<NAME>.<INDEX>
  */
 export type StepSocket = {
     id: string;
@@ -201,28 +256,25 @@ export type StepSocket = {
 
 export type StepType = 'PY_RUN_FUNCTION_STEP' | 'OBJECT_ACCESS_STEP' | 'INPUT_STEP' | 'OUTPUT_STEP' | 'LOOP_STEP' | 'IF_ELSE_STEP' | 'STRING_MATCH_STEP';
 
-export type SubmissionORM = {
-    id: number;
-    definition_id: number;
-    status: SubmissionStatus;
-    submitted_at: string;
-    other_fields?: {
-        [key: string]: unknown;
-    };
-};
-
 export type SubmissionPublic = {
     id: number;
-    definition_id: number;
-    status: SubmissionStatus;
-    submitted_at: string;
-    other_fields?: {
+    problem_id: number;
+    user_id: number;
+    submitted_at: (string | null);
+    task_attempts: Array<TaskAttemptPublic>;
+};
+
+export type TaskAttemptPublic = {
+    id: number;
+    user_id: number;
+    task_id: number;
+    task_type: TaskType;
+    other_fields: {
         [key: string]: unknown;
     };
     task_results: Array<TaskResult>;
+    task: TaskORM;
 };
-
-export type SubmissionStatus = 'PENDING' | 'OK';
 
 export type TaskEvalStatus = 'SUCCESS' | 'PENDING' | 'SKIPPED' | 'FAILED';
 
@@ -233,7 +285,7 @@ export type TaskORM = {
     other_fields?: {
         [key: string]: unknown;
     };
-    definition_id: number;
+    problem_id: number;
 };
 
 export type TaskResult = MultipleChoiceTaskResult | MultipleResponseTaskResult | ProgrammingTaskResult | ShortAnswerTaskResult;
@@ -252,14 +304,26 @@ export type Token = {
     user: UserPublic;
 };
 
+export type UserCreate = {
+    username: string;
+    password: string;
+    confirm_password: string;
+};
+
 export type UserInput = {
     task_id: number;
-    user_input: unknown;
+    value: unknown;
 };
 
 export type UserPublic = {
     id: number;
     username: string;
+};
+
+export type UserPublicWithRoles = {
+    id: number;
+    username: string;
+    roles: Array<RolePublic>;
 };
 
 export type ValidationError = {
@@ -276,6 +340,14 @@ export type LoginResponse = (Token);
 
 export type LoginError = (HTTPValidationError);
 
+export type SignupData = {
+    body: UserCreate;
+};
+
+export type SignupResponse = (Token);
+
+export type SignupError = (HTTPValidationError);
+
 export type LogoutResponse = (unknown);
 
 export type LogoutError = unknown;
@@ -286,60 +358,49 @@ export type GetUserResponse = (UserPublic);
 
 export type GetUserError = (HTTPValidationError);
 
-export type GetDefinitionsData = unknown;
-
-export type GetDefinitionsResponse = (Array<DefinitionORM>);
-
-export type GetDefinitionsError = (HTTPValidationError);
-
-export type SubmitDefinitionData = {
-    body: Definition;
-};
-
-export type SubmitDefinitionResponse = (DefinitionORM);
-
-export type SubmitDefinitionError = (HTTPValidationError);
-
-export type GetDefinitionData = {
+export type GetProblemData = {
     path: {
         id: number;
     };
 };
 
-export type GetDefinitionResponse = (Definition);
+export type GetProblemResponse = (Problem);
 
-export type GetDefinitionError = (HTTPValidationError);
+export type GetProblemError = (HTTPValidationError);
 
-export type UpdateDefinitionData = {
-    body: Definition;
+export type UpdateProblemData = {
+    body: Problem;
     path: {
         id: number;
     };
 };
 
-export type UpdateDefinitionResponse = (DefinitionORM);
+export type UpdateProblemResponse = (Problem);
 
-export type UpdateDefinitionError = (HTTPValidationError);
+export type UpdateProblemError = (HTTPValidationError);
 
-export type SubmitContestSubmissionData = {
-    body: ContestSubmission;
+export type SubmitProblemTaskAttemptData = {
+    body: UserInput;
     path: {
         id: number;
-    };
-    query?: {
-        task_id?: (number | null);
+        task_id: number;
     };
 };
 
-export type SubmitContestSubmissionResponse = (SubmissionORM);
+export type SubmitProblemTaskAttemptResponse = (TaskAttemptPublic);
 
-export type SubmitContestSubmissionError = (HTTPValidationError);
+export type SubmitProblemTaskAttemptError = (HTTPValidationError);
 
-export type GetSubmissionsData = unknown;
+export type MakeSubmissionData = {
+    body: Array<(number)>;
+    path: {
+        id: number;
+    };
+};
 
-export type GetSubmissionsResponse = (Array<SubmissionORM>);
+export type MakeSubmissionResponse = (SubmissionPublic);
 
-export type GetSubmissionsError = (HTTPValidationError);
+export type MakeSubmissionError = (HTTPValidationError);
 
 export type GetSubmissionData = {
     path: {
@@ -353,3 +414,192 @@ export type GetSubmissionData = {
 export type GetSubmissionResponse = (SubmissionPublic);
 
 export type GetSubmissionError = (HTTPValidationError);
+
+export type GetAllOrganisationsData = unknown;
+
+export type GetAllOrganisationsResponse = (Array<Organisation>);
+
+export type GetAllOrganisationsError = (HTTPValidationError);
+
+export type CreateOrganisationData = {
+    body: OrganisationCreate;
+};
+
+export type CreateOrganisationResponse = (OrganisationPublic);
+
+export type CreateOrganisationError = (HTTPValidationError);
+
+export type UpdateOrganisationData = {
+    body: OrganisationUpdate;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateOrganisationResponse = (OrganisationPublic);
+
+export type UpdateOrganisationError = (HTTPValidationError);
+
+export type DeleteOrganisationData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteOrganisationResponse = (unknown);
+
+export type DeleteOrganisationError = (HTTPValidationError);
+
+export type GetOrganisationData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetOrganisationResponse = (OrganisationPublicWithProjects);
+
+export type GetOrganisationError = (HTTPValidationError);
+
+export type CreateProjectData = {
+    body: ProjectCreate;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateProjectResponse = (ProjectPublic);
+
+export type CreateProjectError = (HTTPValidationError);
+
+export type GetAllProjectsData = unknown;
+
+export type GetAllProjectsResponse = (Array<ProjectPublic>);
+
+export type GetAllProjectsError = (HTTPValidationError);
+
+export type GetProjectData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetProjectResponse = (ProjectPublicWithProblems);
+
+export type GetProjectError = (HTTPValidationError);
+
+export type UpdateProjectData = {
+    body: ProjectUpdate;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateProjectResponse = (ProjectPublic);
+
+export type UpdateProjectError = (HTTPValidationError);
+
+export type GetProjectRolesData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetProjectRolesResponse = (Array<RolePublicWithInvitationKeys>);
+
+export type GetProjectRolesError = (HTTPValidationError);
+
+export type CreateRoleData = {
+    body: RoleCreate;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateRoleResponse = (RolePublic);
+
+export type CreateRoleError = (HTTPValidationError);
+
+export type GetProjectUsersData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetProjectUsersResponse = (Array<UserPublicWithRoles>);
+
+export type GetProjectUsersError = (HTTPValidationError);
+
+export type GetProjectSubmissionsData = {
+    path: {
+        id: number;
+    };
+    query?: {
+        all_users?: boolean;
+    };
+};
+
+export type GetProjectSubmissionsResponse = (Array<SubmissionPublic>);
+
+export type GetProjectSubmissionsError = (HTTPValidationError);
+
+export type JoinProjectData = {
+    path: {
+        key: string;
+    };
+};
+
+export type JoinProjectResponse = (ProjectPublic);
+
+export type JoinProjectError = (HTTPValidationError);
+
+export type CreateProblemData = {
+    body: Problem;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateProblemResponse = (ProblemORM);
+
+export type CreateProblemError = (HTTPValidationError);
+
+export type UpdateRoleData = {
+    body: RoleBase;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateRoleResponse = (unknown);
+
+export type UpdateRoleError = (HTTPValidationError);
+
+export type DeleteRoleData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteRoleResponse = (unknown);
+
+export type DeleteRoleError = (HTTPValidationError);
+
+export type CreateInvitationKeyData = {
+    path: {
+        id: number;
+    };
+};
+
+export type CreateInvitationKeyResponse = (unknown);
+
+export type CreateInvitationKeyError = (HTTPValidationError);
+
+export type DeleteInvitationKeyData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteInvitationKeyResponse = (unknown);
+
+export type DeleteInvitationKeyError = (HTTPValidationError);

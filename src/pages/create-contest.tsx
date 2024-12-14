@@ -1,16 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleAlert } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Params, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 
+import ErrorAlert from "@/components/form/fields/error-alert";
 import TextareaField from "@/components/form/fields/textarea-field";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useCreateDefinition } from "@/features/definitions/queries";
-import { useUserStore } from "@/store/user/user-store-provider";
+import { useCreateProblem } from "@/features/definitions/queries";
 import { json } from "@/utils/json";
 
 const definitionFormSchema = z.object({
@@ -33,8 +31,10 @@ const definitionFormDefault = {
 };
 
 const CreateContest = () => {
-  const { user, isLoading } = useUserStore((store) => store);
-  const createDefinitionMutation = useCreateDefinition();
+  const { id } = useParams<Params<"id">>();
+  const idNumber = Number(id);
+
+  const createDefinitionMutation = useCreateProblem(idNumber);
   const navigate = useNavigate();
 
   // @ts-expect-error - it is infinitely deep because of the definition in json.ts
@@ -43,17 +43,7 @@ const CreateContest = () => {
     defaultValues: definitionFormDefault,
   });
 
-  useEffect(() => {
-    if (!user && !isLoading) {
-      navigate("/login");
-    }
-  }, [user, navigate, isLoading]);
-
   const [error, setError] = useState("");
-
-  if (!user) {
-    return;
-  }
 
   const onSubmit: SubmitHandler<DefinitionFormType> = async (data) => {
     // @ts-expect-error - just let the backend validate it
@@ -64,7 +54,7 @@ const CreateContest = () => {
           return;
         }
         if (response.status === 200) {
-          navigate(`/contests/${response.data?.id}`);
+          navigate(`/projects/${id}/problems/${response.data?.id}`);
         } else {
           setError(JSON.stringify(response.error));
         }
@@ -77,14 +67,7 @@ const CreateContest = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Create new contest</h1>
       </div>
-      {error && (
-        <Alert variant="destructive">
-          <div>
-            <CircleAlert className="h-5 w-5" />
-          </div>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+      {error && <ErrorAlert message={error} />}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <TextareaField

@@ -1,14 +1,14 @@
-import { ProblemORM } from "@/api";
+import { SubmissionPublic } from "@/api";
 import { DataTable } from "@/components/ui/data-table";
 
 import { columns } from "./columns";
 
 type OwnProps = {
-  data: ProblemORM[];
+  data: SubmissionPublic[];
 };
 
-const DefinitionsTable: React.FC<OwnProps> = ({ data }) => {
+const SubmissionsTable: React.FC<OwnProps> = ({ data }) => {
   return <DataTable columns={columns} data={data} />;
 };
 
-export default DefinitionsTable;
+export default SubmissionsTable;

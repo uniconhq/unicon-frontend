@@ -1,12 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
 
-import { DefinitionORM } from "@/api";
+import { ProblemORM } from "@/api";
 
-export const columns: ColumnDef<DefinitionORM>[] = [
+export const columns: ColumnDef<ProblemORM>[] = [
   {
     accessorKey: "id",
-    header: "Contest ID",
+    header: "Problem ID",
   },
   {
     accessorKey: "name",
@@ -22,7 +22,7 @@ export const columns: ColumnDef<DefinitionORM>[] = [
       const id = row.original.id;
       return (
         <Link
-          to={`/contests/${id}`}
+          to={`/projects/${row.original.project_id}/problems/${id}`}
           className="hover:text-purple-300 hover:underline"
         >
           View
