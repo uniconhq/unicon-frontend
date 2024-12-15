@@ -127,6 +127,13 @@ export type ProblemORM = {
     project_id: number;
 };
 
+export type ProcessedResult = {
+    status: Status;
+    stdout: string;
+    stderr: string;
+    results?: (Array<SocketResult> | null);
+};
+
 export type ProgrammingLanguage = 'PYTHON';
 
 export type ProgrammingTask = {
@@ -147,9 +154,7 @@ export type ProgrammingTaskResult = {
     completed_at: (string | null);
     job_id: (string | null);
     status: TaskEvalStatus;
-    result: (Array<{
-    [key: string]: unknown;
-}> | null);
+    result: (Array<ProcessedResult> | null);
     error: (string | null);
 };
 
@@ -227,6 +232,18 @@ export type ShortAnswerTaskResult = {
     result: (string | null);
     error: (string | null);
 };
+
+/**
+ * This class is used to store whether the result of an output socket is right or wrong.
+ * Note that whether or not to show this information (public) and other variables should be derived from data in Testcase.
+ */
+export type SocketResult = {
+    id: string;
+    value: unknown;
+    correct: boolean;
+};
+
+export type Status = 'OK' | 'MLE' | 'TLE' | 'RTE' | 'WA';
 
 export type Step = {
     id: number;

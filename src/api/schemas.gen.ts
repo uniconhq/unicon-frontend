@@ -568,6 +568,39 @@ export const ProblemORMSchema = {
     title: 'ProblemORM'
 } as const;
 
+export const ProcessedResultSchema = {
+    properties: {
+        status: {
+            '$ref': '#/components/schemas/Status'
+        },
+        stdout: {
+            type: 'string',
+            title: 'Stdout'
+        },
+        stderr: {
+            type: 'string',
+            title: 'Stderr'
+        },
+        results: {
+            anyOf: [
+                {
+                    items: {
+                        '$ref': '#/components/schemas/SocketResult'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Results'
+        }
+    },
+    type: 'object',
+    required: ['status', 'stdout', 'stderr'],
+    title: 'ProcessedResult'
+} as const;
+
 export const ProgrammingLanguageSchema = {
     type: 'string',
     enum: ['PYTHON'],
@@ -665,7 +698,7 @@ export const ProgrammingTaskResultSchema = {
             anyOf: [
                 {
                     items: {
-                        type: 'object'
+                        '$ref': '#/components/schemas/ProcessedResult'
                     },
                     type: 'array'
                 },
@@ -998,6 +1031,33 @@ export const ShortAnswerTaskResultSchema = {
     type: 'object',
     required: ['id', 'task_attempt_id', 'task_type', 'started_at', 'completed_at', 'job_id', 'status', 'result', 'error'],
     title: 'ShortAnswerTaskResult'
+} as const;
+
+export const SocketResultSchema = {
+    properties: {
+        id: {
+            type: 'string',
+            title: 'Id'
+        },
+        value: {
+            title: 'Value'
+        },
+        correct: {
+            type: 'boolean',
+            title: 'Correct'
+        }
+    },
+    type: 'object',
+    required: ['id', 'value', 'correct'],
+    title: 'SocketResult',
+    description: `This class is used to store whether the result of an output socket is right or wrong.
+Note that whether or not to show this information (public) and other variables should be derived from data in Testcase.`
+} as const;
+
+export const StatusSchema = {
+    type: 'string',
+    enum: ['OK', 'MLE', 'TLE', 'RTE', 'WA'],
+    title: 'Status'
 } as const;
 
 export const StepSchema = {

@@ -22,12 +22,18 @@ import {
 
 import { Button } from "./button";
 
-interface DataTableProps<TData, TValue> {
+interface DataWithOptionalClassname {
+  className?: string;
+}
+
+type ExtendedData<T = object> = T & Partial<DataWithOptionalClassname>;
+
+interface DataTableProps<TData extends ExtendedData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends ExtendedData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -70,6 +76,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className={row.original.className || ""}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
