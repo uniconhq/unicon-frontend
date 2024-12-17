@@ -33,6 +33,7 @@ const MultipleResponseResult: React.FC<OwnProps> = ({ taskAttempt }) => {
             "bg-red-800/50":
               taskResult.result?.incorrect_choices.includes(index),
           })}
+          key={index}
         >
           <input
             type="radio"

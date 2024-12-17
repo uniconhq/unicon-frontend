@@ -5,9 +5,9 @@ import { Link, type Params, useParams } from "react-router-dom";
 import { Task } from "@/components/tasks/task";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getProblemById } from "@/features/definitions/queries";
+import { getProblemById } from "@/features/problems/queries";
 
-const Contest = () => {
+const Problem = () => {
   const { id, projectId } = useParams<Params<"id" | "projectId">>();
   const { data } = useQuery(getProblemById(Number(id)));
   const submitLink = `/projects/${projectId}/problems/${id}/submit`;
@@ -55,4 +55,4 @@ const Contest = () => {
   );
 };
 
-export default Contest;
+export default Problem;

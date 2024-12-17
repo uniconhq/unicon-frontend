@@ -1,5 +1,5 @@
 import { ProgrammingTask } from "@/api";
-import Testcase from "@/features/definitions/components/tasks/testcase";
+import Testcase from "@/features/problems/components/tasks/testcase";
 
 export function Programming({ task }: { task: ProgrammingTask }) {
   return (

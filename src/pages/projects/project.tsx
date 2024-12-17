@@ -1,14 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
-import { Link, Params, useParams } from "react-router-dom";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import DefinitionsTable from "@/features/definitions/table/definitions-table";
+import CreateProblemModal from "@/features/problems/components/form/create-problem-modal";
+import DefinitionsTable from "@/features/problems/table/definitions-table";
+import { useProjectId } from "@/features/projects/hooks/use-id";
 import { getProjectById } from "@/features/projects/queries";
 
 const Project = () => {
-  const { id } = useParams<Params<"id">>();
+  const id = useProjectId();
   const { data: project, isLoading } = useQuery(getProjectById(Number(id)));
+
+  const [newProblemOpen, setNewProblemOpen] = useState(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -20,16 +24,19 @@ const Project = () => {
 
   return (
     <div className="m-auto flex w-full max-w-5xl flex-col gap-8 p-4 px-8">
+      {newProblemOpen && <CreateProblemModal setOpen={setNewProblemOpen} />}
       <div className="flex flex-col">
         <h2 className="text-3xl font-semibold">{project.name}</h2>
       </div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Problems</h2>
-        <Link to={`/projects/${id}/problems/new`} className="flex gap-1">
-          <Button variant="ghost" className="hover:text-purple-300">
-            <Plus /> New Problem
-          </Button>
-        </Link>
+        <Button
+          variant="ghost"
+          className="hover:text-purple-300"
+          onClick={() => setNewProblemOpen(true)}
+        >
+          <Plus /> New Problem
+        </Button>
       </div>
       <div className="flex flex-col gap-4">
         <DefinitionsTable data={project.problems} />

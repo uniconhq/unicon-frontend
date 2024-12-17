@@ -1,13 +1,19 @@
 import { queryOptions, useMutation } from "@tanstack/react-query";
 
 import {
+  addTaskToProblem,
   createProblem,
   getProblem,
   getProjectSubmissions,
   getSubmission,
   makeSubmission,
+  MultipleChoiceTask,
+  MultipleResponseTask,
   Problem,
+  ProgrammingTask,
+  ShortAnswerTask,
   submitProblemTaskAttempt,
+  updateProblem,
   UserInput,
 } from "@/api";
 
@@ -21,6 +27,26 @@ export const useCreateProblem = (project_id: number) => {
   return useMutation({
     mutationFn: (data: Problem) =>
       createProblem({ body: data, path: { id: project_id } }),
+  });
+};
+
+export const useUpdateProblem = (problemId: number) => {
+  return useMutation({
+    mutationFn: (data: Problem) =>
+      updateProblem({ body: data, path: { id: problemId } }),
+  });
+};
+
+export type TaskType =
+  | ProgrammingTask
+  | MultipleChoiceTask
+  | MultipleResponseTask
+  | ShortAnswerTask;
+
+export const useCreateTask = (problemId: number) => {
+  return useMutation({
+    mutationFn: (data: TaskType) =>
+      addTaskToProblem({ body: data, path: { id: problemId } }),
   });
 };
 

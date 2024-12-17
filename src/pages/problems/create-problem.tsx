@@ -8,7 +8,7 @@ import ErrorAlert from "@/components/form/fields/error-alert";
 import TextareaField from "@/components/form/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useCreateProblem } from "@/features/definitions/queries";
+import { useCreateProblem } from "@/features/problems/queries";
 import { json } from "@/utils/json";
 
 const definitionFormSchema = z.object({
@@ -30,14 +30,13 @@ const definitionFormDefault = {
   definition: "",
 };
 
-const CreateContest = () => {
+const CreateProblem = () => {
   const { id } = useParams<Params<"id">>();
   const idNumber = Number(id);
 
   const createDefinitionMutation = useCreateProblem(idNumber);
   const navigate = useNavigate();
 
-  // @ts-expect-error - it is infinitely deep because of the definition in json.ts
   const form = useForm<DefinitionFormType>({
     resolver: zodResolver(definitionFormSchema),
     defaultValues: definitionFormDefault,
@@ -86,4 +85,4 @@ const CreateContest = () => {
   );
 };
 
-export default CreateContest;
+export default CreateProblem;

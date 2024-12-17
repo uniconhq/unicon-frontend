@@ -37,6 +37,7 @@ export type MultipleChoiceTask = {
     autograde?: boolean;
     question: string;
     choices: Array<(string)>;
+    expected_answer: number;
 };
 
 export type MultipleChoiceTaskResult = {
@@ -57,6 +58,7 @@ export type MultipleResponseTask = {
     autograde?: boolean;
     question: string;
     choices: Array<(string)>;
+    expected_answer: Array<(number)>;
 };
 
 export type MultipleResponseTaskResult = {
@@ -128,6 +130,7 @@ export type ProblemORM = {
 };
 
 export type ProcessedResult = {
+    id: number;
     status: Status;
     stdout: string;
     stderr: string;
@@ -219,6 +222,7 @@ export type ShortAnswerTask = {
     type: "SHORT_ANSWER_TASK";
     autograde?: boolean;
     question: string;
+    expected_answer?: (string | null);
 };
 
 export type ShortAnswerTaskResult = {
@@ -395,6 +399,17 @@ export type UpdateProblemData = {
 export type UpdateProblemResponse = (Problem);
 
 export type UpdateProblemError = (HTTPValidationError);
+
+export type AddTaskToProblemData = {
+    body: (ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask);
+    path: {
+        id: number;
+    };
+};
+
+export type AddTaskToProblemResponse = (unknown);
+
+export type AddTaskToProblemError = (HTTPValidationError);
 
 export type SubmitProblemTaskAttemptData = {
     body: UserInput;

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getAllProjectSubmissions } from "@/features/definitions/queries";
-import { useProjectId } from "@/features/projects/hooks/use-project-id";
+import { getAllProjectSubmissions } from "@/features/problems/queries";
+import { useProjectId } from "@/features/projects/hooks/use-id";
 import SubmissionsTable from "@/features/projects/table/submissions/submissions-table";
 
 const Submissions = () => {

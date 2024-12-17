@@ -6,8 +6,8 @@ import { z } from "zod";
 import TextareaField from "@/components/form/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useCreateSubmission } from "@/features/definitions/queries";
-import { useProjectId } from "@/features/projects/hooks/use-project-id";
+import { useCreateSubmission } from "@/features/problems/queries";
+import { useProjectId } from "@/features/projects/hooks/use-id";
 import { json } from "@/utils/json";
 
 const submissionFormSchema = z.object({
@@ -35,6 +35,7 @@ const CreateSubmission = () => {
   const createContestSubmissionMutation = useCreateSubmission(Number(id));
   const navigate = useNavigate();
 
+  // @ts-expect-error - it is infinitely deep because of the definition in json.ts
   const form = useForm<SubmissionFormType>({
     resolver: zodResolver(submissionFormSchema),
     defaultValues: submissionFormDefault,

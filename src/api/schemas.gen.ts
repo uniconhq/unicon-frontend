@@ -156,10 +156,14 @@ export const MultipleChoiceTaskSchema = {
             },
             type: 'array',
             title: 'Choices'
+        },
+        expected_answer: {
+            type: 'integer',
+            title: 'Expected Answer'
         }
     },
     type: 'object',
-    required: ['id', 'type', 'question', 'choices'],
+    required: ['id', 'type', 'question', 'choices', 'expected_answer'],
     title: 'MultipleChoiceTask'
 } as const;
 
@@ -254,10 +258,17 @@ export const MultipleResponseTaskSchema = {
             },
             type: 'array',
             title: 'Choices'
+        },
+        expected_answer: {
+            items: {
+                type: 'integer'
+            },
+            type: 'array',
+            title: 'Expected Answer'
         }
     },
     type: 'object',
-    required: ['id', 'type', 'question', 'choices'],
+    required: ['id', 'type', 'question', 'choices', 'expected_answer'],
     title: 'MultipleResponseTask'
 } as const;
 
@@ -570,6 +581,10 @@ export const ProblemORMSchema = {
 
 export const ProcessedResultSchema = {
     properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
         status: {
             '$ref': '#/components/schemas/Status'
         },
@@ -597,7 +612,7 @@ export const ProcessedResultSchema = {
         }
     },
     type: 'object',
-    required: ['status', 'stdout', 'stderr'],
+    required: ['id', 'status', 'stdout', 'stderr'],
     title: 'ProcessedResult'
 } as const;
 
@@ -954,6 +969,17 @@ export const ShortAnswerTaskSchema = {
         question: {
             type: 'string',
             title: 'Question'
+        },
+        expected_answer: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Expected Answer'
         }
     },
     type: 'object',

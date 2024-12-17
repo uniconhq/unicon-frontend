@@ -4,8 +4,8 @@ import { Link, useParams } from "react-router-dom";
 
 import TaskResult from "@/components/tasks/submission-results/task-result";
 import { Button } from "@/components/ui/button";
-import { getSubmissionById } from "@/features/definitions/queries";
-import { useProjectId } from "@/features/projects/hooks/use-project-id";
+import { getSubmissionById } from "@/features/problems/queries";
+import { useProjectId } from "@/features/projects/hooks/use-id";
 
 const SubmissionResults = () => {
   const { id } = useParams<{ id: string }>();
