@@ -23,22 +23,30 @@ const CreateTaskPopover: React.FC<PropsWithChildren> = ({ children }) => {
           <Link
             to={`/projects/${projectId}/problems/${id}/tasks/new/programming`}
           >
-            <Button variant="ghost">Programming</Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Programming
+            </Button>
           </Link>
           <Link
             to={`/projects/${projectId}/problems/${id}/tasks/new/multiple-choice`}
           >
-            <Button variant="ghost">Multiple choice</Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Multiple choice
+            </Button>
           </Link>
           <Link
             to={`/projects/${projectId}/problems/${id}/tasks/new/multiple-response`}
           >
-            <Button variant="ghost">Multiple response</Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Multiple response
+            </Button>
           </Link>
           <Link
             to={`/projects/${projectId}/problems/${id}/tasks/new/short-answer`}
           >
-            <Button variant="ghost">Short answer</Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Short answer
+            </Button>
           </Link>
         </div>
       </PopoverContent>

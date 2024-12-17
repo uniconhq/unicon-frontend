@@ -14,28 +14,32 @@ import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
 
 import Choices from "./choices";
 
-const multipleChoiceFormSchema = z
+const multipleResponseFormSchema = z
   .object({
     question: z.string().min(1, "Question cannot be empty"),
     choices: z.array(z.string()).nonempty("Choices cannot be empty"),
-    expected_answer: z.number().min(0, "Correct choice cannot be empty"),
+    expected_answer: z
+      .array(z.number())
+      .nonempty("Correct choices cannot be empty"),
   })
   .refine(
     (data) =>
-      0 <= data.expected_answer && data.expected_answer < data.choices.length,
+      data.expected_answer.every(
+        (answer) => 0 <= answer && answer < data.choices.length,
+      ),
     {},
   );
 
-type MultipleChoiceFormType = z.infer<typeof multipleChoiceFormSchema>;
+type MultipleResponseFormType = z.infer<typeof multipleResponseFormSchema>;
 const multipleChoiceFormDefault = {
   question: "",
   choices: [],
-  expected_answer: -1,
+  expected_answer: [],
 };
 
-const CreateMultipleChoice = () => {
-  const form = useForm<MultipleChoiceFormType>({
-    resolver: zodResolver(multipleChoiceFormSchema),
+const CreateMultipleResponse = () => {
+  const form = useForm<MultipleResponseFormType>({
+    resolver: zodResolver(multipleResponseFormSchema),
     defaultValues: multipleChoiceFormDefault,
   });
 
@@ -45,11 +49,11 @@ const CreateMultipleChoice = () => {
   const createTaskMutation = useCreateTask(problemId);
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<MultipleChoiceFormType> = async (data) => {
+  const onSubmit: SubmitHandler<MultipleResponseFormType> = async (data) => {
     createTaskMutation.mutate(
       {
         ...data,
-        type: "MULTIPLE_CHOICE_TASK",
+        type: "MULTIPLE_RESPONSE_TASK",
         id: -1,
       },
       {
@@ -76,30 +80,43 @@ const CreateMultipleChoice = () => {
     newChoices.splice(source.index, 1);
     newChoices.splice(destination.index, 0, choice);
 
-    // @ts-expect-error - it's okay for the user to delete all choices, just don't let them submit
-    form.setValue("choices", [...newChoices]);
+    form.setValue("choices", [...newChoices] as [string, ...string[]]);
     trigger("choices");
 
-    // fix expected answer after the move
-    if (source.index == getValues().expected_answer) {
-      form.setValue("expected_answer", destination.index);
-    } else if (
-      source.index < getValues().expected_answer &&
-      destination.index >= getValues().expected_answer
-    ) {
-      setValue("expected_answer", getValues().expected_answer - 1);
-    } else if (
-      source.index > getValues().expected_answer &&
-      destination.index <= getValues().expected_answer
-    ) {
-      setValue("expected_answer", getValues().expected_answer + 1);
-    }
+    form.setValue(
+      "expected_answer",
+      getValues().expected_answer.map((answer) => {
+        if (answer == source.index) {
+          return destination.index;
+        } else if (source.index < answer && destination.index >= answer) {
+          return answer - 1;
+        } else if (source.index > answer && destination.index <= answer) {
+          return answer + 1;
+        }
+        return answer;
+      }) as [number, ...number[]],
+    );
+
+    // // fix expected answer after the move
+    // if (source.index == getValues().expected_answer) {
+    //   form.setValue("expected_answer", destination.index);
+    // } else if (
+    //   source.index < getValues().expected_answer &&
+    //   destination.index >= getValues().expected_answer
+    // ) {
+    //   setValue("expected_answer", getValues().expected_answer - 1);
+    // } else if (
+    //   source.index > getValues().expected_answer &&
+    //   destination.index <= getValues().expected_answer
+    // ) {
+    //   setValue("expected_answer", getValues().expected_answer + 1);
+    // }
   };
 
   const isChecked = (index: number) =>
-    index == form.getValues().expected_answer;
+    form.getValues().expected_answer.includes(index);
   const onCheck = (index: number) => {
-    form.setValue("expected_answer", index);
+    form.setValue("expected_answer", [...getValues().expected_answer, index]);
     form.trigger("expected_answer");
   };
   const onDelete = (index: number) => {
@@ -109,15 +126,13 @@ const CreateMultipleChoice = () => {
       getValues().choices.filter((_, i) => i !== index),
     );
 
-    if (index == form.getValues().expected_answer) {
-      form.setValue("expected_answer", -1);
-    } else {
-      form.setValue(
-        "expected_answer",
-        form.getValues().expected_answer -
-          Number(index < form.getValues().expected_answer),
-      );
-    }
+    setValue(
+      "expected_answer",
+      getValues()
+        .expected_answer.filter((i) => i !== index)
+        .map((i) => (i < index ? index : index - 1)) as [number, ...number[]],
+    );
+
     trigger("choices");
     trigger("expected_answer");
   };
@@ -125,7 +140,7 @@ const CreateMultipleChoice = () => {
   return (
     <div className="flex w-full flex-col gap-8 px-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">New multiple choice task</h1>
+        <h1 className="text-2xl font-semibold">New multiple response task</h1>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -165,4 +180,4 @@ const CreateMultipleChoice = () => {
   );
 };
 
-export default CreateMultipleChoice;
+export default CreateMultipleResponse;

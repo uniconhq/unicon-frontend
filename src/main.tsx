@@ -31,6 +31,7 @@ import EditProblem from "./pages/problems/edit-problem";
 import ProjectUsers from "./pages/projects/project-users";
 import SignUp from "./pages/signup";
 import CreateMultipleChoice from "./pages/tasks/create-multiple-choice";
+import CreateMultipleResponse from "./pages/tasks/create-multiple-response";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
           {
             path: "/projects/:projectId/problems/:problemId/tasks/new/multiple-choice",
             element: <CreateMultipleChoice />,
+          },
+          {
+            path: "/projects/:projectId/problems/:problemId/tasks/new/multiple-response",
+            element: <CreateMultipleResponse />,
           },
           {
             path: "/projects/:projectId/problems/:id/submit",

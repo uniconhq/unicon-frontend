@@ -16,7 +16,7 @@ const EditTasksDisplay: React.FC<OwnProps> = ({ tasks }) => {
     <div className="p-4">
       <h2 className="min-w-[200px] text-lg font-medium">Tasks</h2>
       {tasks.length === 0 && (
-        <div className="rounded-sm bg-secondary p-4 text-center shadow-inner">
+        <div className="mt-4 rounded-sm bg-secondary p-4 text-center shadow-inner">
           You don't have any tasks.{" "}
           <CreateTaskPopover>
             <span className="text-purple-400 hover:text-purple-400/80">
