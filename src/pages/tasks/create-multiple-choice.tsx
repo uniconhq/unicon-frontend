@@ -5,6 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
+import CheckboxField from "@/components/form/fields/checkbox-field";
 import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ const multipleChoiceFormSchema = z
     question: z.string().min(1, "Question cannot be empty"),
     choices: z.array(z.string()).nonempty("Choices cannot be empty"),
     expected_answer: z.number().min(0, "Correct choice cannot be empty"),
+    autograde: z.boolean(),
   })
   .refine(
     (data) =>
@@ -31,6 +33,7 @@ const multipleChoiceFormDefault = {
   question: "",
   choices: [],
   expected_answer: -1,
+  autograded: true,
 };
 
 const CreateMultipleChoice = () => {
@@ -128,9 +131,13 @@ const CreateMultipleChoice = () => {
         <h1 className="text-2xl font-semibold">New multiple choice task</h1>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
           <TextField label="Question" name="question" />
-          <div className="mt-4 flex flex-col items-start gap-4">
+          <CheckboxField label="Autograde" name="autograde" />
+          <div className="flex flex-col items-start gap-4">
             <h3 className="text-bold">Choices</h3>
             <Button
               variant={"outline"}

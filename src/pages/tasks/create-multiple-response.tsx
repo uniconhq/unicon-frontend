@@ -5,6 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
+import CheckboxField from "@/components/form/fields/checkbox-field";
 import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ const multipleResponseFormSchema = z
     expected_answer: z
       .array(z.number())
       .nonempty("Correct choices cannot be empty"),
+    autograde: z.boolean(),
   })
   .refine(
     (data) =>
@@ -35,6 +37,7 @@ const multipleChoiceFormDefault = {
   question: "",
   choices: [],
   expected_answer: [],
+  autograde: true,
 };
 
 const CreateMultipleResponse = () => {
@@ -96,27 +99,23 @@ const CreateMultipleResponse = () => {
         return answer;
       }) as [number, ...number[]],
     );
-
-    // // fix expected answer after the move
-    // if (source.index == getValues().expected_answer) {
-    //   form.setValue("expected_answer", destination.index);
-    // } else if (
-    //   source.index < getValues().expected_answer &&
-    //   destination.index >= getValues().expected_answer
-    // ) {
-    //   setValue("expected_answer", getValues().expected_answer - 1);
-    // } else if (
-    //   source.index > getValues().expected_answer &&
-    //   destination.index <= getValues().expected_answer
-    // ) {
-    //   setValue("expected_answer", getValues().expected_answer + 1);
-    // }
   };
 
   const isChecked = (index: number) =>
     form.getValues().expected_answer.includes(index);
   const onCheck = (index: number) => {
-    form.setValue("expected_answer", [...getValues().expected_answer, index]);
+    if (isChecked(index)) {
+      form.setValue(
+        "expected_answer",
+        getValues().expected_answer.filter((i) => i !== index) as [
+          number,
+          ...number[],
+        ],
+      );
+    } else {
+      form.setValue("expected_answer", [...getValues().expected_answer, index]);
+    }
+
     form.trigger("expected_answer");
   };
   const onDelete = (index: number) => {
@@ -143,8 +142,12 @@ const CreateMultipleResponse = () => {
         <h1 className="text-2xl font-semibold">New multiple response task</h1>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
           <TextField label="Question" name="question" />
+          <CheckboxField label="Autograde" name="autograde" />
           <div className="mt-4 flex flex-col items-start gap-4">
             <h3 className="text-bold">Choices</h3>
             <Button
