@@ -32,6 +32,7 @@ import ProjectUsers from "./pages/projects/project-users";
 import SignUp from "./pages/signup";
 import CreateMultipleChoice from "./pages/tasks/create-multiple-choice";
 import CreateMultipleResponse from "./pages/tasks/create-multiple-response";
+import CreateProgramming from "./pages/tasks/create-programming";
 import CreateShortAnswer from "./pages/tasks/create-short-answer";
 
 const router = createBrowserRouter([
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
           {
             path: "/projects/:projectId/problems/:problemId/tasks/new/short-answer",
             element: <CreateShortAnswer />,
+          },
+          {
+            path: "/projects/:projectId/problems/:problemId/tasks/new/programming",
+            element: <CreateProgramming />,
           },
           {
             path: "/projects/:projectId/problems/:id/submit",

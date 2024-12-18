@@ -55,8 +55,7 @@ const CreateShortAnswer = () => {
     );
   };
 
-  const { watch, getValues } = form;
-  console.log(getValues());
+  const { watch } = form;
 
   return (
     <div className="flex w-full flex-col gap-8 px-8">

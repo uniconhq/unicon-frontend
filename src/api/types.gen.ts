@@ -9,8 +9,17 @@ export type Body_login_auth_token_post = {
     client_secret?: (string | null);
 };
 
+export type ComputeContext = {
+    language: Language;
+    time_limit_secs: number;
+    memory_limit_mb: number;
+    extra_options?: ({
+    [key: string]: (string);
+} | null);
+};
+
 export type File = {
-    file_name: string;
+    name: string;
     content: string;
 };
 
@@ -30,6 +39,8 @@ export type InvitationKeyPublic = {
     key?: string;
     enabled?: boolean;
 };
+
+export type Language = 'PYTHON';
 
 export type MultipleChoiceTask = {
     id: number;
@@ -130,21 +141,19 @@ export type ProblemORM = {
 };
 
 export type ProcessedResult = {
-    id: number;
     status: Status;
     stdout: string;
     stderr: string;
+    id: number;
     results?: (Array<SocketResult> | null);
 };
-
-export type ProgrammingLanguage = 'PYTHON';
 
 export type ProgrammingTask = {
     id: number;
     type: "PROGRAMMING_TASK";
     autograde?: boolean;
     question: string;
-    environment: RunnerEnvironment;
+    environment: ComputeContext;
     required_inputs: Array<RequiredInput>;
     testcases: Array<Testcase>;
 };
@@ -206,15 +215,6 @@ export type RolePublicWithInvitationKeys = {
     id: number;
     project_id: number;
     invitation_keys: Array<InvitationKeyPublic>;
-};
-
-export type RunnerEnvironment = {
-    language: ProgrammingLanguage;
-    time_limit: number;
-    memory_limit: number;
-    extra_options?: ({
-    [key: string]: unknown;
-} | null);
 };
 
 export type ShortAnswerTask = {

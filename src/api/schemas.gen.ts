@@ -55,11 +55,44 @@ export const Body_login_auth_token_postSchema = {
     title: 'Body_login_auth_token_post'
 } as const;
 
+export const ComputeContextSchema = {
+    properties: {
+        language: {
+            '$ref': '#/components/schemas/Language'
+        },
+        time_limit_secs: {
+            type: 'integer',
+            title: 'Time Limit Secs'
+        },
+        memory_limit_mb: {
+            type: 'integer',
+            title: 'Memory Limit Mb'
+        },
+        extra_options: {
+            anyOf: [
+                {
+                    additionalProperties: {
+                        type: 'string'
+                    },
+                    type: 'object'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Extra Options'
+        }
+    },
+    type: 'object',
+    required: ['language', 'time_limit_secs', 'memory_limit_mb'],
+    title: 'ComputeContext'
+} as const;
+
 export const FileSchema = {
     properties: {
-        file_name: {
+        name: {
             type: 'string',
-            title: 'File Name'
+            title: 'Name'
         },
         content: {
             type: 'string',
@@ -67,7 +100,7 @@ export const FileSchema = {
         }
     },
     type: 'object',
-    required: ['file_name', 'content'],
+    required: ['name', 'content'],
     title: 'File'
 } as const;
 
@@ -128,6 +161,12 @@ export const InvitationKeyPublicSchema = {
     },
     type: 'object',
     title: 'InvitationKeyPublic'
+} as const;
+
+export const LanguageSchema = {
+    type: 'string',
+    enum: ['PYTHON'],
+    title: 'Language'
 } as const;
 
 export const MultipleChoiceTaskSchema = {
@@ -581,10 +620,6 @@ export const ProblemORMSchema = {
 
 export const ProcessedResultSchema = {
     properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
         status: {
             '$ref': '#/components/schemas/Status'
         },
@@ -595,6 +630,10 @@ export const ProcessedResultSchema = {
         stderr: {
             type: 'string',
             title: 'Stderr'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
         },
         results: {
             anyOf: [
@@ -612,14 +651,8 @@ export const ProcessedResultSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'status', 'stdout', 'stderr'],
+    required: ['status', 'stdout', 'stderr', 'id'],
     title: 'ProcessedResult'
-} as const;
-
-export const ProgrammingLanguageSchema = {
-    type: 'string',
-    enum: ['PYTHON'],
-    title: 'ProgrammingLanguage'
 } as const;
 
 export const ProgrammingTaskSchema = {
@@ -643,7 +676,7 @@ export const ProgrammingTaskSchema = {
             title: 'Question'
         },
         environment: {
-            '$ref': '#/components/schemas/RunnerEnvironment'
+            '$ref': '#/components/schemas/ComputeContext'
         },
         required_inputs: {
             items: {
@@ -918,36 +951,6 @@ export const RolePublicWithInvitationKeysSchema = {
     type: 'object',
     required: ['name', 'id', 'project_id', 'invitation_keys'],
     title: 'RolePublicWithInvitationKeys'
-} as const;
-
-export const RunnerEnvironmentSchema = {
-    properties: {
-        language: {
-            '$ref': '#/components/schemas/ProgrammingLanguage'
-        },
-        time_limit: {
-            type: 'integer',
-            title: 'Time Limit'
-        },
-        memory_limit: {
-            type: 'integer',
-            title: 'Memory Limit'
-        },
-        extra_options: {
-            anyOf: [
-                {
-                    type: 'object'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Extra Options'
-        }
-    },
-    type: 'object',
-    required: ['language', 'time_limit', 'memory_limit'],
-    title: 'RunnerEnvironment'
 } as const;
 
 export const ShortAnswerTaskSchema = {

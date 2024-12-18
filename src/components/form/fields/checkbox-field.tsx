@@ -36,7 +36,6 @@ function CheckboxField({
               <Checkbox
                 checked={!!field.value}
                 onCheckedChange={(checked) => {
-                  console.log(checked);
                   field.onChange(checked);
                 }}
                 className={className}
