@@ -1,5 +1,6 @@
 import { useFormContext } from "react-hook-form";
 
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormDescription,
@@ -8,8 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-
 interface CheckboxFieldProps {
   name: string;
   label?: string;
@@ -34,11 +33,12 @@ function CheckboxField({
           <div className="justify-left flex w-fit items-center gap-x-2">
             {label && <FormLabel className="!text-current">{label}</FormLabel>}
             <FormControl>
-              <Input
-                type="checkbox"
-                placeholder={""}
-                {...field}
-                checked={field.value === true}
+              <Checkbox
+                checked={!!field.value}
+                onCheckedChange={(checked) => {
+                  console.log(checked);
+                  field.onChange(checked);
+                }}
                 className={className}
               />
             </FormControl>
