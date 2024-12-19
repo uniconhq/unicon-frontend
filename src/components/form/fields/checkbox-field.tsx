@@ -29,18 +29,17 @@ function CheckboxField({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className={className}>
           <div className="justify-left flex w-fit items-center gap-x-2">
-            {label && <FormLabel className="!text-current">{label}</FormLabel>}
             <FormControl>
               <Checkbox
                 checked={!!field.value}
                 onCheckedChange={(checked) => {
                   field.onChange(checked);
                 }}
-                className={className}
               />
             </FormControl>
+            {label && <FormLabel className="!text-current">{label}</FormLabel>}
           </div>
           <FormMessage />
           {description && <FormDescription>{description}</FormDescription>}

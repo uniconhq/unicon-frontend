@@ -92,8 +92,12 @@ const CreateProgramming = () => {
         >
           <FormSection title="Task details">
             <TextField label="Question" name="question" />
-            <CheckboxField label="Autograde" name="autograde" />
           </FormSection>
+          <hr />
+          <FormSection title="Autograde?">
+            <CheckboxField label="" name="autograde" className="mt-2" />
+          </FormSection>
+          <hr />
           <FormSection title="Environment">
             <div className="flex gap-4">
               <SelectField
@@ -118,6 +122,8 @@ const CreateProgramming = () => {
               />
             </div>
           </FormSection>
+          <hr />
+          <FormSection title="Testcases">{/* TODO */}</FormSection>
 
           <div className="mt-12">
             <Button className="bg-purple-600 text-white hover:bg-purple-600 hover:bg-opacity-80">

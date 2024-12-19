@@ -9,6 +9,11 @@ export type Body_login_auth_token_post = {
     client_secret?: (string | null);
 };
 
+export type Comparison = {
+    operator: Operator;
+    value: unknown;
+};
+
 export type ComputeContext = {
     language: Language;
     time_limit_secs: number;
@@ -35,12 +40,33 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type IfElseStep = {
+    id: number;
+    inputs: Array<StepSocket>;
+    outputs: Array<StepSocket>;
+    type: StepType;
+};
+
+export type InputStep = {
+    id: number;
+    inputs: Array<StepSocket>;
+    outputs: Array<StepSocket>;
+    type: StepType;
+};
+
 export type InvitationKeyPublic = {
     key?: string;
     enabled?: boolean;
 };
 
 export type Language = 'PYTHON';
+
+export type LoopStep = {
+    id: number;
+    inputs: Array<StepSocket>;
+    outputs: Array<StepSocket>;
+    type: StepType;
+};
 
 export type MultipleChoiceTask = {
     id: number;
@@ -90,6 +116,20 @@ export type MultipleResponseTaskResultType = {
     num_choices: number;
 };
 
+/**
+ * A step to retrieve a value from a dictionary.
+ * To use this step, the user must provide the key value to access the dictionary.
+ */
+export type ObjectAccessStep = {
+    id: number;
+    inputs: Array<StepSocket>;
+    outputs: Array<StepSocket>;
+    type: StepType;
+    key: string;
+};
+
+export type Operator = '<' | '=' | '>';
+
 export type Organisation = {
     name: string;
     description: string;
@@ -118,6 +158,21 @@ export type OrganisationPublicWithProjects = {
 export type OrganisationUpdate = {
     name: string;
     description: string;
+};
+
+export type OutputSocketConfig = {
+    id: string;
+    label?: (string | null);
+    comparison: (Comparison | null);
+    public?: boolean;
+};
+
+export type OutputStep = {
+    id: number;
+    inputs: Array<StepSocket>;
+    outputs: Array<StepSocket>;
+    type: StepType;
+    socket_metadata: Array<OutputSocketConfig>;
 };
 
 export type Problem = {
@@ -191,6 +246,24 @@ export type ProjectUpdate = {
     name: string;
 };
 
+/**
+ * A step that runs a Python function.
+ * To use this step, the user must provide the function name and the arguments to the function via the input sockets.
+ *
+ * Socket Name Format:
+ * - DATA.IN.ARG.{index}.{name}: For positional arguments
+ * - DATA.IN.KWARG.{name}: For keyword arguments
+ * - DATA.IN.FILE: For the `File` object that contains the Python function
+ */
+export type PyRunFunctionStep = {
+    id: number;
+    inputs: Array<StepSocket>;
+    outputs: Array<StepSocket>;
+    type: StepType;
+    function_identifier: string;
+    allow_error?: boolean;
+};
+
 export type RequiredInput = {
     id: string;
     data: (string | number | boolean | File);
@@ -249,13 +322,6 @@ export type SocketResult = {
 
 export type Status = 'OK' | 'MLE' | 'TLE' | 'RTE' | 'WA';
 
-export type Step = {
-    id: number;
-    inputs: Array<StepSocket>;
-    outputs: Array<StepSocket>;
-    type: StepType;
-};
-
 /**
  * A socket that is used to connect steps to each other.
  *
@@ -276,6 +342,13 @@ export type StepSocket = {
 };
 
 export type StepType = 'PY_RUN_FUNCTION_STEP' | 'OBJECT_ACCESS_STEP' | 'INPUT_STEP' | 'OUTPUT_STEP' | 'LOOP_STEP' | 'IF_ELSE_STEP' | 'STRING_MATCH_STEP';
+
+export type StringMatchStep = {
+    id: number;
+    inputs: Array<StepSocket>;
+    outputs: Array<StepSocket>;
+    type: StepType;
+};
 
 export type SubmissionPublic = {
     id: number;
@@ -314,7 +387,7 @@ export type TaskResult = MultipleChoiceTaskResult | MultipleResponseTaskResult |
 export type TaskType = 'MULTIPLE_CHOICE_TASK' | 'MULTIPLE_RESPONSE_TASK' | 'SHORT_ANSWER_TASK' | 'PROGRAMMING_TASK';
 
 export type Testcase = {
-    nodes: Array<Step>;
+    nodes: Array<(OutputStep | InputStep | PyRunFunctionStep | LoopStep | IfElseStep | StringMatchStep | ObjectAccessStep)>;
     edges: Array<GraphEdge>;
     id: number;
 };

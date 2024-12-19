@@ -5,9 +5,10 @@ interface NodeSlotProps {
   id: string;
   label: string;
   type: HandleType;
+  hideLabel?: boolean;
 }
 
-export function NodeSlot({ id, type }: NodeSlotProps) {
+export function NodeSlot({ id, type, hideLabel = false }: NodeSlotProps) {
   const [slotType, slotDirection, ...name] = id.split(".");
 
   return (
@@ -30,9 +31,11 @@ export function NodeSlot({ id, type }: NodeSlotProps) {
           type === "target" ? HandlePosition.Left : HandlePosition.Right
         }
       />
-      <span className="text-xs">
-        {name.length ? name.join(".") : `${slotType}.${slotDirection}`}
-      </span>
+      {!hideLabel && (
+        <span className="text-xs">
+          {name.length ? name.join(".") : `${slotType}.${slotDirection}`}
+        </span>
+      )}
     </div>
   );
 }

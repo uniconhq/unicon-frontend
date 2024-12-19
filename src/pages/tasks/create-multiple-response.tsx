@@ -146,8 +146,17 @@ const CreateMultipleResponse = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
-          <TextField label="Question" name="question" />
-          <CheckboxField label="Autograde" name="autograde" />
+          <div className="flex w-full items-end justify-end gap-4">
+            <div className="flex-grow">
+              <TextField label="Question" name="question" />
+            </div>
+
+            <CheckboxField
+              label="Autograde"
+              name="autograde"
+              className="pb-2"
+            />
+          </div>
           <div className="mt-4 flex flex-col items-start gap-4">
             <h3 className="text-bold">Choices</h3>
             <Button

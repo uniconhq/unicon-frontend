@@ -13,6 +13,7 @@ export type SocketMetadata = {
   comparison?: Comparison;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
+  public: boolean;
 };
 
 export type Result = {
