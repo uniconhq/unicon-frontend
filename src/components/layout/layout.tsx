@@ -4,6 +4,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 import AppSidebar from "@/components/layout/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/toaster";
 import { getUserProfile } from "@/features/auth/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
@@ -26,6 +27,7 @@ const Layout: React.FC<PropsWithChildren> = () => {
 
   return (
     <main className="flex h-screen w-screen flex-col overflow-y-scroll bg-[#141414] p-4">
+      <Toaster />
       <div className="flex max-h-screen w-full text-neutral-300">
         {user && (
           <SidebarProvider>

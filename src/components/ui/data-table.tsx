@@ -31,11 +31,13 @@ type ExtendedData<T = object> = T & Partial<DataWithOptionalClassname>;
 interface DataTableProps<TData extends ExtendedData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  hidePagination?: boolean;
 }
 
 export function DataTable<TData extends ExtendedData, TValue>({
   columns,
   data,
+  hidePagination = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
@@ -101,7 +103,7 @@ export function DataTable<TData extends ExtendedData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {table.getPageCount() !== 0 && (
+      {table.getPageCount() !== 0 && !hidePagination && (
         <div className="flex items-center justify-center gap-2 space-x-2 py-4">
           <Button
             variant="outline"

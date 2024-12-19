@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Testcase } from "@/api";
+import { OutputSocketConfig, Testcase } from "@/api";
 
 export type Comparison = {
   operator: "<" | "=" | ">";
@@ -13,11 +13,13 @@ export type SocketMetadata = {
   comparison?: Comparison;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
+  public: boolean;
 };
 
 export type Result = {
-  value: unknown;
-  socketMetadata: SocketMetadata;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
+  socketMetadata: OutputSocketConfig;
   testcase: Testcase;
   id: string;
   correct: boolean;

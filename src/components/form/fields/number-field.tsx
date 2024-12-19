@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-interface TextFieldProps {
+interface NumberFieldProps {
   name: string;
   label?: string;
   placeholder?: string;
@@ -18,13 +18,13 @@ interface TextFieldProps {
   className?: string;
 }
 
-function TextField({
+function NumberField({
   name,
   label,
   placeholder,
   description,
   className,
-}: TextFieldProps) {
+}: NumberFieldProps) {
   const { control } = useFormContext();
   return (
     <FormField
@@ -34,7 +34,12 @@ function TextField({
         <FormItem>
           {label && <FormLabel className="!text-current">{label}</FormLabel>}
           <FormControl>
-            <Input placeholder={placeholder} {...field} className={className} />
+            <Input
+              type="number"
+              placeholder={placeholder}
+              {...field}
+              className={className}
+            />
           </FormControl>
           <FormMessage />
           {description && <FormDescription>{description}</FormDescription>}
@@ -44,4 +49,4 @@ function TextField({
   );
 }
 
-export default TextField;
+export default NumberField;

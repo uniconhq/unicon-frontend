@@ -31,7 +31,7 @@ const ProjectRoles = () => {
       </div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Roles</h2>
-        <Link to={`/projects/${id}/problems/new`} className="flex gap-1">
+        <Link to={`/projects/${id}/roles/new`} className="flex gap-1">
           <Button variant="ghost" className="hover:text-purple-300">
             <Plus /> New Role
           </Button>

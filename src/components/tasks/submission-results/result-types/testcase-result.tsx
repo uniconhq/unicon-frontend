@@ -1,4 +1,4 @@
-import { ProcessedResult, Status, Step, Testcase } from "@/api";
+import { OutputStep, ProcessedResult, Status, Testcase } from "@/api";
 import {
   Accordion,
   AccordionContent,
@@ -8,7 +8,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-import { SocketMetadata } from "./table/columns";
 import SocketResultTable from "./table/socket-result-table";
 
 type OwnProps = {
@@ -30,11 +29,6 @@ const getTestcaseResultBadge = (status: Status) => {
     case "RTE":
       return <Badge className="bg-red-300 hover:bg-red-300">RTE</Badge>;
   }
-};
-
-type OutputStep = Step & {
-  type: "OUTPUT_STEP";
-  socket_metadata: SocketMetadata[];
 };
 
 const TestcaseResult: React.FC<OwnProps> = ({ result, index, testcase }) => {
