@@ -46,6 +46,10 @@ export function StepNode({ data }: { data: Step }) {
     });
   };
 
+  const handlesInStepMetadata = ["OUTPUT_STEP", "INPUT_STEP"].includes(
+    data.type,
+  );
+
   return (
     <div
       className={cn(
@@ -64,7 +68,7 @@ export function StepNode({ data }: { data: Step }) {
       <StepMetadata step={data} />
       {/* Node body */}
 
-      {!["OUTPUT_STEP", "INPUT_STEP"].includes(data.type) && (
+      {!handlesInStepMetadata && (
         <div className="text-xs font-light">
           <div className="flex flex-row justify-between">
             <NodeSlotGroup>

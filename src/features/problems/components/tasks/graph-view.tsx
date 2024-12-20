@@ -19,7 +19,6 @@ import {
   useNodesInitialized,
   useReactFlow,
 } from "@xyflow/react";
-import { PlusIcon } from "lucide-react";
 import {
   useCallback,
   useContext,
@@ -30,9 +29,9 @@ import {
 } from "react";
 
 import { StepNode } from "@/components/node-graph/components/step/step-node";
-import { Button } from "@/components/ui/button";
 import getLayoutedElements from "@/utils/graph";
 
+import AddNodeButton from "./add-node-button";
 import { GraphContext, GraphDispatchContext } from "./graph-context";
 import { Step } from "./types";
 
@@ -192,39 +191,27 @@ const GraphView: React.FC = () => {
       edgeReconnectSuccessful.current = true;
       setReactFlowEdges((els) => reconnectEdge(oldEdge, newConnection, els));
     },
-    [],
+    [dispatch, edges],
   );
 
-  const onReconnectEnd = useCallback((_: unknown, edge: Edge) => {
-    if (!edgeReconnectSuccessful.current) {
-      dispatch({
-        type: "DELETE_EDGE",
-        edgeId: parseInt(edge.id),
-      });
-      setReactFlowEdges((eds) => eds.filter((e) => e.id !== edge.id));
-    }
+  const onReconnectEnd = useCallback(
+    (_: unknown, edge: Edge) => {
+      if (!edgeReconnectSuccessful.current) {
+        dispatch({
+          type: "DELETE_EDGE",
+          edgeId: parseInt(edge.id),
+        });
+        setReactFlowEdges((eds) => eds.filter((e) => e.id !== edge.id));
+      }
 
-    edgeReconnectSuccessful.current = true;
-  }, []);
+      edgeReconnectSuccessful.current = true;
+    },
+    [dispatch],
+  );
 
   return (
     <div className="relative h-[60vh] w-full">
-      {isEditing && (
-        <Button
-          variant={"outline"}
-          className="absolute right-1 top-1 z-50"
-          type="button"
-          onClick={() => {
-            dispatch({
-              type: "ADD_STEP",
-              stepType: "PY_RUN_FUNCTION_STEP",
-            });
-          }}
-        >
-          <PlusIcon />
-          Add node
-        </Button>
-      )}
+      {isEditing && <AddNodeButton />}
       {reactFlowNodes && (
         <ReactFlow
           nodeTypes={nodeTypes}
