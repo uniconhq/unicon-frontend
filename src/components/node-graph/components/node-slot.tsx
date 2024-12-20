@@ -33,7 +33,7 @@ export function NodeSlot({
     if (onEditSocketId) {
       onEditSocketId(newSocketId);
     }
-  }, 500);
+  }, 1000);
 
   return (
     <div

@@ -1,7 +1,6 @@
 import "@xyflow/react/dist/style.css";
 
 import {
-  addEdge,
   applyEdgeChanges,
   applyNodeChanges,
   Background,
@@ -15,7 +14,6 @@ import {
   OnEdgesChange,
   OnNodesChange,
   ReactFlow,
-  reconnectEdge,
   useNodesInitialized,
   useReactFlow,
 } from "@xyflow/react";
@@ -159,9 +157,9 @@ const GraphView: React.FC = () => {
           to_socket_id: connection.targetHandle!,
         },
       });
-      setReactFlowEdges((reactFlowEdges) =>
-        addEdge(connection, reactFlowEdges),
-      );
+      //   setReactFlowEdges((reactFlowEdges) =>
+      //     addEdge(connection, reactFlowEdges),
+      //   );
     },
     [dispatch, edges],
   );
@@ -189,7 +187,7 @@ const GraphView: React.FC = () => {
         },
       });
       edgeReconnectSuccessful.current = true;
-      setReactFlowEdges((els) => reconnectEdge(oldEdge, newConnection, els));
+      //   setReactFlowEdges((els) => reconnectEdge(oldEdge, newConnection, els));
     },
     [dispatch, edges],
   );

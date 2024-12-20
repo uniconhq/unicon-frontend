@@ -83,7 +83,7 @@ export type GraphAction =
   | AddStepSocketAction;
 
 const addStep = (state: GraphState, action: AddStepAction) => {
-  const newStep: Step = {
+  const baseStep: Step = {
     id: Math.max(...state.steps.map((node) => node.id), -1) + 1,
     type: action.stepType,
     inputs: [
@@ -98,13 +98,68 @@ const addStep = (state: GraphState, action: AddStepAction) => {
         data: null,
       },
     ],
-    ...(action.stepType === "PY_RUN_FUNCTION_STEP"
-      ? { function_identifier: "", allow_error: false }
-      : {}),
-    ...(action.stepType === "OBJECT_ACCESS_STEP" ? { key: "" } : {}),
-    ...(action.stepType === "OUTPUT_STEP" ? { socket_metadata: {} } : {}),
   };
-  state.steps.push(newStep);
+
+  let newStep: Step;
+
+  //   ...(action.stepType === "PY_RUN_FUNCTION_STEP"
+  // ? { function_identifier: "", allow_error: false }
+  // : {}),
+  // ...(action.stepType === "OBJECT_ACCESS_STEP" ? { key: "" } : {}),
+  // ...(action.stepType === "OUTPUT_STEP" ? { socket_metadata: {} } : {}),
+
+  switch (action.stepType) {
+    case "PY_RUN_FUNCTION_STEP":
+      newStep = {
+        ...baseStep,
+        inputs: [...baseStep.inputs, { id: "DATA.IN.FILE", data: null }],
+        function_identifier: "",
+        allow_error: false,
+      };
+      break;
+    case "OBJECT_ACCESS_STEP":
+      newStep = {
+        ...baseStep,
+        inputs: [...baseStep.inputs, { id: "DATA.IN.OBJECT", data: null }],
+        outputs: [...baseStep.outputs, { id: "DATA.OUT.VALUE", data: null }],
+        key: "",
+      };
+      break;
+    case "OUTPUT_STEP":
+      newStep = {
+        ...baseStep,
+        socket_metadata: [],
+      };
+      break;
+    case "INPUT_STEP":
+      newStep = baseStep;
+      break;
+    case "LOOP_STEP":
+      newStep = {
+        ...baseStep,
+        inputs: [
+          ...baseStep.inputs,
+          { id: "CONTROL.IN.PREDICATE", data: null },
+        ],
+        outputs: [...baseStep.outputs, { id: "CONTROL.OUT.BODY", data: null }],
+      };
+      break;
+    case "IF_ELSE_STEP":
+      newStep = {
+        ...baseStep,
+        inputs: [
+          ...baseStep.inputs,
+          { id: "CONTROL.IN.PREDICATE", data: null },
+        ],
+        outputs: [
+          ...baseStep.outputs,
+          { id: "CONTROL.OUT.IF", data: null },
+          { id: "CONTROL.OUT.ELSE", data: null },
+        ],
+      };
+      break;
+  }
+  state.steps.push(newStep!);
   return state;
 };
 

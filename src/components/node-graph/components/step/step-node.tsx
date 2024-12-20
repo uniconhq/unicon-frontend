@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { useCallback, useContext } from "react";
 import { GoDotFill } from "react-icons/go";
 
@@ -18,6 +18,8 @@ import StepMetadata from "./step-metadata";
 export function StepNode({ data }: { data: Step }) {
   const { isEditing } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
+
+  console.log("STEP RENDERED");
 
   const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
     dispatch({
@@ -46,6 +48,15 @@ export function StepNode({ data }: { data: Step }) {
     });
   };
 
+  const deleteStep = useCallback(
+    () =>
+      dispatch({
+        type: "REMOVE_STEP",
+        stepId: data.id,
+      }),
+    [data.id, dispatch],
+  );
+
   const handlesInStepMetadata = ["OUTPUT_STEP", "INPUT_STEP"].includes(
     data.type,
   );
@@ -57,12 +68,25 @@ export function StepNode({ data }: { data: Step }) {
       )}
     >
       {/* Node header */}
-      <div className="flex items-center gap-1 rounded-t py-2 pl-1 pr-4 font-medium uppercase">
-        <GoDotFill
-          style={{ color: `${StepNodeColorMap[data.type]}` }}
-          className="h-5 w-5"
-        />
-        {data.type}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1 rounded-t py-2 pl-1 pr-4 font-medium uppercase">
+          <GoDotFill
+            style={{ color: `${StepNodeColorMap[data.type]}` }}
+            className="h-5 w-5"
+          />
+          {data.type}
+        </div>
+        {isEditing && (
+          <Button
+            size={"sm"}
+            className="mr-3 h-fit w-fit px-1 py-1"
+            variant={"secondary"}
+            onClick={deleteStep}
+            type="button"
+          >
+            <Trash className="h-2 w-2" />
+          </Button>
+        )}
       </div>
       {/* Node metadata */}
       <StepMetadata step={data} />
@@ -89,6 +113,7 @@ export function StepNode({ data }: { data: Step }) {
                   className="ml-3 h-fit w-fit px-1 py-1"
                   variant={"secondary"}
                   onClick={addInputSocket}
+                  type="button"
                 >
                   <Plus className="h-2 w-2" />
                 </Button>
@@ -112,6 +137,7 @@ export function StepNode({ data }: { data: Step }) {
                   className="mr-3 h-fit w-fit self-end px-1 py-1"
                   variant={"secondary"}
                   onClick={addOutputSocket}
+                  type="button"
                 >
                   <Plus className="h-2 w-2" />
                 </Button>
