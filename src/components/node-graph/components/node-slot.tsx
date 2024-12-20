@@ -1,15 +1,35 @@
 import { Handle, HandleType, Position as HandlePosition } from "@xyflow/react";
+import { useState } from "react";
 import { twJoin } from "tailwind-merge";
+import { useDebouncedCallback } from "use-debounce";
+
+import { cn } from "@/lib/utils";
 
 interface NodeSlotProps {
   id: string;
   label: string;
   type: HandleType;
   hideLabel?: boolean;
+  isEditable?: boolean;
+  onEditSocketId?: (socketId: string) => void;
 }
 
-export function NodeSlot({ id, type, hideLabel = false }: NodeSlotProps) {
+export function NodeSlot({
+  id,
+  type,
+  hideLabel = false,
+  isEditable = false,
+  onEditSocketId,
+}: NodeSlotProps) {
   const [slotType, slotDirection, ...name] = id.split(".");
+  const isControl = slotType === "CONTROL";
+
+  const [displayName, setDisplayName] = useState(name.join("."));
+  const handleEditSocketId = useDebouncedCallback((newSocketId: string) => {
+    if (onEditSocketId) {
+      onEditSocketId(newSocketId);
+    }
+  }, 500);
 
   return (
     <div
@@ -31,11 +51,30 @@ export function NodeSlot({ id, type, hideLabel = false }: NodeSlotProps) {
           type === "target" ? HandlePosition.Left : HandlePosition.Right
         }
       />
-      {!hideLabel && (
-        <span className="text-xs">
-          {name.length ? name.join(".") : `${slotType}.${slotDirection}`}
-        </span>
-      )}
+      {!hideLabel &&
+        (isEditable && !isControl ? (
+          <input
+            type="text"
+            className={cn("inline max-w-fit bg-transparent text-xs", {
+              "text-right": type === "source",
+            })}
+            value={displayName}
+            onChange={(e) => {
+              const newSocketId = [
+                slotType,
+                slotDirection,
+                e.target.value,
+              ].join(".");
+              handleEditSocketId(newSocketId);
+              setDisplayName(e.target.value);
+            }}
+            size={displayName.length}
+          />
+        ) : (
+          <span className="text-xs">
+            {name.length ? name.join(".") : `${slotType}.${slotDirection}`}
+          </span>
+        ))}
     </div>
   );
 }

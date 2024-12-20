@@ -27,6 +27,7 @@ interface SelectFieldProps {
   placeholder?: string;
   description?: string;
   options: Option[];
+  disabled?: boolean;
 }
 
 function SelectField({
@@ -35,6 +36,7 @@ function SelectField({
   placeholder,
   description,
   options,
+  disabled = false,
 }: SelectFieldProps) {
   const { control } = useFormContext();
   return (
@@ -45,7 +47,11 @@ function SelectField({
         <FormItem>
           {label && <FormLabel className="!text-current">{label}</FormLabel>}
           <FormControl>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled={disabled}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>

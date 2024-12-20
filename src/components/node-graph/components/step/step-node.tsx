@@ -1,6 +1,11 @@
+import { useContext } from "react";
 import { GoDotFill } from "react-icons/go";
 
 import { StepSocket } from "@/api";
+import {
+  GraphContext,
+  GraphDispatchContext,
+} from "@/features/problems/components/tasks/graph-context";
 import { Step } from "@/features/problems/components/tasks/types";
 import { StepNodeColorMap } from "@/lib/colors";
 import { cn } from "@/lib/utils";
@@ -9,6 +14,19 @@ import { NodeSlot, NodeSlotGroup } from "../node-slot";
 import StepMetadata from "./step-metadata";
 
 export function StepNode({ data }: { data: Step }) {
+  const { isEditing } = useContext(GraphContext)!;
+  const dispatch = useContext(GraphDispatchContext)!;
+
+  const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
+    dispatch({
+      type: "UPDATE_STEP_SOCKET_ID",
+      stepId: data.id,
+      oldSocketId,
+      newSocketId,
+      isInput: data.inputs.some((socket) => socket.id === oldSocketId),
+    });
+  };
+
   return (
     <div
       className={cn(
@@ -37,6 +55,8 @@ export function StepNode({ data }: { data: Step }) {
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="target"
+                  isEditable={isEditing}
+                  onEditSocketId={handleEditSocketId(stepSocket.id)}
                 />
               ))}
             </NodeSlotGroup>
@@ -47,6 +67,8 @@ export function StepNode({ data }: { data: Step }) {
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="source"
+                  isEditable={isEditing}
+                  onEditSocketId={handleEditSocketId(stepSocket.id)}
                 />
               ))}
             </NodeSlotGroup>

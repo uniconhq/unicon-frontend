@@ -1,28 +1,18 @@
 import "@xyflow/react/dist/style.css";
 
-import {
-  addEdge,
-  Background,
-  BackgroundVariant,
-  Connection,
-  Controls,
-  Edge,
-  MarkerType,
-  MiniMap,
-  Node,
-  ReactFlow,
-  ReactFlowProvider,
-  useEdgesState,
-  useNodesInitialized,
-  useNodesState,
-  useReactFlow,
-} from "@xyflow/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ReactFlowProvider } from "@xyflow/react";
+import { useCallback } from "react";
+import { useImmerReducer } from "use-immer";
 
 import { GraphEdge } from "@/api";
-import { StepNode } from "@/components/node-graph/components/step/step-node";
-import getLayoutedElements from "@/utils/graph";
 
+import {
+  GraphAction,
+  GraphContext,
+  GraphDispatchContext,
+  graphReducer,
+} from "./graph-context";
+import GraphView from "./graph-view";
 import { Step } from "./types";
 
 type OwnProps = {
@@ -30,106 +20,35 @@ type OwnProps = {
   edges: GraphEdge[];
 };
 
-const NodeGraph: React.FC<OwnProps> = ({ steps, edges }) => {
-  const { fitView } = useReactFlow();
-  const initialized = useNodesInitialized(); // Track if nodes are initialized
-  const [ran, setRan] = useState(false);
+const NodeGraph: React.FC<OwnProps> = ({
+  steps: initialSteps,
+  edges: initialEdges,
+}) => {
+  const [graph, dispatch] = useImmerReducer(graphReducer, {
+    steps: initialSteps,
+    edges: initialEdges,
+    selectedStep: null,
+    // TODO: make this a parameter
+    isEditing: true,
+  });
 
-  const nodeTypes = useMemo(() => ({ step: StepNode }), []);
+  const wrappedDispatch = useCallback(
+    (action: GraphAction) => {
+      console.log("dispatching", action);
 
-  const nodeData: Node<Step>[] = useMemo(
-    () =>
-      steps.map((step) => ({
-        id: step.id.toString(),
-        position: { x: 0, y: 0 },
-        data: step,
-        type: "step",
-      })),
-    [steps],
+      dispatch(action);
+    },
+    [dispatch],
   );
-
-  const edgeData: Edge[] = useMemo(
-    () =>
-      edges.map((edge) => ({
-        id: edge.id.toString(),
-        source: edge.from_node_id.toString(),
-        sourceHandle: edge.from_socket_id,
-        target: edge.to_node_id.toString(),
-        targetHandle: edge.to_socket_id,
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          width: 20,
-          height: 20,
-        },
-      })),
-    [edges],
-  );
-
-  const [reactFlowNodes, setReactFlowNodes, onNodesChange] =
-    useNodesState(nodeData);
-  const [reactFlowEdges, setReactFlowEdges, onEdgesChange] =
-    useEdgesState(edgeData);
-
-  const onLayout = useCallback(() => {
-    if (!initialized) {
-      return;
-    }
-
-    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-      nodeData,
-      edgeData,
-    );
-
-    setReactFlowNodes([...layoutedNodes]);
-    setReactFlowEdges([...layoutedEdges]);
-
-    window.requestAnimationFrame(() => {
-      fitView();
-    });
-  }, [
-    initialized,
-    nodeData,
-    edgeData,
-    setReactFlowNodes,
-    setReactFlowEdges,
-    fitView,
-  ]);
-
-  useEffect(() => {
-    if (initialized && !ran) {
-      onLayout(); // Trigger layout once nodes are initialized
-      setTimeout(fitView, 100);
-      setRan(true);
-    }
-  }, [fitView, initialized, onLayout, ran]);
 
   return (
-    <div className="grid gap-1">
-      <div className="h-[60vh] w-full">
-        {reactFlowNodes && (
-          <ReactFlow
-            nodeTypes={nodeTypes}
-            nodes={reactFlowNodes}
-            edges={reactFlowEdges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={(connection: Connection) =>
-              setReactFlowEdges((reactFlowEdges) =>
-                addEdge(connection, reactFlowEdges),
-              )
-            }
-            colorMode="dark"
-            fitView
-            // fitViewOptions={{ maxZoom: 1.0 }}
-            proOptions={{ hideAttribution: true }}
-          >
-            <Background variant={BackgroundVariant.Dots} />
-            <Controls />
-            <MiniMap />
-          </ReactFlow>
-        )}
-      </div>
-    </div>
+    <GraphContext.Provider value={graph}>
+      <GraphDispatchContext.Provider value={wrappedDispatch}>
+        <div className="grid gap-1">
+          <GraphView />
+        </div>
+      </GraphDispatchContext.Provider>
+    </GraphContext.Provider>
   );
 };
 

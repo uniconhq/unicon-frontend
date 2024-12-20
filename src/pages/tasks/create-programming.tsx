@@ -10,6 +10,7 @@ import TextField from "@/components/form/fields/text-field";
 import FormSection from "@/components/form/form-section";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import TestcaseNodeGraph from "@/features/problems/components/tasks/node-graph";
 import { useCreateTask } from "@/features/problems/queries";
 import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
 
@@ -40,7 +41,7 @@ const programmingFormDefault = {
   environment: {
     language: "PYTHON" as const,
     options: {
-      version: "3.12",
+      version: "3.11.9",
     },
     time_limit_secs: 1,
     memory_limit_mb: 256,
@@ -104,11 +105,13 @@ const CreateProgramming = () => {
                 label="Language"
                 name="environment.language"
                 options={[{ label: "Python", value: "PYTHON" }]}
+                disabled
               />
               <SelectField
                 label="Version"
                 name="environment.options.version"
-                options={[{ label: "3.12", value: "3.12" }]}
+                options={[{ label: "3.11.9", value: "3.11.9" }]}
+                disabled
               />
             </div>
             <div className="flex gap-4">
@@ -123,7 +126,9 @@ const CreateProgramming = () => {
             </div>
           </FormSection>
           <hr />
-          <FormSection title="Testcases">{/* TODO */}</FormSection>
+          <FormSection title="Testcases">
+            <TestcaseNodeGraph steps={[]} edges={[]} />
+          </FormSection>
 
           <div className="mt-12">
             <Button className="bg-purple-600 text-white hover:bg-purple-600 hover:bg-opacity-80">
