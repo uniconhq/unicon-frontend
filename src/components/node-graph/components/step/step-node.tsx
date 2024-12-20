@@ -1,7 +1,9 @@
-import { useContext } from "react";
+import { Plus } from "lucide-react";
+import { useCallback, useContext } from "react";
 import { GoDotFill } from "react-icons/go";
 
 import { StepSocket } from "@/api";
+import { Button } from "@/components/ui/button";
 import {
   GraphContext,
   GraphDispatchContext,
@@ -19,13 +21,21 @@ export function StepNode({ data }: { data: Step }) {
 
   const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
     dispatch({
-      type: "UPDATE_STEP_SOCKET_ID",
+      type: "UPDATE_STEP_SOCKET",
       stepId: data.id,
       oldSocketId,
       newSocketId,
       isInput: data.inputs.some((socket) => socket.id === oldSocketId),
     });
   };
+
+  const addInputSocket = useCallback(() => {
+    dispatch({ type: "ADD_STEP_SOCKET", stepId: data.id, isInput: true });
+  }, [data.id, dispatch]);
+
+  const addOutputSocket = useCallback(() => {
+    dispatch({ type: "ADD_STEP_SOCKET", stepId: data.id, isInput: false });
+  }, [data.id, dispatch]);
 
   return (
     <div
@@ -59,6 +69,16 @@ export function StepNode({ data }: { data: Step }) {
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
                 />
               ))}
+              {isEditing && (
+                <Button
+                  size={"sm"}
+                  className="ml-3 h-fit w-fit px-1 py-1"
+                  variant={"secondary"}
+                  onClick={addInputSocket}
+                >
+                  <Plus className="h-2 w-2" />
+                </Button>
+              )}
             </NodeSlotGroup>
             <NodeSlotGroup>
               {data.outputs.map((stepSocket: StepSocket) => (
@@ -71,6 +91,16 @@ export function StepNode({ data }: { data: Step }) {
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
                 />
               ))}
+              {isEditing && (
+                <Button
+                  size={"sm"}
+                  className="mr-3 h-fit w-fit self-end px-1 py-1"
+                  variant={"secondary"}
+                  onClick={addOutputSocket}
+                >
+                  <Plus className="h-2 w-2" />
+                </Button>
+              )}
             </NodeSlotGroup>
           </div>
         </div>

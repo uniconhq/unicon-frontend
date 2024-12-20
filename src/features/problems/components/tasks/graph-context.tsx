@@ -30,11 +30,24 @@ type UpdateStepAction = {
   step: Step;
 };
 
-type UpdateStepSocketIdAction = {
-  type: "UPDATE_STEP_SOCKET_ID";
+type AddStepSocketAction = {
+  type: "ADD_STEP_SOCKET";
+  stepId: number;
+  isInput: boolean;
+};
+
+type UpdateStepSocketAction = {
+  type: "UPDATE_STEP_SOCKET";
   stepId: number;
   oldSocketId: string;
   newSocketId: string;
+  isInput: boolean;
+};
+
+type DeleteStepSocketAction = {
+  type: "DELETE_STEP_SOCKET";
+  stepId: number;
+  socketId: string;
   isInput: boolean;
 };
 
@@ -65,7 +78,9 @@ export type GraphAction =
   | DeselectStepAction
   | AddEdgeAction
   | DeleteEdgeAction
-  | UpdateStepSocketIdAction;
+  | UpdateStepSocketAction
+  | DeleteStepSocketAction
+  | AddStepSocketAction;
 
 const addStep = (state: GraphState, action: AddStepAction) => {
   const newStep: Step = {
@@ -108,9 +123,75 @@ const updateStep = (state: GraphState, action: UpdateStepAction) => {
   return state;
 };
 
-const updateStepSocketId = (
+const addStepSocket = (state: GraphState, action: AddStepSocketAction) => {
+  const step = state.steps.find((node) => node.id === action.stepId);
+  if (!step) {
+    console.error("Step not found");
+    return state;
+  }
+  const allIds = step.inputs
+    .map((socket) => socket.id)
+    .concat(step.outputs.map((socket) => socket.id));
+
+  // generate a unique id
+  const PREFIX = action.isInput ? "DATA.IN." : "DATA.OUT.";
+  let newSocketId = PREFIX + "TEMP";
+  let i = 1;
+
+  while (allIds.includes(newSocketId)) {
+    newSocketId = `${PREFIX}TEMP${i}`;
+    i++;
+  }
+
+  if (action.isInput) {
+    step.inputs.push({
+      id: newSocketId,
+      data: null,
+    });
+  } else {
+    step.outputs.push({
+      id: newSocketId,
+      data: null,
+    });
+  }
+  return state;
+};
+
+const deleteStepSocket = (
   state: GraphState,
-  action: UpdateStepSocketIdAction,
+  action: DeleteStepSocketAction,
+) => {
+  const step = state.steps.find((node) => node.id === action.stepId);
+  if (!step) {
+    console.error("Step not found");
+    return state;
+  }
+
+  if (action.isInput) {
+    step.inputs = step.inputs.filter((socket) => socket.id !== action.socketId);
+  } else {
+    step.outputs = step.outputs.filter(
+      (socket) => socket.id !== action.socketId,
+    );
+  }
+
+  // Remove all edges that use the socket
+  state.edges = state.edges.filter(
+    (edge) =>
+      !(
+        (edge.from_node_id === action.stepId &&
+          edge.from_socket_id === action.socketId) ||
+        (edge.to_node_id === action.stepId &&
+          edge.to_socket_id === action.socketId)
+      ),
+  );
+
+  return state;
+};
+
+const updateStepSocket = (
+  state: GraphState,
+  action: UpdateStepSocketAction,
 ) => {
   const stepIndex = state.steps.findIndex((node) => node.id === action.stepId);
   const step = state.steps[stepIndex];
@@ -183,8 +264,12 @@ export const graphReducer: ImmerReducer<GraphState, GraphAction> = (
       return selectStep(state, action);
     case "DESELECT_STEP":
       return deselectStep(state);
-    case "UPDATE_STEP_SOCKET_ID":
-      return updateStepSocketId(state, action);
+    case "UPDATE_STEP_SOCKET":
+      return updateStepSocket(state, action);
+    case "ADD_STEP_SOCKET":
+      return addStepSocket(state, action);
+    case "DELETE_STEP_SOCKET":
+      return deleteStepSocket(state, action);
     case "ADD_EDGE":
       return addEdge(state, action);
     case "DELETE_EDGE":
