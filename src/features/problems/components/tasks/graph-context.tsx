@@ -158,6 +158,16 @@ const addStep = (state: GraphState, action: AddStepAction) => {
         ],
       };
       break;
+    case "STRING_MATCH_STEP":
+      newStep = {
+        ...baseStep,
+        inputs: [
+          ...baseStep.inputs,
+          { id: "DATA.IN.STRING.0", data: null },
+          { id: "DATA.IN.STRING.1", data: null },
+        ],
+        outputs: [...baseStep.outputs, { id: "DATA.OUT.MATCH", data: null }],
+      };
   }
   state.steps.push(newStep!);
   return state;
