@@ -1,8 +1,10 @@
 import { Handle, HandleType, Position as HandlePosition } from "@xyflow/react";
+import { Trash } from "lucide-react";
 import { useState } from "react";
 import { twJoin } from "tailwind-merge";
 import { useDebouncedCallback } from "use-debounce";
 
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface NodeSlotProps {
@@ -12,6 +14,7 @@ interface NodeSlotProps {
   hideLabel?: boolean;
   isEditable?: boolean;
   onEditSocketId?: (socketId: string) => void;
+  onDeleteSocket?: () => void;
 }
 
 export function NodeSlot({
@@ -20,6 +23,7 @@ export function NodeSlot({
   hideLabel = false,
   isEditable = false,
   onEditSocketId,
+  onDeleteSocket,
 }: NodeSlotProps) {
   const [slotType, slotDirection, ...name] = id.split(".");
   const isControl = slotType === "CONTROL";
@@ -53,23 +57,37 @@ export function NodeSlot({
       />
       {!hideLabel &&
         (isEditable && !isControl ? (
-          <input
-            type="text"
-            className={cn("inline max-w-fit bg-transparent text-xs", {
-              "text-right": type === "source",
+          <div
+            className={cn("flex grow justify-between", {
+              "flex-row-reverse space-x-reverse": type === "source",
             })}
-            value={displayName}
-            onChange={(e) => {
-              const newSocketId = [
-                slotType,
-                slotDirection,
-                e.target.value,
-              ].join(".");
-              handleEditSocketId(newSocketId);
-              setDisplayName(e.target.value);
-            }}
-            size={displayName.length}
-          />
+          >
+            <input
+              type="text"
+              className={cn("inline max-w-fit bg-transparent text-xs", {
+                "text-right": type === "source",
+              })}
+              value={displayName}
+              onChange={(e) => {
+                const newSocketId = [
+                  slotType,
+                  slotDirection,
+                  e.target.value,
+                ].join(".");
+                handleEditSocketId(newSocketId);
+                setDisplayName(e.target.value);
+              }}
+              size={displayName.length}
+            />
+            <Button
+              size={"sm"}
+              className="h-fit w-fit px-1 py-1"
+              variant={"secondary"}
+              onClick={onDeleteSocket}
+            >
+              <Trash className="h-2 w-2" />
+            </Button>
+          </div>
         ) : (
           <span className="text-xs">
             {name.length ? name.join(".") : `${slotType}.${slotDirection}`}

@@ -37,6 +37,15 @@ export function StepNode({ data }: { data: Step }) {
     dispatch({ type: "ADD_STEP_SOCKET", stepId: data.id, isInput: false });
   }, [data.id, dispatch]);
 
+  const deleteSocket = (isInput: boolean, socketId: string) => () => {
+    dispatch({
+      type: "DELETE_STEP_SOCKET",
+      stepId: data.id,
+      socketId,
+      isInput,
+    });
+  };
+
   return (
     <div
       className={cn(
@@ -67,6 +76,7 @@ export function StepNode({ data }: { data: Step }) {
                   type="target"
                   isEditable={isEditing}
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
+                  onDeleteSocket={deleteSocket(true, stepSocket.id)}
                 />
               ))}
               {isEditing && (
@@ -89,6 +99,7 @@ export function StepNode({ data }: { data: Step }) {
                   type="source"
                   isEditable={isEditing}
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
+                  onDeleteSocket={deleteSocket(false, stepSocket.id)}
                 />
               ))}
               {isEditing && (
