@@ -1,4 +1,4 @@
-import { Trash } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { useCallback, useContext } from "react";
 
 import { InputStep } from "@/api";
@@ -50,6 +50,10 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
       isInput: false,
     });
   };
+
+  const addOutputSocket = useCallback(() => {
+    dispatch({ type: "ADD_STEP_SOCKET", stepId: step.id, isInput: false });
+  }, [dispatch, step.id]);
 
   if (!isEditing) {
     return <InputTable data={step.outputs} />;
@@ -118,6 +122,15 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
           </TableBody>
         </Table>
       </div>
+      <Button
+        size={"sm"}
+        className="mt-3 h-fit w-fit px-1 py-1"
+        variant={"secondary"}
+        onClick={addOutputSocket}
+        type="button"
+      >
+        <Plus className="h-2 w-2" />
+      </Button>
     </div>
   );
 };
