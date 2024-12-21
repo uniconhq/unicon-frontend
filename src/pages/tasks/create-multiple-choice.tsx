@@ -8,6 +8,7 @@ import { z } from "zod";
 import CheckboxField from "@/components/form/fields/checkbox-field";
 import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
+import FormSection from "@/components/form/form-section";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useCreateTask } from "@/features/problems/queries";
@@ -33,7 +34,7 @@ const multipleChoiceFormDefault = {
   question: "",
   choices: [],
   expected_answer: -1,
-  autograded: true,
+  autograde: true,
 };
 
 const CreateMultipleChoice = () => {
@@ -128,49 +129,48 @@ const CreateMultipleChoice = () => {
   return (
     <div className="flex w-full flex-col gap-8 px-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">New multiple choice task</h1>
+        <h1 className="p-4 text-2xl font-semibold">New multiple choice task</h1>
       </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
-          <div className="flex w-full items-end justify-end gap-4">
-            <div className="flex-grow">
-              <TextField label="Question" name="question" />
+          <FormSection title="Task details">
+            <TextField label="Question" name="question" />
+          </FormSection>
+          <hr />
+          <FormSection title="Autograde?">
+            <CheckboxField label="" name="autograde" className="mt-2" />
+          </FormSection>
+          <hr />
+          <FormSection title="Choices">
+            <div className="flex flex-col items-start gap-4">
+              <Button
+                variant={"outline"}
+                type="button"
+                onClick={() => {
+                  setValue("choices", [...getValues().choices, ""]);
+                  trigger("choices");
+                }}
+              >
+                <PlusIcon />
+                Add choice
+              </Button>
+              {formState.errors.expected_answer && (
+                <ErrorAlert message="Select the correct option." />
+              )}
+              <Choices
+                choices={form.getValues().choices}
+                onDragEnd={onDragEnd}
+                onCheck={onCheck}
+                isChecked={isChecked}
+                onDelete={onDelete}
+              />
             </div>
+          </FormSection>
 
-            <CheckboxField
-              label="Autograde"
-              name="autograde"
-              className="pb-2"
-            />
-          </div>
-          <div className="flex flex-col items-start gap-4">
-            <h3 className="text-bold">Choices</h3>
-            <Button
-              variant={"outline"}
-              type="button"
-              onClick={() => {
-                setValue("choices", [...getValues().choices, ""]);
-                trigger("choices");
-              }}
-            >
-              <PlusIcon />
-              Add choice
-            </Button>
-            {formState.errors.expected_answer && (
-              <ErrorAlert message="Select the correct option." />
-            )}
-            <Choices
-              choices={form.getValues().choices}
-              onDragEnd={onDragEnd}
-              onCheck={onCheck}
-              isChecked={isChecked}
-              onDelete={onDelete}
-            />
-          </div>
-          <div className="mt-12">
+          <div className="ml-4 mt-12">
             <Button className="bg-purple-600 text-white hover:bg-purple-600 hover:bg-opacity-80">
               Submit
             </Button>

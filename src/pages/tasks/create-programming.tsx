@@ -37,7 +37,7 @@ type ProgrammingFormType = z.infer<typeof programmingFormSchema>;
 
 const programmingFormDefault = {
   question: "",
-  autograded: false,
+  autograde: true,
   environment: {
     language: "PYTHON" as const,
     options: {
@@ -130,7 +130,7 @@ const CreateProgramming = () => {
             <TestcaseNodeGraph steps={[]} edges={[]} />
           </FormSection>
 
-          <div className="mt-12">
+          <div className="ml-4 mt-12">
             <Button className="bg-purple-600 text-white hover:bg-purple-600 hover:bg-opacity-80">
               Submit
             </Button>
