@@ -30,6 +30,9 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
   const { isEditing } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
+  const isStepEditable = step.id !== 0;
+  const showEditElements = isEditing && isStepEditable;
+
   const deleteSocket = useCallback(
     (socketId: string) => () => {
       dispatch({
@@ -57,7 +60,7 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
     dispatch({ type: "ADD_STEP_SOCKET", stepId: step.id, isInput: false });
   }, [dispatch, step.id]);
 
-  if (!isEditing) {
+  if (!showEditElements) {
     return <InputTable data={step.outputs} step={step} />;
   }
 

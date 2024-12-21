@@ -19,7 +19,8 @@ export function StepNode({ data }: { data: Step }) {
   const { isEditing } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
-  console.log("STEP RENDERED");
+  const isStepEditable = data.id !== 0;
+  const showEditElements = isEditing && isStepEditable;
 
   const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
     dispatch({
@@ -76,7 +77,7 @@ export function StepNode({ data }: { data: Step }) {
           />
           {data.type}
         </div>
-        {isEditing && (
+        {showEditElements && (
           <Button
             size={"sm"}
             className="mr-3 h-fit w-fit px-1 py-1"
@@ -107,7 +108,7 @@ export function StepNode({ data }: { data: Step }) {
                   onDeleteSocket={deleteSocket(true, stepSocket.id)}
                 />
               ))}
-              {isEditing && (
+              {showEditElements && (
                 <Button
                   size={"sm"}
                   className="ml-3 h-fit w-fit px-1 py-1"
@@ -131,7 +132,7 @@ export function StepNode({ data }: { data: Step }) {
                   onDeleteSocket={deleteSocket(false, stepSocket.id)}
                 />
               ))}
-              {isEditing && (
+              {showEditElements && (
                 <Button
                   size={"sm"}
                   className="mr-3 h-fit w-fit self-end px-1 py-1"

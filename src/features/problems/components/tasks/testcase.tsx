@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { Testcase } from "@/api";
+import { InputStep, ProgrammingTask, Testcase } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -15,10 +15,18 @@ import NodeGraph from "./node-graph";
 type OwnProps = {
   testcase: Testcase;
   index: number;
+  task: ProgrammingTask;
 };
 
-const TestcaseDisplay: React.FC<OwnProps> = ({ testcase, index }) => {
+const TestcaseDisplay: React.FC<OwnProps> = ({ testcase, index, task }) => {
   const [isOpen, setIsOpen] = React.useState(true);
+
+  const userInputNode: InputStep = {
+    id: 0,
+    type: "INPUT_STEP",
+    inputs: [],
+    outputs: task.required_inputs,
+  };
 
   return (
     <Collapsible
@@ -34,7 +42,10 @@ const TestcaseDisplay: React.FC<OwnProps> = ({ testcase, index }) => {
         </CollapsibleTrigger>
       </div>
       <CollapsibleContent className="space-y-4">
-        <NodeGraph steps={testcase.nodes} edges={testcase.edges} />
+        <NodeGraph
+          steps={testcase.nodes.concat([userInputNode])}
+          edges={testcase.edges}
+        />
       </CollapsibleContent>
     </Collapsible>
   );
