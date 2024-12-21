@@ -6,8 +6,10 @@ import {
 } from "@/api";
 import { Step } from "@/features/problems/components/tasks/types";
 
-import InputTable from "./input-table/input-table";
-import OutputTable from "./output-table/output-table";
+import InputMetadata from "./input-metadata";
+import ObjectAccessMetadata from "./object-access-metadata";
+import OutputMetadata from "./output-metadata";
+import PyRunMetadata from "./py-run-metadata";
 
 const STEP_TYPES_WITH_METADATA: StepType[] = [
   "PY_RUN_FUNCTION_STEP",
@@ -27,21 +29,15 @@ const StepMetadata: React.FC<OwnProps> = ({ step }) => {
   return (
     <div className="ml-7 mr-2 pb-4 text-sm text-gray-500">
       {step.type === "PY_RUN_FUNCTION_STEP" && (
-        <>
-          <div>{(step as PyRunFunctionStep).function_identifier}(...)</div>
-          <div>
-            allow_error:{" "}
-            {JSON.stringify((step as PyRunFunctionStep).allow_error)}
-          </div>
-        </>
+        <PyRunMetadata step={step as PyRunFunctionStep} />
       )}
       {step.type === "OBJECT_ACCESS_STEP" && (
-        <div>{(step as ObjectAccessStep).key}</div>
+        <ObjectAccessMetadata step={step as ObjectAccessStep} />
       )}
       {step.type === "OUTPUT_STEP" && (
-        <OutputTable data={(step as OutputStep).socket_metadata} />
+        <OutputMetadata step={step as OutputStep} />
       )}
-      {step.type === "INPUT_STEP" && <InputTable data={step.outputs} />}
+      {step.type === "INPUT_STEP" && <InputMetadata step={step} />}
     </div>
   );
 };

@@ -1,7 +1,8 @@
+import { current } from "immer";
 import { createContext, Dispatch } from "react";
 import { ImmerReducer } from "use-immer";
 
-import { GraphEdge, StepType } from "@/api";
+import { File, GraphEdge, StepSocket, StepType } from "@/api";
 
 import { Step } from "./types";
 
@@ -42,6 +43,7 @@ type UpdateStepSocketAction = {
   oldSocketId: string;
   newSocketId: string;
   isInput: boolean;
+  data?: unknown;
 };
 
 type DeleteStepSocketAction = {
@@ -262,18 +264,22 @@ const updateStepSocket = (
   const step = state.steps[stepIndex];
 
   // Update name of socket within the Step
+  let socket: StepSocket | undefined;
   if (action.isInput) {
-    const socketIndex = step.inputs.findIndex(
-      (socket) => socket.id === action.oldSocketId,
-    );
-    step.inputs[socketIndex].id = action.newSocketId;
+    socket = step.inputs.find((socket) => socket.id === action.oldSocketId);
   } else {
-    const socketIndex = step.outputs.findIndex(
-      (socket) => socket.id === action.oldSocketId,
-    );
-    step.outputs[socketIndex].id = action.newSocketId;
+    socket = step.outputs.find((socket) => socket.id === action.oldSocketId);
   }
 
+  if (socket === undefined) {
+    console.error("Socket not found");
+    return state;
+  }
+
+  socket!.id = action.newSocketId;
+  if (action.data !== undefined) {
+    socket.data = action.data as string | number | boolean | File | null;
+  }
   // Update name of socket for all edges it uses
   state.edges.forEach((edge) => {
     if (
@@ -289,6 +295,8 @@ const updateStepSocket = (
       edge.to_socket_id = action.newSocketId;
     }
   });
+
+  console.log(current(state));
 
   return state;
 };

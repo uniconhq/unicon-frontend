@@ -99,8 +99,6 @@ const GraphView: React.FC = () => {
     fitView,
   ]);
 
-  //   const [retriggerLayout, setRetriggerLayout] = useState(false);
-
   useEffect(() => {
     // keep old positions...
     setReactFlowNodes((reactFlowNodes) => {
@@ -125,13 +123,8 @@ const GraphView: React.FC = () => {
       setTimeout(fitView, 100);
       setRan(true);
     }
-    // else if (retriggerLayout) {
-    //   onLayout();
-    //   setRetriggerLayout(false);
-    // }
   }, [fitView, initialized, onLayout, ran]);
 
-  // todo: hijack with dispatch
   const onNodesChange: OnNodesChange<Node<Step>> = useCallback(
     (changes) => {
       console.log({ nodeChanges: changes });
@@ -157,9 +150,6 @@ const GraphView: React.FC = () => {
           to_socket_id: connection.targetHandle!,
         },
       });
-      //   setReactFlowEdges((reactFlowEdges) =>
-      //     addEdge(connection, reactFlowEdges),
-      //   );
     },
     [dispatch, edges],
   );

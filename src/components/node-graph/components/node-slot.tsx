@@ -1,11 +1,11 @@
 import { Handle, HandleType, Position as HandlePosition } from "@xyflow/react";
 import { Trash } from "lucide-react";
-import { useState } from "react";
 import { twJoin } from "tailwind-merge";
-import { useDebouncedCallback } from "use-debounce";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+import NodeInput from "./step/node-input";
 
 interface NodeSlotProps {
   id: string;
@@ -28,12 +28,11 @@ export function NodeSlot({
   const [slotType, slotDirection, ...name] = id.split(".");
   const isControl = slotType === "CONTROL";
 
-  const [displayName, setDisplayName] = useState(name.join("."));
-  const handleEditSocketId = useDebouncedCallback((newSocketId: string) => {
+  const handleEditSocketId = (newSocketId: string) => {
     if (onEditSocketId) {
       onEditSocketId(newSocketId);
     }
-  }, 1000);
+  };
 
   return (
     <div
@@ -58,26 +57,26 @@ export function NodeSlot({
       {!hideLabel &&
         (isEditable && !isControl ? (
           <div
-            className={cn("flex grow justify-between", {
+            className={cn("flex grow justify-between gap-2", {
               "flex-row-reverse space-x-reverse": type === "source",
             })}
           >
-            <input
-              type="text"
-              className={cn("inline max-w-fit bg-transparent text-xs", {
-                "text-right": type === "source",
-              })}
-              value={displayName}
-              onChange={(e) => {
-                const newSocketId = [
-                  slotType,
-                  slotDirection,
-                  e.target.value,
-                ].join(".");
-                handleEditSocketId(newSocketId);
-                setDisplayName(e.target.value);
+            <NodeInput
+              className={[
+                {
+                  "text-right": type === "source",
+                },
+              ]}
+              value={
+                name.length ? name.join(".") : `${slotType}.${slotDirection}`
+              }
+              onChange={(newValue) => {
+                handleEditSocketId(
+                  name.length
+                    ? `${slotType}.${slotDirection}.${newValue}`
+                    : newValue,
+                );
               }}
-              size={displayName.length}
             />
             <Button
               size={"sm"}

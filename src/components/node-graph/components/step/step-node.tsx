@@ -13,7 +13,7 @@ import { StepNodeColorMap } from "@/lib/colors";
 import { cn } from "@/lib/utils";
 
 import { NodeSlot, NodeSlotGroup } from "../node-slot";
-import StepMetadata from "./step-metadata";
+import StepMetadata from "./metadata/step-metadata";
 
 export function StepNode({ data }: { data: Step }) {
   const { isEditing } = useContext(GraphContext)!;
