@@ -1,3 +1,5 @@
+import { File as FileType } from "@/api";
+
 export enum NodeType {
   USER,
   GROUP,
@@ -45,3 +47,10 @@ export type NodeData =
   | GroupNodeData
   | TaskNodeData
   | ArtifactNodeData;
+
+export const isFile = (data: unknown): data is FileType => {
+  return (
+    (data as FileType).name !== undefined &&
+    (data as FileType).content !== undefined
+  );
+};

@@ -15,9 +15,11 @@ import {
   GraphContext,
   GraphDispatchContext,
 } from "@/features/problems/components/tasks/graph-context";
+import { isFile } from "@/lib/types";
 
 import { NodeSlot } from "../../node-slot";
 import InputTable from "../input-table/input-table";
+import ViewFileButton from "../input-table/view-file-button";
 import NodeInput from "../node-input";
 
 type OwnProps = {
@@ -56,7 +58,7 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
   }, [dispatch, step.id]);
 
   if (!isEditing) {
-    return <InputTable data={step.outputs} />;
+    return <InputTable data={step.outputs} step={step} />;
   }
 
   return (
@@ -92,21 +94,64 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  {
-                    <NodeInput
-                      value={JSON.stringify(socket.data)}
-                      onChange={(newValue) => {
-                        dispatch({
-                          type: "UPDATE_STEP_SOCKET",
-                          stepId: step.id,
-                          oldSocketId: socket.id,
-                          newSocketId: socket.id,
-                          data: JSON.parse(newValue),
-                          isInput: false,
-                        });
-                      }}
-                    />
-                  }
+                  {socket.data && isFile(socket.data) ? (
+                    <div className="flex gap-2">
+                      <ViewFileButton step={step} socket={socket} />
+                      <Button
+                        size={"sm"}
+                        className="h-fit w-fit px-1 py-1"
+                        variant={"secondary"}
+                        onClick={() => {
+                          dispatch({
+                            type: "UPDATE_STEP_SOCKET",
+                            stepId: step.id,
+                            oldSocketId: socket.id,
+                            newSocketId: socket.id,
+                            data: "",
+                            isInput: false,
+                          });
+                        }}
+                      >
+                        Change to value
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <NodeInput
+                        value={JSON.stringify(socket.data)}
+                        onChange={(newValue) => {
+                          dispatch({
+                            type: "UPDATE_STEP_SOCKET",
+                            stepId: step.id,
+                            oldSocketId: socket.id,
+                            newSocketId: socket.id,
+                            data: JSON.parse(newValue),
+                            isInput: false,
+                          });
+                        }}
+                      />
+                      <Button
+                        size={"sm"}
+                        className="h-fit w-fit px-1 py-1"
+                        variant={"secondary"}
+                        onClick={() => {
+                          dispatch({
+                            type: "UPDATE_STEP_SOCKET",
+                            stepId: step.id,
+                            oldSocketId: socket.id,
+                            newSocketId: socket.id,
+                            data: {
+                              name: "file.py",
+                              content: "print('Hello World')",
+                            },
+                            isInput: false,
+                          });
+                        }}
+                      >
+                        Change to file
+                      </Button>
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell>
                   <NodeSlot

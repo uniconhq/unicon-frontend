@@ -5,7 +5,9 @@ import { useCallback } from "react";
 import { useImmerReducer } from "use-immer";
 
 import { GraphEdge } from "@/api";
+import { cn } from "@/lib/utils";
 
+import FileEditor from "./file-editor";
 import {
   GraphAction,
   GraphContext,
@@ -27,7 +29,8 @@ const NodeGraph: React.FC<OwnProps> = ({
   const [graph, dispatch] = useImmerReducer(graphReducer, {
     steps: initialSteps,
     edges: initialEdges,
-    selectedStep: null,
+    selectedSocket: null,
+    selectedStepId: null,
     // TODO: make this a parameter
     isEditing: true,
   });
@@ -44,7 +47,13 @@ const NodeGraph: React.FC<OwnProps> = ({
   return (
     <GraphContext.Provider value={graph}>
       <GraphDispatchContext.Provider value={wrappedDispatch}>
-        <div className="grid gap-1">
+        <div
+          className={cn("grid gap-1", {
+            // show editor only if a socket is selected
+            "grid-cols-2": graph.selectedSocket !== null,
+          })}
+        >
+          <FileEditor />
           <GraphView />
         </div>
       </GraphDispatchContext.Provider>

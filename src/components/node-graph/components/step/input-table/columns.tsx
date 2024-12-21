@@ -1,10 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { StepSocket } from "@/api";
+import { InputStep, StepSocket } from "@/api";
+import { isFile } from "@/lib/types";
 
 import { NodeSlot } from "../../node-slot";
+import ViewFileButton from "./view-file-button";
 
-export const columns: ColumnDef<StepSocket>[] = [
+export const columns: ColumnDef<StepSocket & { step: InputStep }>[] = [
   {
     accessorFn: (row) => row.id.replace(/^DATA\.OUT\./, ""),
     header: "Socket ID",
@@ -13,8 +15,15 @@ export const columns: ColumnDef<StepSocket>[] = [
     header: "Value",
     cell: ({ row }) => {
       const data = row.original.data;
-      const isFile = data instanceof File;
-      return <div>{isFile ? "View more" : JSON.stringify(data)}</div>;
+      return (
+        <div>
+          {data && isFile(data) ? (
+            <ViewFileButton socket={row.original} step={row.original.step} />
+          ) : (
+            JSON.stringify(data)
+          )}
+        </div>
+      );
     },
   },
   {

@@ -9,7 +9,8 @@ import { Step } from "./types";
 type GraphState = {
   steps: Step[];
   edges: GraphEdge[];
-  selectedStep: Step | null;
+  selectedStepId: number | null;
+  selectedSocket: StepSocket | null;
   isEditing: boolean;
 };
 
@@ -56,6 +57,7 @@ type DeleteStepSocketAction = {
 type SelectStepAction = {
   type: "SELECT_STEP";
   stepId: number;
+  socketId: string;
 };
 
 type DeselectStepAction = {
@@ -103,12 +105,6 @@ const addStep = (state: GraphState, action: AddStepAction) => {
   };
 
   let newStep: Step;
-
-  //   ...(action.stepType === "PY_RUN_FUNCTION_STEP"
-  // ? { function_identifier: "", allow_error: false }
-  // : {}),
-  // ...(action.stepType === "OBJECT_ACCESS_STEP" ? { key: "" } : {}),
-  // ...(action.stepType === "OUTPUT_STEP" ? { socket_metadata: {} } : {}),
 
   switch (action.stepType) {
     case "PY_RUN_FUNCTION_STEP":
@@ -301,14 +297,34 @@ const updateStepSocket = (
   return state;
 };
 
-const selectStep = (state: GraphState, action: SelectStepAction) => {
-  state.selectedStep =
+const selectSocket = (state: GraphState, action: SelectStepAction) => {
+  const selectedStep =
     state.steps.find((node) => node.id === action.stepId) || null;
+
+  if (!selectedStep) {
+    console.error("Step not found");
+    return state;
+  }
+
+  // this is used only for inputs so far, so this is okay
+  const selectedSocket = selectedStep.outputs.find(
+    (socket) => socket.id === action.socketId,
+  );
+
+  if (!selectedSocket) {
+    console.error("Socket not found");
+    return state;
+  }
+
+  state.selectedStepId = action.stepId;
+  state.selectedSocket = selectedSocket;
+
   return state;
 };
 
-const deselectStep = (state: GraphState) => {
-  state.selectedStep = null;
+const deselectSocket = (state: GraphState) => {
+  state.selectedStepId = null;
+  state.selectedSocket = null;
   return state;
 };
 
@@ -334,9 +350,9 @@ export const graphReducer: ImmerReducer<GraphState, GraphAction> = (
     case "UPDATE_STEP_EXCLUDING_SOCKETS":
       return updateStep(state, action);
     case "SELECT_STEP":
-      return selectStep(state, action);
+      return selectSocket(state, action);
     case "DESELECT_STEP":
-      return deselectStep(state);
+      return deselectSocket(state);
     case "UPDATE_STEP_SOCKET":
       return updateStepSocket(state, action);
     case "ADD_STEP_SOCKET":
