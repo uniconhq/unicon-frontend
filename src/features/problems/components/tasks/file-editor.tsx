@@ -10,7 +10,7 @@ type OwnProps = {
   fileContent: string;
   onUpdateFileName: (newFileName: string) => void;
   onUpdateFileContent: (newFileContent: string) => void;
-  onDeselectFile: () => void;
+  onDeselectFile?: () => void;
   isEditing: boolean;
 };
 
@@ -40,7 +40,7 @@ const FileEditor: React.FC<OwnProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="h-full gap-2">
       {/* file tab */}
       <div className="flex w-fit gap-2 border-b border-purple-200 py-1">
         {isEditing ? (
@@ -52,15 +52,18 @@ const FileEditor: React.FC<OwnProps> = ({
         ) : (
           <span className="px-1 text-xs">{displayFileName}</span>
         )}
-        <Button
-          className="h-fit p-1"
-          variant={"ghost"}
-          onClick={onDeselectFile}
-        >
-          <X />
-        </Button>
+        {onDeselectFile && (
+          <Button
+            className="h-fit p-1"
+            variant={"ghost"}
+            onClick={onDeselectFile}
+          >
+            <X />
+          </Button>
+        )}
       </div>
       <Editor
+        className="grow"
         theme="vs-dark"
         defaultLanguage="python"
         options={{

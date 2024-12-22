@@ -63,7 +63,7 @@ const GraphFileEditor = () => {
       onUpdateFileName={updateFileName}
       onUpdateFileContent={updateFileContent}
       onDeselectFile={deselectFile}
-      isEditing={isEditing}
+      isEditing={isEditing && selectedStepId !== 0}
     />
   );
 };

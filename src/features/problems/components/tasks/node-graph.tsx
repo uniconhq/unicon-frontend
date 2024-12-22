@@ -40,7 +40,6 @@ const NodeGraph: React.FC<OwnProps> = ({
 
   const wrappedDispatch = useCallback(
     (action: GraphAction) => {
-      console.log("dispatching", action);
       dispatch(action);
       if (onChange) {
         onChange(action);

@@ -182,7 +182,7 @@ const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
                                   operator: "=",
                                   value: "",
                                 }),
-                                value: newValue,
+                                value: JSON.parse(newValue),
                               },
                             });
                           }}

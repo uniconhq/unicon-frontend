@@ -8,16 +8,19 @@ import { produce } from "immer";
 import { PlusIcon, Trash } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useDebouncedCallback } from "use-debounce";
 import { z } from "zod";
 
-import { InputStep, Testcase } from "@/api";
+import { File as FileType, InputStep, Testcase } from "@/api";
 import CheckboxField from "@/components/form/fields/checkbox-field";
 import NumberField from "@/components/form/fields/number-field";
 import SelectField from "@/components/form/fields/select-field";
 import TextField from "@/components/form/fields/text-field";
 import FormSection from "@/components/form/form-section";
+import NodeInput from "@/components/node-graph/components/step/node-input";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import FileEditor from "@/features/problems/components/tasks/file-editor";
 import {
   GraphAction,
   graphReducer,
@@ -119,8 +122,63 @@ const CreateProgramming = () => {
     id: 0,
     type: "INPUT_STEP",
     inputs: [],
-    outputs: form.watch().required_inputs,
+    outputs: form.getValues("required_inputs"),
   };
+
+  const addRequiredInput = () => {
+    let uniqueId = "DATA.OUT.TEMP";
+    let i = 0;
+    while (
+      form.watch().required_inputs.some((input) => input.id === uniqueId)
+    ) {
+      uniqueId = `DATA.OUT.TEMP${i}`;
+      i++;
+    }
+    form.setValue("required_inputs", [
+      ...form.watch().required_inputs,
+      {
+        id: uniqueId,
+        data: {
+          name: `file${form.watch("required_inputs").length}.py`,
+          content: "def some_function():\n\tpass",
+        },
+      },
+    ]);
+  };
+
+  const onUpdateFileName = useDebouncedCallback(
+    (index: number, newName: string) => {
+      form.setValue(
+        "required_inputs",
+        form.watch("required_inputs").map((input, i) =>
+          i === index
+            ? {
+                ...input,
+                data: { ...(input.data as FileType), name: newName },
+              }
+            : input,
+        ),
+      );
+    },
+    1000,
+  );
+
+  const onUpdateFileContent = useDebouncedCallback(
+    (index: number, newContent: string) => {
+      form.setValue(
+        "required_inputs",
+        form.watch("required_inputs").map((input, i) =>
+          i === index
+            ? {
+                ...input,
+                data: { ...(input.data as FileType), content: newContent },
+              }
+            : input,
+        ),
+      );
+    },
+    1000,
+  );
 
   return (
     <div className="flex w-full flex-col gap-8 px-8">
@@ -168,11 +226,70 @@ const CreateProgramming = () => {
           </FormSection>
           <hr />
           <FormSection title="Required inputs">
-            <div className="flex flex-col items-start">
-              <Button variant="secondary" type="button">
+            <div className="flex flex-col items-start gap-4">
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={addRequiredInput}
+              >
                 <PlusIcon />
                 Add input
               </Button>
+              {form.getValues("required_inputs").map((input, index) => (
+                <Collapsible className="w-full">
+                  <div
+                    className="flex gap-4 rounded-md border p-2"
+                    key={input.id}
+                  >
+                    <NodeInput
+                      value={input.id}
+                      onChange={(newId) =>
+                        form.setValue(
+                          "required_inputs",
+                          form
+                            .getValues("required_inputs")
+                            .map((input, i) =>
+                              i === index ? { ...input, id: newId } : input,
+                            ),
+                        )
+                      }
+                    />
+                    <CollapsibleTrigger asChild>
+                      <Button variant={"secondary"} type="button">
+                        View/Edit {(input.data as FileType).name}
+                      </Button>
+                    </CollapsibleTrigger>
+                    <Button
+                      variant={"destructive"}
+                      onClick={() => {
+                        form.setValue(
+                          "required_inputs",
+                          form
+                            .watch("required_inputs")
+                            .filter((_, i) => i !== index),
+                        );
+                      }}
+                    >
+                      <Trash />
+                    </Button>
+                  </div>
+                  <CollapsibleContent>
+                    <div className="h-[50vh]">
+                      <FileEditor
+                        fileName={(input.data as FileType).name}
+                        fileContent={(input.data as FileType).content}
+                        onUpdateFileName={(newFileName: string) => {
+                          onUpdateFileName(index, newFileName);
+                        }}
+                        onUpdateFileContent={(newFileContent: string) => {
+                          onUpdateFileContent(index, newFileContent);
+                        }}
+                        isEditing
+                      />
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              ))}
             </div>
           </FormSection>
           <hr />
@@ -188,7 +305,10 @@ const CreateProgramming = () => {
             </div>
             <div className="flex w-full flex-col gap-4">
               {form.watch("testcases").map((testcase) => (
-                <div className="p-4" key={testcase.id}>
+                <div
+                  className="p-4"
+                  key={testcase.id + JSON.stringify(userInputNode)}
+                >
                   <Collapsible defaultOpen>
                     <div className="flex justify-between">
                       <CollapsibleTrigger asChild>
@@ -215,7 +335,7 @@ const CreateProgramming = () => {
                     <CollapsibleContent>
                       <TestcaseNodeGraph
                         key={testcase.id}
-                        steps={testcase.nodes.concat({ ...userInputNode })}
+                        steps={testcase.nodes.concat(userInputNode)}
                         edges={testcase.edges}
                         isEditing
                         // Note: I couldn't figure out how to make this subscribe to the child's nodes/edges
@@ -238,14 +358,6 @@ const CreateProgramming = () => {
                           );
 
                           const { steps, edges } = nextState;
-
-                          if (
-                            form
-                              .getValues("testcases")
-                              .filter((t) => t.id === testcase.id).length === 0
-                          ) {
-                            console.error("huh???");
-                          }
 
                           const updatedTestcases = [
                             ...form.getValues("testcases").map((t) =>
