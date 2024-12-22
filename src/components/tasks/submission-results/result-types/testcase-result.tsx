@@ -1,4 +1,4 @@
-import { ProcessedResult, Status, Step, Testcase } from "@/api";
+import { OutputStep, ProcessedResult, Status, Testcase } from "@/api";
 import {
   Accordion,
   AccordionContent,
@@ -8,7 +8,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-import { SocketMetadata } from "./table/columns";
 import SocketResultTable from "./table/socket-result-table";
 
 type OwnProps = {
@@ -32,19 +31,14 @@ const getTestcaseResultBadge = (status: Status) => {
   }
 };
 
-type OutputStep = Step & {
-  type: "OUTPUT_STEP";
-  socket_metadata: SocketMetadata[];
-};
-
 const TestcaseResult: React.FC<OwnProps> = ({ result, index, testcase }) => {
   const outputStep = testcase.nodes.filter(
     (node) => node.type == "OUTPUT_STEP",
   )[0] as OutputStep;
 
   const combinedResults = result.results?.map((socketResult) => {
-    const testcaseSocketMetadata = outputStep.socket_metadata.filter(
-      (metadata) => metadata.id === socketResult.id,
+    const testcaseSocketMetadata = outputStep.inputs.filter(
+      (input) => input.id === socketResult.id,
     );
     return {
       ...socketResult,
