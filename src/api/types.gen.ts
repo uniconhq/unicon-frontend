@@ -464,6 +464,28 @@ export type GetProblemResponse = (Problem);
 
 export type GetProblemError = (HTTPValidationError);
 
+export type UpdateProblemData = {
+    body: Problem;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateProblemResponse = (Problem);
+
+export type UpdateProblemError = (HTTPValidationError);
+
+export type AddTaskToProblemData = {
+    body: (ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask);
+    path: {
+        id: number;
+    };
+};
+
+export type AddTaskToProblemResponse = (unknown);
+
+export type AddTaskToProblemError = (HTTPValidationError);
+
 export type SubmitProblemTaskAttemptData = {
     body: UserInput;
     path: {
