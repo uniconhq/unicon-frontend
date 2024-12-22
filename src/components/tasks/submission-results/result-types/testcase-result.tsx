@@ -37,8 +37,8 @@ const TestcaseResult: React.FC<OwnProps> = ({ result, index, testcase }) => {
   )[0] as OutputStep;
 
   const combinedResults = result.results?.map((socketResult) => {
-    const testcaseSocketMetadata = outputStep.socket_metadata.filter(
-      (metadata) => metadata.id === socketResult.id,
+    const testcaseSocketMetadata = outputStep.inputs.filter(
+      (input) => input.id === socketResult.id,
     );
     return {
       ...socketResult,

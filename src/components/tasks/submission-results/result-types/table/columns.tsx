@@ -28,7 +28,7 @@ export type Result = {
 
 export const columns: ColumnDef<Result>[] = [
   {
-    accessorKey: "socketMetadata.label",
+    accessorKey: "socketMetadata.user_label",
     header: "label",
   },
   {

@@ -18,6 +18,8 @@ export type ComputeContext = {
     language: Language;
     time_limit_secs: number;
     memory_limit_mb: number;
+    slurm?: boolean;
+    slurm_options?: Array<(string)>;
     extra_options?: ({
     [key: string]: (string);
 } | null);
@@ -160,19 +162,19 @@ export type OrganisationUpdate = {
     description: string;
 };
 
-export type OutputSocketConfig = {
+export type OutputSocket = {
     id: string;
-    label?: (string | null);
-    comparison: (Comparison | null);
+    data?: (string | number | boolean | File | null);
+    user_label?: (string | null);
+    comparison?: (Comparison | null);
     public?: boolean;
 };
 
 export type OutputStep = {
     id: number;
-    inputs: Array<StepSocket>;
-    outputs: Array<StepSocket>;
+    inputs: Array<OutputSocket>;
+    outputs: Array<OutputSocket>;
     type: StepType;
-    socket_metadata: Array<OutputSocketConfig>;
 };
 
 export type Problem = {
@@ -195,14 +197,6 @@ export type ProblemORM = {
     project_id: number;
 };
 
-export type ProcessedResult = {
-    status: Status;
-    stdout: string;
-    stderr: string;
-    id: number;
-    results?: (Array<SocketResult> | null);
-};
-
 export type ProgrammingTask = {
     id: number;
     type: "PROGRAMMING_TASK";
@@ -221,7 +215,7 @@ export type ProgrammingTaskResult = {
     completed_at: (string | null);
     job_id: (string | null);
     status: TaskEvalStatus;
-    result: (Array<ProcessedResult> | null);
+    result: (Array<TestcaseResult> | null);
     error: (string | null);
 };
 
@@ -392,6 +386,14 @@ export type Testcase = {
     id: number;
 };
 
+export type TestcaseResult = {
+    status: Status;
+    stdout: string;
+    stderr: string;
+    id: number;
+    results?: (Array<SocketResult> | null);
+};
+
 export type Token = {
     access_token: string;
     token_type: string;
@@ -461,28 +463,6 @@ export type GetProblemData = {
 export type GetProblemResponse = (Problem);
 
 export type GetProblemError = (HTTPValidationError);
-
-export type UpdateProblemData = {
-    body: Problem;
-    path: {
-        id: number;
-    };
-};
-
-export type UpdateProblemResponse = (Problem);
-
-export type UpdateProblemError = (HTTPValidationError);
-
-export type AddTaskToProblemData = {
-    body: (ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask);
-    path: {
-        id: number;
-    };
-};
-
-export type AddTaskToProblemResponse = (unknown);
-
-export type AddTaskToProblemError = (HTTPValidationError);
 
 export type SubmitProblemTaskAttemptData = {
     body: UserInput;

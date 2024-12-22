@@ -82,6 +82,19 @@ export const ComputeContextSchema = {
             type: 'integer',
             title: 'Memory Limit Mb'
         },
+        slurm: {
+            type: 'boolean',
+            title: 'Slurm',
+            default: false
+        },
+        slurm_options: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Slurm Options',
+            default: []
+        },
         extra_options: {
             anyOf: [
                 {
@@ -671,13 +684,36 @@ export const OrganisationUpdateSchema = {
     title: 'OrganisationUpdate'
 } as const;
 
-export const OutputSocketConfigSchema = {
+export const OutputSocketSchema = {
     properties: {
         id: {
             type: 'string',
             title: 'Id'
         },
-        label: {
+        data: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'boolean'
+                },
+                {
+                    '$ref': '#/components/schemas/File'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Data'
+        },
+        user_label: {
             anyOf: [
                 {
                     type: 'string'
@@ -686,8 +722,7 @@ export const OutputSocketConfigSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Label',
-            default: ''
+            title: 'User Label'
         },
         comparison: {
             anyOf: [
@@ -706,8 +741,8 @@ export const OutputSocketConfigSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'comparison'],
-    title: 'OutputSocketConfig'
+    required: ['id'],
+    title: 'OutputSocket'
 } as const;
 
 export const OutputStepSchema = {
@@ -718,32 +753,25 @@ export const OutputStepSchema = {
         },
         inputs: {
             items: {
-                '$ref': '#/components/schemas/StepSocket'
+                '$ref': '#/components/schemas/OutputSocket'
             },
             type: 'array',
             title: 'Inputs'
         },
         outputs: {
             items: {
-                '$ref': '#/components/schemas/StepSocket'
+                '$ref': '#/components/schemas/OutputSocket'
             },
             type: 'array',
             title: 'Outputs'
         },
         type: {
             '$ref': '#/components/schemas/StepType'
-        },
-        socket_metadata: {
-            items: {
-                '$ref': '#/components/schemas/OutputSocketConfig'
-            },
-            type: 'array',
-            title: 'Socket Metadata'
         }
     },
     additionalProperties: false,
     type: 'object',
-    required: ['id', 'inputs', 'outputs', 'type', 'socket_metadata'],
+    required: ['id', 'inputs', 'outputs', 'type'],
     title: 'OutputStep'
 } as const;
 
@@ -840,43 +868,6 @@ export const ProblemORMSchema = {
     title: 'ProblemORM'
 } as const;
 
-export const ProcessedResultSchema = {
-    properties: {
-        status: {
-            '$ref': '#/components/schemas/Status'
-        },
-        stdout: {
-            type: 'string',
-            title: 'Stdout'
-        },
-        stderr: {
-            type: 'string',
-            title: 'Stderr'
-        },
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        results: {
-            anyOf: [
-                {
-                    items: {
-                        '$ref': '#/components/schemas/SocketResult'
-                    },
-                    type: 'array'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Results'
-        }
-    },
-    type: 'object',
-    required: ['status', 'stdout', 'stderr', 'id'],
-    title: 'ProcessedResult'
-} as const;
-
 export const ProgrammingTaskSchema = {
     properties: {
         id: {
@@ -968,7 +959,7 @@ export const ProgrammingTaskResultSchema = {
             anyOf: [
                 {
                     items: {
-                        '$ref': '#/components/schemas/ProcessedResult'
+                        '$ref': '#/components/schemas/TestcaseResult'
                     },
                     type: 'array'
                 },
@@ -1618,6 +1609,43 @@ export const TestcaseSchema = {
     type: 'object',
     required: ['nodes', 'edges', 'id'],
     title: 'Testcase'
+} as const;
+
+export const TestcaseResultSchema = {
+    properties: {
+        status: {
+            '$ref': '#/components/schemas/Status'
+        },
+        stdout: {
+            type: 'string',
+            title: 'Stdout'
+        },
+        stderr: {
+            type: 'string',
+            title: 'Stderr'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        results: {
+            anyOf: [
+                {
+                    items: {
+                        '$ref': '#/components/schemas/SocketResult'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Results'
+        }
+    },
+    type: 'object',
+    required: ['status', 'stdout', 'stderr', 'id'],
+    title: 'TestcaseResult'
 } as const;
 
 export const TokenSchema = {
