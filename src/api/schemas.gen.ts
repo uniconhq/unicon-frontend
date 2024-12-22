@@ -82,6 +82,19 @@ export const ComputeContextSchema = {
             type: 'integer',
             title: 'Memory Limit Mb'
         },
+        slurm: {
+            type: 'boolean',
+            title: 'Slurm',
+            default: false
+        },
+        slurm_options: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Slurm Options',
+            default: []
+        },
         extra_options: {
             anyOf: [
                 {
@@ -855,43 +868,6 @@ export const ProblemORMSchema = {
     title: 'ProblemORM'
 } as const;
 
-export const ProcessedResultSchema = {
-    properties: {
-        status: {
-            '$ref': '#/components/schemas/Status'
-        },
-        stdout: {
-            type: 'string',
-            title: 'Stdout'
-        },
-        stderr: {
-            type: 'string',
-            title: 'Stderr'
-        },
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        results: {
-            anyOf: [
-                {
-                    items: {
-                        '$ref': '#/components/schemas/SocketResult'
-                    },
-                    type: 'array'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Results'
-        }
-    },
-    type: 'object',
-    required: ['status', 'stdout', 'stderr', 'id'],
-    title: 'ProcessedResult'
-} as const;
-
 export const ProgrammingTaskSchema = {
     properties: {
         id: {
@@ -983,7 +959,7 @@ export const ProgrammingTaskResultSchema = {
             anyOf: [
                 {
                     items: {
-                        '$ref': '#/components/schemas/ProcessedResult'
+                        '$ref': '#/components/schemas/TestcaseResult'
                     },
                     type: 'array'
                 },
@@ -1633,6 +1609,43 @@ export const TestcaseSchema = {
     type: 'object',
     required: ['nodes', 'edges', 'id'],
     title: 'Testcase'
+} as const;
+
+export const TestcaseResultSchema = {
+    properties: {
+        status: {
+            '$ref': '#/components/schemas/Status'
+        },
+        stdout: {
+            type: 'string',
+            title: 'Stdout'
+        },
+        stderr: {
+            type: 'string',
+            title: 'Stderr'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        results: {
+            anyOf: [
+                {
+                    items: {
+                        '$ref': '#/components/schemas/SocketResult'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Results'
+        }
+    },
+    type: 'object',
+    required: ['status', 'stdout', 'stderr', 'id'],
+    title: 'TestcaseResult'
 } as const;
 
 export const TokenSchema = {
