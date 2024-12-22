@@ -1,4 +1,13 @@
 import { File as FileType } from "@/api";
+import {
+  IfElseStep,
+  InputStep,
+  LoopStep,
+  ObjectAccessStep,
+  OutputStep,
+  PyRunFunctionStep,
+  StringMatchStep,
+} from "@/api";
 
 export enum NodeType {
   USER,
@@ -54,3 +63,11 @@ export const isFile = (data: unknown): data is FileType => {
     (data as FileType).content !== undefined
   );
 };
+export type Step =
+  | OutputStep
+  | InputStep
+  | PyRunFunctionStep
+  | LoopStep
+  | IfElseStep
+  | StringMatchStep
+  | ObjectAccessStep;
