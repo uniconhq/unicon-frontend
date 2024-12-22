@@ -111,7 +111,7 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
                             stepId: step.id,
                             oldSocketId: socket.id,
                             newSocketId: socket.id,
-                            data: "",
+                            socketFields: { data: "" },
                             isInput: false,
                           });
                         }}
@@ -129,7 +129,7 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
                             stepId: step.id,
                             oldSocketId: socket.id,
                             newSocketId: socket.id,
-                            data: JSON.parse(newValue),
+                            socketFields: { data: JSON.parse(newValue) },
                             isInput: false,
                           });
                         }}
@@ -145,9 +145,11 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
                             stepId: step.id,
                             oldSocketId: socket.id,
                             newSocketId: socket.id,
-                            data: {
-                              name: "file.py",
-                              content: "print('Hello World')",
+                            socketFields: {
+                              data: {
+                                name: "file.py",
+                                content: "print('Hello World')",
+                              },
                             },
                             isInput: false,
                           });

@@ -17,9 +17,11 @@ const GraphFileEditor = () => {
       stepId: selectedStepId!,
       oldSocketId: selectedSocket!.id,
       newSocketId: selectedSocket!.id,
-      data: {
-        ...file,
-        name: newValue,
+      socketFields: {
+        data: {
+          ...file,
+          name: newValue,
+        },
       },
       isInput: false,
     });
@@ -35,9 +37,11 @@ const GraphFileEditor = () => {
         stepId: selectedStepId!,
         oldSocketId: selectedSocket!.id,
         newSocketId: selectedSocket!.id,
-        data: {
-          ...file,
-          content: newValue,
+        socketFields: {
+          data: {
+            ...file,
+            content: newValue,
+          },
         },
         isInput: false,
       });

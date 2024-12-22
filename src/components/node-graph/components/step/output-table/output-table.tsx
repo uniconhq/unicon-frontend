@@ -1,10 +1,10 @@
-import { OutputSocketConfig } from "@/api";
+import { OutputSocket } from "@/api";
 import { DataTable } from "@/components/ui/data-table";
 
 import { columns } from "./columns";
 
 type OwnProps = {
-  data: OutputSocketConfig[];
+  data: OutputSocket[];
 };
 
 const OutputTable: React.FC<OwnProps> = ({ data }) => {

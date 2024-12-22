@@ -1,10 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { OutputSocketConfig } from "@/api";
+import { OutputSocket } from "@/api";
 
 import { NodeSlot } from "../../node-slot";
 
-export const columns: ColumnDef<OutputSocketConfig>[] = [
+export const columns: ColumnDef<OutputSocket>[] = [
   {
     id: "handle",
     header: "",

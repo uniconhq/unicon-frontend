@@ -1,7 +1,7 @@
 import { Delete, Plus, Trash } from "lucide-react";
 import { useCallback, useContext } from "react";
 
-import { OutputSocketConfig, OutputStep } from "@/api";
+import { OutputSocket, OutputStep } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -36,34 +36,23 @@ const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
   const { isEditing } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
-  const updateStep = useCallback(
-    (newStep: OutputStep) => {
-      dispatch({
-        type: "UPDATE_STEP_EXCLUDING_SOCKETS",
-        stepId: step.id,
-        step: newStep,
-      });
-    },
-    [dispatch, step.id],
-  );
-
   const updateSocketMetadata = (
     metadataIndex: number,
-    newMetadata: OutputSocketConfig,
+    newMetadata: OutputSocket,
   ) => {
-    const newMetadataList = [...step.socket_metadata];
-    newMetadataList[metadataIndex] = newMetadata;
-    updateStep({ ...step, socket_metadata: newMetadataList });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id: _, ...newMetadataWithoutId } = newMetadata;
+    dispatch({
+      type: "UPDATE_STEP_SOCKET",
+      stepId: step.id,
+      oldSocketId: step.inputs[metadataIndex].id,
+      newSocketId: newMetadata.id,
+      isInput: true,
+      socketFields: newMetadataWithoutId,
+    });
   };
 
   const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
-    const socketMetadataIndex = step.socket_metadata.findIndex(
-      (socket) => socket.id === oldSocketId,
-    );
-    updateSocketMetadata(socketMetadataIndex, {
-      ...step.socket_metadata[socketMetadataIndex],
-      id: newSocketId,
-    });
     dispatch({
       type: "UPDATE_STEP_SOCKET",
       stepId: step.id,
@@ -86,18 +75,12 @@ const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
         socketId,
         isInput: true,
       });
-      updateStep({
-        ...step,
-        socket_metadata: step.socket_metadata.filter(
-          (socket) => socket.id !== socketId,
-        ),
-      });
     },
-    [dispatch, step, updateStep],
+    [dispatch, step],
   );
 
   if (!isEditing) {
-    return <OutputTable data={step.socket_metadata} />;
+    return <OutputTable data={step.inputs} />;
   }
 
   return (
@@ -115,7 +98,7 @@ const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {step.socket_metadata.map((socket, index) => (
+            {step.inputs.map((socket, index) => (
               <TableRow key={socket.id}>
                 <TableCell>
                   <NodeSlot
@@ -134,11 +117,11 @@ const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
                 </TableCell>
                 <TableCell>
                   <NodeInput
-                    value={socket.label || ""}
+                    value={socket.user_label || ""}
                     onChange={(newLabel) => {
                       updateSocketMetadata(index, {
                         ...socket,
-                        label: newLabel,
+                        user_label: newLabel,
                       });
                     }}
                   />

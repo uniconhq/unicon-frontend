@@ -1,7 +1,7 @@
 import { createContext, Dispatch } from "react";
 import { ImmerReducer } from "use-immer";
 
-import { File, GraphEdge, OutputStep, StepSocket, StepType } from "@/api";
+import { GraphEdge, OutputSocket, StepSocket, StepType } from "@/api";
 
 import { Step } from "./types";
 
@@ -43,7 +43,7 @@ type UpdateStepSocketAction = {
   oldSocketId: string;
   newSocketId: string;
   isInput: boolean;
-  data?: unknown;
+  socketFields?: Omit<Partial<OutputSocket>, "id">;
 };
 
 type DeleteStepSocketAction = {
@@ -125,7 +125,6 @@ const addStep = (state: GraphState, action: AddStepAction) => {
     case "OUTPUT_STEP":
       newStep = {
         ...baseStep,
-        socket_metadata: [],
       };
       break;
     case "INPUT_STEP":
@@ -217,15 +216,6 @@ const addStepSocket = (state: GraphState, action: AddStepSocketAction) => {
     });
   }
 
-  // todo: remove this when we change to store in sockets
-  if (step.type === "OUTPUT_STEP") {
-    (step as OutputStep).socket_metadata.push({
-      id: newSocketId,
-      label: "new output value",
-      public: false,
-      comparison: null,
-    });
-  }
   return state;
 };
 
@@ -281,10 +271,12 @@ const updateStepSocket = (
     return state;
   }
 
-  socket!.id = action.newSocketId;
-  if (action.data !== undefined) {
-    socket.data = action.data as string | number | boolean | File | null;
+  socket.id = action.newSocketId;
+  if (action.socketFields !== undefined) {
+    Object.assign(socket, action.socketFields);
+    // socket = { ...socket, ...action.socketFields };
   }
+  console.log(socket);
   // Update name of socket for all edges it uses
   state.edges.forEach((edge) => {
     if (
