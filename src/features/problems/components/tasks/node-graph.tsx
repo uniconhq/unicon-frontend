@@ -58,7 +58,10 @@ const NodeGraph: React.FC<OwnProps> = ({
             "grid-cols-2": graph.selectedSocket !== null,
           })}
         >
-          <GraphFileEditor />
+          <div className="h-[60vh]">
+            <GraphFileEditor />
+          </div>
+
           <GraphView />
         </div>
       </GraphDispatchContext.Provider>
