@@ -1,12 +1,11 @@
-import { current } from "immer";
 import { createContext, Dispatch } from "react";
 import { ImmerReducer } from "use-immer";
 
-import { File, GraphEdge, StepSocket, StepType } from "@/api";
+import { File, GraphEdge, OutputStep, StepSocket, StepType } from "@/api";
 
 import { Step } from "./types";
 
-type GraphState = {
+export type GraphState = {
   steps: Step[];
   edges: GraphEdge[];
   selectedStepId: number | null;
@@ -189,7 +188,7 @@ const updateStep = (state: GraphState, action: UpdateStepAction) => {
 const addStepSocket = (state: GraphState, action: AddStepSocketAction) => {
   const step = state.steps.find((node) => node.id === action.stepId);
   if (!step) {
-    console.error("Step not found");
+    console.error(`Add step socket: step ${action.stepId} not found`);
     return state;
   }
   const allIds = step.inputs
@@ -215,6 +214,16 @@ const addStepSocket = (state: GraphState, action: AddStepSocketAction) => {
     step.outputs.push({
       id: newSocketId,
       data: null,
+    });
+  }
+
+  // todo: remove this when we change to store in sockets
+  if (step.type === "OUTPUT_STEP") {
+    (step as OutputStep).socket_metadata.push({
+      id: newSocketId,
+      label: "new output value",
+      public: false,
+      comparison: null,
     });
   }
   return state;
@@ -291,8 +300,6 @@ const updateStepSocket = (
       edge.to_socket_id = action.newSocketId;
     }
   });
-
-  console.log(current(state));
 
   return state;
 };

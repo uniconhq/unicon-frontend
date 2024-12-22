@@ -104,6 +104,7 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
                         size={"sm"}
                         className="h-fit w-fit px-1 py-1"
                         variant={"secondary"}
+                        type="button"
                         onClick={() => {
                           dispatch({
                             type: "UPDATE_STEP_SOCKET",
@@ -137,6 +138,7 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
                         size={"sm"}
                         className="h-fit w-fit px-1 py-1"
                         variant={"secondary"}
+                        type="button"
                         onClick={() => {
                           dispatch({
                             type: "UPDATE_STEP_SOCKET",

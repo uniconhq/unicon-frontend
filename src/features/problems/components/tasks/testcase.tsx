@@ -45,6 +45,7 @@ const TestcaseDisplay: React.FC<OwnProps> = ({ testcase, index, task }) => {
         <NodeGraph
           steps={testcase.nodes.concat([userInputNode])}
           edges={testcase.edges}
+          isEditing={false}
         />
       </CollapsibleContent>
     </Collapsible>

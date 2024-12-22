@@ -1,76 +1,62 @@
 import { Editor } from "@monaco-editor/react";
 import { X } from "lucide-react";
-import { useContext } from "react";
-import { useDebouncedCallback } from "use-debounce";
+import { useState } from "react";
 
-import { File } from "@/api";
 import NodeInput from "@/components/node-graph/components/step/node-input";
 import { Button } from "@/components/ui/button";
 
-import { GraphContext, GraphDispatchContext } from "./graph-context";
+type OwnProps = {
+  fileName: string;
+  fileContent: string;
+  onUpdateFileName: (newFileName: string) => void;
+  onUpdateFileContent: (newFileContent: string) => void;
+  onDeselectFile: () => void;
+  isEditing: boolean;
+};
 
-const FileEditor = () => {
-  const { selectedStepId, selectedSocket, isEditing } =
-    useContext(GraphContext)!;
-  const dispatch = useContext(GraphDispatchContext)!;
+// Assumes debouncing is handled by the parent component onUpdateFileName and onUpdateFileContent
+const FileEditor: React.FC<OwnProps> = ({
+  fileName,
+  fileContent,
+  onUpdateFileName,
+  onUpdateFileContent,
+  onDeselectFile,
+  isEditing,
+}) => {
+  const [displayFileName, setDisplayFilename] = useState(fileName);
+  const [displayFileContent, setDisplayFileValue] = useState(fileContent);
 
   const updateFileName = (newValue: string) => {
-    dispatch({
-      type: "UPDATE_STEP_SOCKET",
-      stepId: selectedStepId!,
-      oldSocketId: selectedSocket!.id,
-      newSocketId: selectedSocket!.id,
-      data: {
-        ...file,
-        name: newValue,
-      },
-      isInput: false,
-    });
+    setDisplayFilename(newValue);
+    onUpdateFileName(newValue);
   };
 
-  const updateFileContent = useDebouncedCallback(
-    (newValue: string | undefined) => {
-      if (newValue === undefined) {
-        return;
-      }
-      dispatch({
-        type: "UPDATE_STEP_SOCKET",
-        stepId: selectedStepId!,
-        oldSocketId: selectedSocket!.id,
-        newSocketId: selectedSocket!.id,
-        data: {
-          ...file,
-          content: newValue,
-        },
-        isInput: false,
-      });
-    },
-    1000,
-  );
-
-  const deselectFile = () => {
-    dispatch({ type: "DESELECT_STEP" });
+  const updateFileContent = (newValue: string | undefined) => {
+    if (newValue === undefined) {
+      return;
+    }
+    setDisplayFileValue(newValue);
+    onUpdateFileContent(newValue);
   };
-
-  if (selectedSocket === null || selectedStepId === null) {
-    return null;
-  }
-
-  const file = selectedSocket.data as File;
 
   return (
     <div className="flex flex-col gap-2">
+      {/* file tab */}
       <div className="flex w-fit gap-2 border-b border-purple-200 py-1">
         {isEditing ? (
           <NodeInput
-            key={file.name}
-            value={file.name}
+            key={displayFileName}
+            value={displayFileName}
             onChange={updateFileName}
           />
         ) : (
-          <span className="px-1 text-xs">{file.name}</span>
+          <span className="px-1 text-xs">{displayFileName}</span>
         )}
-        <Button className="h-fit p-1" variant={"ghost"} onClick={deselectFile}>
+        <Button
+          className="h-fit p-1"
+          variant={"ghost"}
+          onClick={onDeselectFile}
+        >
           <X />
         </Button>
       </div>
@@ -82,7 +68,7 @@ const FileEditor = () => {
           minimap: { enabled: false },
           ...(!isEditing ? { readOnly: true } : {}),
         }}
-        value={file.content}
+        value={displayFileContent}
         onChange={updateFileContent}
       />
     </div>

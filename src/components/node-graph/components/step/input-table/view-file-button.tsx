@@ -10,10 +10,10 @@ type OwnProps = {
 };
 
 const ViewFileButton: React.FC<OwnProps> = ({ step, socket }) => {
-  console.log({ step, socket });
   const dispatch = useContext(GraphDispatchContext)!;
   return (
     <Button
+      type="button"
       size={"sm"}
       className="h-fit w-fit px-1 py-1"
       variant={"secondary"}

@@ -7,41 +7,46 @@ import { useImmerReducer } from "use-immer";
 import { GraphEdge } from "@/api";
 import { cn } from "@/lib/utils";
 
-import FileEditor from "./file-editor";
 import {
   GraphAction,
   GraphContext,
   GraphDispatchContext,
   graphReducer,
 } from "./graph-context";
+import GraphFileEditor from "./graph-file-editor";
 import GraphView from "./graph-view";
 import { Step } from "./types";
 
 type OwnProps = {
   steps: Step[];
   edges: GraphEdge[];
+  isEditing: boolean;
+  onChange?: (action: GraphAction) => void;
 };
 
 const NodeGraph: React.FC<OwnProps> = ({
   steps: initialSteps,
   edges: initialEdges,
+  isEditing,
+  onChange,
 }) => {
   const [graph, dispatch] = useImmerReducer(graphReducer, {
     steps: initialSteps,
     edges: initialEdges,
     selectedSocket: null,
     selectedStepId: null,
-    // TODO: make this a parameter
-    isEditing: true,
+    isEditing,
   });
 
   const wrappedDispatch = useCallback(
     (action: GraphAction) => {
       console.log("dispatching", action);
-
       dispatch(action);
+      if (onChange) {
+        onChange(action);
+      }
     },
-    [dispatch],
+    [dispatch, onChange],
   );
 
   return (
@@ -53,7 +58,7 @@ const NodeGraph: React.FC<OwnProps> = ({
             "grid-cols-2": graph.selectedSocket !== null,
           })}
         >
-          <FileEditor />
+          <GraphFileEditor />
           <GraphView />
         </div>
       </GraphDispatchContext.Provider>

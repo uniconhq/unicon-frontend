@@ -127,14 +127,12 @@ const GraphView: React.FC = () => {
 
   const onNodesChange: OnNodesChange<Node<Step>> = useCallback(
     (changes) => {
-      console.log({ nodeChanges: changes });
       setReactFlowNodes((nds) => applyNodeChanges(changes, nds));
     },
     [setReactFlowNodes],
   );
 
   const onEdgesChange: OnEdgesChange<Edge> = useCallback((changes) => {
-    console.log({ edgeChanges: changes });
     setReactFlowEdges((eds) => applyEdgeChanges(changes, eds));
   }, []);
 

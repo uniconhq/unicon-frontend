@@ -76,30 +76,7 @@ const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
 
   const addInputSocket = useCallback(() => {
     dispatch({ type: "ADD_STEP_SOCKET", stepId: step.id, isInput: true });
-
-    // generate unique id
-    let newSocketId = "DATA.IN.TEMP";
-    let i = 1;
-
-    while (
-      step.socket_metadata.map((socket) => socket.id).includes(newSocketId)
-    ) {
-      newSocketId = `DATA.IN.TEMP${i}`;
-      i++;
-    }
-    updateStep({
-      ...step,
-      socket_metadata: [
-        ...step.socket_metadata,
-        {
-          id: newSocketId,
-          label: "new output value",
-          public: false,
-          comparison: null,
-        },
-      ],
-    });
-  }, [dispatch, step, updateStep]);
+  }, [dispatch, step]);
 
   const deleteSocket = useCallback(
     (socketId: string) => () => {
