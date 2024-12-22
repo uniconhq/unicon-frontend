@@ -1,4 +1,9 @@
-import { OutputStep, ProcessedResult, Status, Testcase } from "@/api";
+import {
+  OutputStep,
+  Status,
+  Testcase,
+  TestcaseResult as TestcaseResultType,
+} from "@/api";
 import {
   Accordion,
   AccordionContent,
@@ -12,7 +17,7 @@ import SocketResultTable from "./table/socket-result-table";
 
 type OwnProps = {
   index: number;
-  result: ProcessedResult;
+  result: TestcaseResultType;
   testcase: Testcase;
 };
 
