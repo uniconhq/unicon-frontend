@@ -2,6 +2,7 @@ import { createContext, Dispatch } from "react";
 import { ImmerReducer } from "use-immer";
 
 import { GraphEdge, OutputSocket, StepSocket, StepType } from "@/api";
+import { isFile } from "@/lib/types";
 
 import { Step } from "./types";
 
@@ -175,13 +176,18 @@ const removeStep = (state: GraphState, action: RemoveStepAction) => {
     (edge) =>
       edge.from_node_id !== action.stepId && edge.to_node_id !== action.stepId,
   );
+
+  // if file editor is open for a socket in this step, deselect socket to close it
+  if (state.selectedStepId === action.stepId) {
+    state.selectedStepId = null;
+    state.selectedSocket = null;
+  }
   return state;
 };
 
 const updateStep = (state: GraphState, action: UpdateStepAction) => {
   const stepIndex = state.steps.findIndex((node) => node.id === action.stepId);
   state.steps[stepIndex] = action.step;
-  return state;
 };
 
 const addStepSocket = (state: GraphState, action: AddStepSocketAction) => {
@@ -248,6 +254,16 @@ const deleteStepSocket = (
       ),
   );
 
+  // if this socket is open as a file, deselect it
+  if (
+    state.selectedStepId === action.stepId &&
+    state.selectedSocket?.id === action.socketId
+  ) {
+    state.selectedStepId = null;
+    state.selectedSocket = null;
+  }
+  return state;
+
   return state;
 };
 
@@ -274,9 +290,7 @@ const updateStepSocket = (
   socket.id = action.newSocketId;
   if (action.socketFields !== undefined) {
     Object.assign(socket, action.socketFields);
-    // socket = { ...socket, ...action.socketFields };
   }
-  console.log(socket);
   // Update name of socket for all edges it uses
   state.edges.forEach((edge) => {
     if (
@@ -292,6 +306,16 @@ const updateStepSocket = (
       edge.to_socket_id = action.newSocketId;
     }
   });
+
+  // if this socket is open as a file and it is no longer a file, deselect it
+  if (
+    state.selectedStepId === action.stepId &&
+    state.selectedSocket?.id === action.oldSocketId &&
+    !isFile(action.socketFields?.data)
+  ) {
+    state.selectedStepId = null;
+    state.selectedSocket = null;
+  }
 
   return state;
 };
