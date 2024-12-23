@@ -236,7 +236,7 @@ const CreateProgramming = () => {
                 Add input
               </Button>
               {form.getValues("required_inputs").map((input, index) => (
-                <Collapsible className="w-full">
+                <Collapsible className="w-full" key={input.id}>
                   <div
                     className="flex gap-4 rounded-md border p-2"
                     key={input.id}
