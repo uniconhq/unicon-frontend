@@ -188,6 +188,7 @@ const removeStep = (state: GraphState, action: RemoveStepAction) => {
 const updateStep = (state: GraphState, action: UpdateStepAction) => {
   const stepIndex = state.steps.findIndex((node) => node.id === action.stepId);
   state.steps[stepIndex] = action.step;
+  return state;
 };
 
 const addStepSocket = (state: GraphState, action: AddStepSocketAction) => {
