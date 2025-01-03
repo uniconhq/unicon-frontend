@@ -1,12 +1,11 @@
-import { Plus, Trash } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useCallback, useContext } from "react";
 
-import { InputStep } from "@/api";
+import { InputStep, StepSocket } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -15,12 +14,10 @@ import {
   GraphContext,
   GraphDispatchContext,
 } from "@/features/problems/components/tasks/graph-context";
-import { isFile } from "@/lib/types";
+import { isControlSocket } from "@/utils/socket";
 
-import { NodeSlot } from "../../node-slot";
 import InputTable from "../input-table/input-table";
-import ViewFileButton from "../input-table/view-file-button";
-import NodeInput from "../node-input";
+import InputMetadataRow from "./input-metadata-row";
 
 type OwnProps = {
   step: InputStep;
@@ -56,6 +53,22 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
     });
   };
 
+  const handleSocketChangeToFile = (socket: StepSocket) => () => {
+    dispatch({
+      type: "UPDATE_STEP_SOCKET",
+      stepId: step.id,
+      oldSocketId: socket.id,
+      newSocketId: socket.id,
+      socketFields: {
+        data: {
+          name: "file.py",
+          content: "print('Hello World')",
+        },
+      },
+      isInput: false,
+    });
+  };
+
   const addOutputSocket = useCallback(() => {
     dispatch({ type: "ADD_STEP_SOCKET", stepId: step.id, isInput: false });
   }, [dispatch, step.id]);
@@ -63,6 +76,28 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
   if (!showEditElements) {
     return <InputTable data={step.outputs} step={step} />;
   }
+
+  const onChangeValue = (socket: StepSocket) => (newValue: string) => {
+    dispatch({
+      type: "UPDATE_STEP_SOCKET",
+      stepId: step.id,
+      oldSocketId: socket.id,
+      newSocketId: socket.id,
+      socketFields: { data: JSON.parse(newValue) },
+      isInput: false,
+    });
+  };
+
+  const onChangeToValue = (socket: StepSocket) => () => {
+    dispatch({
+      type: "UPDATE_STEP_SOCKET",
+      stepId: step.id,
+      oldSocketId: socket.id,
+      newSocketId: socket.id,
+      socketFields: { data: "" },
+      isInput: false,
+    });
+  };
 
   return (
     <div>
@@ -78,98 +113,17 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
           </TableHeader>
           <TableBody>
             {step.outputs.map((socket) => (
-              <TableRow key={socket.id}>
-                <TableCell>
-                  <Button
-                    size={"sm"}
-                    className="h-fit w-fit px-1 py-1"
-                    variant={"secondary"}
-                    onClick={deleteSocket(socket.id)}
-                    type="button"
-                  >
-                    <Trash className="h-2 w-2" />
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <NodeInput
-                    value={socket.id}
-                    onChange={handleEditSocketId(socket.id)}
-                  />
-                </TableCell>
-                <TableCell>
-                  {socket.data && isFile(socket.data) ? (
-                    <div className="flex gap-2">
-                      <ViewFileButton step={step} socket={socket} />
-                      <Button
-                        size={"sm"}
-                        className="h-fit w-fit px-1 py-1"
-                        variant={"secondary"}
-                        type="button"
-                        onClick={() => {
-                          dispatch({
-                            type: "UPDATE_STEP_SOCKET",
-                            stepId: step.id,
-                            oldSocketId: socket.id,
-                            newSocketId: socket.id,
-                            socketFields: { data: "" },
-                            isInput: false,
-                          });
-                        }}
-                      >
-                        Change to value
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex gap-2">
-                      <NodeInput
-                        value={JSON.stringify(socket.data)}
-                        onChange={(newValue) => {
-                          dispatch({
-                            type: "UPDATE_STEP_SOCKET",
-                            stepId: step.id,
-                            oldSocketId: socket.id,
-                            newSocketId: socket.id,
-                            socketFields: { data: JSON.parse(newValue) },
-                            isInput: false,
-                          });
-                        }}
-                      />
-                      <Button
-                        size={"sm"}
-                        className="h-fit w-fit px-1 py-1"
-                        variant={"secondary"}
-                        type="button"
-                        onClick={() => {
-                          dispatch({
-                            type: "UPDATE_STEP_SOCKET",
-                            stepId: step.id,
-                            oldSocketId: socket.id,
-                            newSocketId: socket.id,
-                            socketFields: {
-                              data: {
-                                name: "file.py",
-                                content: "print('Hello World')",
-                              },
-                            },
-                            isInput: false,
-                          });
-                        }}
-                      >
-                        Change to file
-                      </Button>
-                    </div>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <NodeSlot
-                    key={socket.id}
-                    id={socket.id}
-                    label=""
-                    type="source"
-                    hideLabel
-                  />
-                </TableCell>
-              </TableRow>
+              <InputMetadataRow
+                key={socket.id}
+                socket={socket}
+                onDelete={deleteSocket(socket.id)}
+                onEditSocketId={handleEditSocketId(socket.id)}
+                onChangeToFile={handleSocketChangeToFile(socket)}
+                onChangeToValue={onChangeToValue(socket)}
+                onChangeValue={onChangeValue(socket)}
+                step={step}
+                isEditable={showEditElements && !isControlSocket(socket)}
+              />
             ))}
           </TableBody>
         </Table>
