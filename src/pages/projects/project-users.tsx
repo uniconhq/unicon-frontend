@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Params, useParams } from "react-router-dom";
 
+import { useProjectId } from "@/features/projects/hooks/use-id";
 import {
   getProjectById,
   getProjectUsersById,
@@ -8,10 +8,10 @@ import {
 import UsersTable from "@/features/projects/table/users/users-table";
 
 const ProjectRoles = () => {
-  const { id } = useParams<Params<"id">>();
+  const id = useProjectId();
   const { data: project, isLoading } = useQuery(getProjectById(Number(id)));
   const { data: users, isLoading: isLoadingUsers } = useQuery(
-    getProjectUsersById(Number(id)),
+    getProjectUsersById(id),
   );
 
   if (isLoading) {

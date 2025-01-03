@@ -2,13 +2,8 @@ import "@/index.css";
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
-import App from "@/App.tsx";
 import Layout from "@/components/layout/layout.tsx";
 import CreateSubmission from "@/pages/create-submission";
 import Error from "@/pages/error";
@@ -35,76 +30,71 @@ import CreateMultipleResponse from "./pages/tasks/create-multiple-response";
 import CreateProgramming from "./pages/tasks/create-programming";
 import CreateShortAnswer from "./pages/tasks/create-short-answer";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        path: "/",
-        element: <AuthenticatedPage />,
-        children: [
-          { path: "/", element: <Navigate to="/projects" /> },
-
-          { path: "/organisations", element: <Organisations /> },
-          { path: "/organisations/:id", element: <Organisation /> },
-          { path: "/organisations/new", element: <CreateOrganisation /> },
-          { path: "/projects", element: <Projects /> },
-          { path: "/projects/:projectId", element: <Project /> },
-          { path: "/projects/:id/roles", element: <ProjectRoles /> },
-          { path: "/projects/:id/users", element: <ProjectUsers /> },
-          { path: "/projects/:id/problems/new", element: <CreateProblem /> },
-          { path: "/projects/:projectId/problems/:id", element: <Problem /> },
-          {
-            path: "/projects/:projectId/problems/:problemId/edit",
-            element: <EditProblem />,
-          },
-          {
-            path: "/projects/:projectId/problems/:problemId/tasks/new/multiple-choice",
-            element: <CreateMultipleChoice />,
-          },
-          {
-            path: "/projects/:projectId/problems/:problemId/tasks/new/multiple-response",
-            element: <CreateMultipleResponse />,
-          },
-          {
-            path: "/projects/:projectId/problems/:problemId/tasks/new/short-answer",
-            element: <CreateShortAnswer />,
-          },
-          {
-            path: "/projects/:projectId/problems/:problemId/tasks/new/programming",
-            element: <CreateProgramming />,
-          },
-          {
-            path: "/projects/:projectId/problems/:id/submit",
-            element: <CreateSubmission />,
-          },
-          {
-            path: "/projects/:projectId/submissions",
-            element: <Submissions />,
-          },
-          {
-            path: "/projects/:projectId/submissions/:id",
-            element: <SubmissionResults />,
-          },
-          {
-            path: "/organisations/:id/projects/new",
-            element: <CreateProject />,
-          },
-        ],
-      },
-      { path: "/old", element: <App /> },
-      { path: "/login", element: <Login /> },
-      { path: "/signup", element: <SignUp /> },
-    ],
-    errorElement: <Error />,
-  },
-]);
+const router = (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Layout />} errorElement={<Error />}>
+        <Route element={<AuthenticatedPage />}>
+          <Route index element={<Navigate to="/projects" />} />
+          {/* Organisation routes */}
+          <Route path="organisations">
+            <Route index element={<Organisations />} />
+            <Route path="new" element={<CreateOrganisation />} />
+            <Route path=":id">
+              <Route index element={<Organisation />} />
+              <Route path="projects/new" element={<CreateProject />} />
+            </Route>
+          </Route>
+          {/* Project routes */}
+          <Route path="/projects">
+            <Route index element={<Projects />} />
+            <Route path=":projectId">
+              <Route index element={<Project />} />
+              <Route path="roles" element={<ProjectRoles />} />
+              <Route path="users" element={<ProjectUsers />} />
+              <Route path="submissions">
+                <Route index element={<Submissions />} />
+                <Route path=":id" element={<SubmissionResults />} />
+              </Route>
+              {/* Problem routes */}
+              <Route path="problems">
+                <Route path="new" element={<CreateProblem />} />
+                <Route path=":problemId">
+                  <Route index element={<Problem />} />
+                  <Route path="edit" element={<EditProblem />} />
+                  <Route
+                    path="submissions/new"
+                    element={<CreateSubmission />}
+                  />
+                  <Route path="tasks/new">
+                    <Route
+                      path="multiple-choice"
+                      element={<CreateMultipleChoice />}
+                    />
+                    <Route
+                      path="multiple-response"
+                      element={<CreateMultipleResponse />}
+                    />
+                    <Route
+                      path="short-answer"
+                      element={<CreateShortAnswer />}
+                    />
+                    <Route path="programming" element={<CreateProgramming />} />
+                  </Route>
+                </Route>
+              </Route>
+            </Route>
+          </Route>
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Route>
+    </Routes>
+  </BrowserRouter>
+);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <StoreProvider>
-      <RouterProvider router={router} />
-    </StoreProvider>
+    <StoreProvider>{router}</StoreProvider>
   </StrictMode>,
 );

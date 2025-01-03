@@ -1,16 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { Pencil, Plus } from "lucide-react";
-import { Link, type Params, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { Task } from "@/components/tasks/task";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProblemById } from "@/features/problems/queries";
+import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
 
 const Problem = () => {
-  const { id, projectId } = useParams<Params<"id" | "projectId">>();
-  const { data } = useQuery(getProblemById(Number(id)));
-  const submitLink = `/projects/${projectId}/problems/${id}/submit`;
+  const projectId = useProjectId();
+  const id = useProblemId();
+  const { data } = useQuery(getProblemById(id));
+  const submitLink = `/projects/${projectId}/problems/${id}/submissions/new`;
   const editLink = `/projects/${projectId}/problems/${id}/edit`;
 
   return (

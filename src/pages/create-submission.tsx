@@ -1,13 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Params, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import TextareaField from "@/components/form/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useCreateSubmission } from "@/features/problems/queries";
-import { useProjectId } from "@/features/projects/hooks/use-id";
+import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
 import { json } from "@/utils/json";
 
 const submissionFormSchema = z.object({
@@ -30,7 +30,7 @@ const submissionFormDefault = {
 };
 
 const CreateSubmission = () => {
-  const { id } = useParams<Params<"id">>();
+  const id = useProblemId();
   const projectId = useProjectId();
   const createContestSubmissionMutation = useCreateSubmission(Number(id));
   const navigate = useNavigate();

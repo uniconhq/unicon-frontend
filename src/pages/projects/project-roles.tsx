@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
-import { Link, Params, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
+import { useProjectId } from "@/features/projects/hooks/use-id";
 import {
   getProjectById,
   getProjectRolesById,
@@ -10,10 +11,10 @@ import {
 import RolesTable from "@/features/projects/table/roles/roles-table";
 
 const ProjectRoles = () => {
-  const { id } = useParams<Params<"id">>();
+  const id = useProjectId();
   const { data: project, isLoading } = useQuery(getProjectById(Number(id)));
   const { data: roles, isLoading: isLoadingRoles } = useQuery(
-    getProjectRolesById(Number(id)),
+    getProjectRolesById(id),
   );
 
   if (isLoading) {
