@@ -25,9 +25,6 @@ const Project = () => {
   return (
     <div className="m-auto flex w-full max-w-5xl flex-col gap-8 p-4 px-8">
       {newProblemOpen && <CreateProblemModal setOpen={setNewProblemOpen} />}
-      <div className="flex flex-col">
-        <h2 className="text-3xl font-semibold">{project.name}</h2>
-      </div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Problems</h2>
         <Button

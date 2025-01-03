@@ -63,14 +63,14 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex w-full flex-col gap-8 px-8">
+        <div className="flex w-full flex-col gap-8 px-8 py-6">
           <div className="flex items-center justify-between">
-            <h1 className="p-4 text-2xl font-semibold">Edit problem</h1>
+            <h1 className="text-2xl font-semibold">Edit problem</h1>
             <Button variant="primary">Save</Button>
           </div>
           {error && <ErrorAlert message={error} />}
           <div className="flex w-full items-start">
-            <div className="sticky top-0 px-4">
+            <div className="sticky top-0">
               <h2 className="min-w-[200px] text-lg font-medium">
                 Problem details
               </h2>

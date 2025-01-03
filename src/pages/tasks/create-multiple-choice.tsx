@@ -127,9 +127,9 @@ const CreateMultipleChoice = () => {
   };
 
   return (
-    <div className="flex w-full flex-col gap-8 px-8">
+    <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center justify-between">
-        <h1 className="p-4 text-2xl font-semibold">New multiple choice task</h1>
+        <h1 className="text-2xl font-semibold">New multiple choice task</h1>
       </div>
       <Form {...form}>
         <form

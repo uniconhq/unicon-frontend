@@ -181,9 +181,9 @@ const CreateProgramming = () => {
   );
 
   return (
-    <div className="flex w-full flex-col gap-8 px-8">
+    <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center justify-between">
-        <h1 className="p-4 text-2xl font-semibold">New programming task</h1>
+        <h1 className="text-2xl font-semibold">New programming task</h1>
       </div>
       <Form {...form}>
         <form
@@ -294,7 +294,7 @@ const CreateProgramming = () => {
           </FormSection>
           <hr />
           <div className="flex w-full flex-col items-start">
-            <div className="sticky top-0 w-full px-4">
+            <div className="sticky top-0 w-full">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-medium">Testcases</h2>
                 <Button variant="secondary" type="button" onClick={addTestcase}>
@@ -383,7 +383,7 @@ const CreateProgramming = () => {
             </div>
           </div>
 
-          <div className="ml-4 mt-12">
+          <div className="mt-12">
             <Button className="bg-purple-600 text-white hover:bg-purple-600 hover:bg-opacity-80">
               Submit
             </Button>

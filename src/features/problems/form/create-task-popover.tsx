@@ -21,28 +21,28 @@ const CreateTaskPopover: React.FC<PropsWithChildren> = ({ children }) => {
       <PopoverContent>
         <div className="flex flex-col">
           <Link
-            to={`/projects/${projectId}/problems/${id}/tasks/new/programming`}
+            to={`/projects/${projectId}/problems/${id}/edit/tasks/new/programming`}
           >
             <Button variant="ghost" className="w-full justify-start">
               Programming
             </Button>
           </Link>
           <Link
-            to={`/projects/${projectId}/problems/${id}/tasks/new/multiple-choice`}
+            to={`/projects/${projectId}/problems/${id}/edit/tasks/new/multiple-choice`}
           >
             <Button variant="ghost" className="w-full justify-start">
               Multiple choice
             </Button>
           </Link>
           <Link
-            to={`/projects/${projectId}/problems/${id}/tasks/new/multiple-response`}
+            to={`/projects/${projectId}/problems/${id}/edit/tasks/new/multiple-response`}
           >
             <Button variant="ghost" className="w-full justify-start">
               Multiple response
             </Button>
           </Link>
           <Link
-            to={`/projects/${projectId}/problems/${id}/tasks/new/short-answer`}
+            to={`/projects/${projectId}/problems/${id}/edit/tasks/new/short-answer`}
           >
             <Button variant="ghost" className="w-full justify-start">
               Short answer

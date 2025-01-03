@@ -16,7 +16,7 @@ const Problem = () => {
   const editLink = `/projects/${projectId}/problems/${id}/edit`;
 
   return (
-    <div className="flex w-full flex-col gap-8 py-6">
+    <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex justify-between">
         <div>
           <h1 className="text-2xl font-semibold">

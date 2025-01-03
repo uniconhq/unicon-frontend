@@ -9,7 +9,7 @@ const Submissions = () => {
   const { data, isLoading } = useQuery(getAllProjectSubmissions(projectId));
 
   return (
-    <div className="flex w-full flex-col gap-8 p-4 px-8">
+    <div className="flex w-full flex-col gap-8 px-8 py-6">
       <h1 className="text-2xl font-semibold">Submissions</h1>
       {!isLoading && data && <SubmissionsTable data={data} />}
     </div>

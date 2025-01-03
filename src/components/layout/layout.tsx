@@ -8,6 +8,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { getUserProfile } from "@/features/auth/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
+import Breadcrumb from "./breadcrumb";
+
 const Layout: React.FC<PropsWithChildren> = () => {
   const { data: userProfile, isLoading } = useQuery(getUserProfile());
 
@@ -36,6 +38,7 @@ const Layout: React.FC<PropsWithChildren> = () => {
               <div className="flex justify-between">
                 <SidebarTrigger />
               </div>
+              <Breadcrumb />
               <Outlet />
             </main>
           </SidebarProvider>

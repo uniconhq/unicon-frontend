@@ -13,7 +13,7 @@ type OwnProps = {
 
 const EditTasksDisplay: React.FC<OwnProps> = ({ tasks }) => {
   return (
-    <div className="p-4">
+    <div>
       <h2 className="min-w-[200px] text-lg font-medium">Tasks</h2>
       {tasks.length === 0 && (
         <div className="mt-4 rounded-sm bg-secondary p-4 text-center shadow-inner">
