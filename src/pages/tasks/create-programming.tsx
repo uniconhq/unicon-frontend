@@ -126,12 +126,12 @@ const CreateProgramming = () => {
   };
 
   const addRequiredInput = () => {
-    let uniqueId = "DATA.OUT.TEMP";
+    let uniqueId = "DATA.TEMP";
     let i = 0;
     while (
       form.watch().required_inputs.some((input) => input.id === uniqueId)
     ) {
-      uniqueId = `DATA.OUT.TEMP${i}`;
+      uniqueId = `DATA.TEMP${i}`;
       i++;
     }
     form.setValue("required_inputs", [
