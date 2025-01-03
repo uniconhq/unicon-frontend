@@ -10,7 +10,7 @@ export type GraphState = {
   steps: Step[];
   edges: GraphEdge[];
   selectedStepId: number | null;
-  selectedSocket: StepSocket | null;
+  selectedSocketId: string | null;
   isEditing: boolean;
 };
 
@@ -180,7 +180,7 @@ const removeStep = (state: GraphState, action: RemoveStepAction) => {
   // if file editor is open for a socket in this step, deselect socket to close it
   if (state.selectedStepId === action.stepId) {
     state.selectedStepId = null;
-    state.selectedSocket = null;
+    state.selectedSocketId = null;
   }
   return state;
 };
@@ -258,10 +258,10 @@ const deleteStepSocket = (
   // if this socket is open as a file, deselect it
   if (
     state.selectedStepId === action.stepId &&
-    state.selectedSocket?.id === action.socketId
+    state.selectedSocketId === action.socketId
   ) {
     state.selectedStepId = null;
-    state.selectedSocket = null;
+    state.selectedSocketId = null;
   }
   return state;
 
@@ -311,11 +311,11 @@ const updateStepSocket = (
   // if this socket is open as a file and it is no longer a file, deselect it
   if (
     state.selectedStepId === action.stepId &&
-    state.selectedSocket?.id === action.oldSocketId &&
+    state.selectedSocketId === action.oldSocketId &&
     !isFile(action.socketFields?.data)
   ) {
     state.selectedStepId = null;
-    state.selectedSocket = null;
+    state.selectedSocketId = null;
   }
 
   return state;
@@ -341,14 +341,14 @@ const selectSocket = (state: GraphState, action: SelectStepAction) => {
   }
 
   state.selectedStepId = action.stepId;
-  state.selectedSocket = selectedSocket;
+  state.selectedSocketId = selectedSocket.id;
 
   return state;
 };
 
 const deselectSocket = (state: GraphState) => {
   state.selectedStepId = null;
-  state.selectedSocket = null;
+  state.selectedSocketId = null;
   return state;
 };
 

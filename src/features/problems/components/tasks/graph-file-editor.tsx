@@ -7,8 +7,9 @@ import FileEditor from "./file-editor";
 import { GraphContext, GraphDispatchContext } from "./graph-context";
 
 const GraphFileEditor = () => {
-  const { selectedStepId, selectedSocket, isEditing } =
+  const { selectedStepId, selectedSocketId, isEditing, steps } =
     useContext(GraphContext)!;
+
   const dispatch = useContext(GraphDispatchContext)!;
 
   const updateFileName = (newValue: string) => {
@@ -52,6 +53,21 @@ const GraphFileEditor = () => {
   const deselectFile = () => {
     dispatch({ type: "DESELECT_STEP" });
   };
+
+  const selectedStep = steps.filter((step) => step.id === selectedStepId)[0];
+  if (selectedStep === undefined) {
+    return null;
+  }
+
+  // At the moment, you can only select output sockets
+  // as they would have possibly a file for editing
+  const selectedSocket = selectedStep.outputs.filter(
+    (socket) => socket.id === selectedSocketId,
+  )[0];
+
+  if (selectedSocket === undefined) {
+    return null;
+  }
 
   if (selectedSocket === null || selectedStepId === null) {
     return null;

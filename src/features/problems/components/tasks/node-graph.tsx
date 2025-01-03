@@ -33,7 +33,7 @@ const NodeGraph: React.FC<OwnProps> = ({
   const [graph, dispatch] = useImmerReducer(graphReducer, {
     steps: initialSteps,
     edges: initialEdges,
-    selectedSocket: null,
+    selectedSocketId: null,
     selectedStepId: null,
     isEditing,
   });
@@ -54,10 +54,10 @@ const NodeGraph: React.FC<OwnProps> = ({
         <div
           className={cn("grid gap-1", {
             // show editor only if a socket is selected
-            "grid-cols-2": graph.selectedSocket !== null,
+            "grid-cols-2": graph.selectedSocketId !== null,
           })}
         >
-          {graph.selectedSocket !== null && (
+          {graph.selectedSocketId !== null && (
             <div className="h-[60vh]">
               <GraphFileEditor />
             </div>

@@ -349,7 +349,7 @@ const CreateProgramming = () => {
                               steps: target.nodes.concat({ ...userInputNode }),
                               edges: target.edges,
                               selectedStepId: null,
-                              selectedSocket: null,
+                              selectedSocketId: null,
                               isEditing: true,
                             },
                             (draft) => {
