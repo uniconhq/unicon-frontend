@@ -191,6 +191,8 @@ const updateStep = (state: GraphState, action: UpdateStepAction) => {
   return state;
 };
 
+// Note: we only create data sockets with this method.
+// All control sockets are created on initialisation and should not be changed
 const addStepSocket = (state: GraphState, action: AddStepSocketAction) => {
   const step = state.steps.find((node) => node.id === action.stepId);
   if (!step) {
@@ -202,7 +204,7 @@ const addStepSocket = (state: GraphState, action: AddStepSocketAction) => {
     .concat(step.outputs.map((socket) => socket.id));
 
   // generate a unique id
-  const PREFIX = action.isInput ? "DATA.IN." : "DATA.OUT.";
+  const PREFIX = "DATA.";
   let newSocketId = PREFIX + "TEMP";
   let i = 1;
 
