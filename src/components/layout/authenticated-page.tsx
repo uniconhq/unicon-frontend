@@ -9,7 +9,6 @@ const AuthenticatedPage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!user && !isLoading) {
-      console.log("ran");
       navigate("/login");
     }
   }, [user, navigate, isLoading]);

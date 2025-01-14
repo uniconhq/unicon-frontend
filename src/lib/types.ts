@@ -1,3 +1,13 @@
+import {
+  IfElseStep,
+  InputStep,
+  LoopStep,
+  ObjectAccessStep,
+  OutputStep,
+  PyRunFunctionStep,
+  StringMatchStep,
+} from "@/api";
+
 export enum NodeType {
   USER,
   GROUP,
@@ -45,3 +55,12 @@ export type NodeData =
   | GroupNodeData
   | TaskNodeData
   | ArtifactNodeData;
+
+export type Step =
+  | OutputStep
+  | InputStep
+  | PyRunFunctionStep
+  | LoopStep
+  | IfElseStep
+  | StringMatchStep
+  | ObjectAccessStep;

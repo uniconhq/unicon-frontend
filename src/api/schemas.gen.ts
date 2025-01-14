@@ -55,11 +55,71 @@ export const Body_login_auth_token_postSchema = {
     title: 'Body_login_auth_token_post'
 } as const;
 
+export const ComparisonSchema = {
+    properties: {
+        operator: {
+            '$ref': '#/components/schemas/Operator'
+        },
+        value: {
+            title: 'Value'
+        }
+    },
+    type: 'object',
+    required: ['operator', 'value'],
+    title: 'Comparison'
+} as const;
+
+export const ComputeContextSchema = {
+    properties: {
+        language: {
+            '$ref': '#/components/schemas/Language'
+        },
+        time_limit_secs: {
+            type: 'integer',
+            title: 'Time Limit Secs'
+        },
+        memory_limit_mb: {
+            type: 'integer',
+            title: 'Memory Limit Mb'
+        },
+        slurm: {
+            type: 'boolean',
+            title: 'Slurm',
+            default: false
+        },
+        slurm_options: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Slurm Options',
+            default: []
+        },
+        extra_options: {
+            anyOf: [
+                {
+                    additionalProperties: {
+                        type: 'string'
+                    },
+                    type: 'object'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Extra Options'
+        }
+    },
+    type: 'object',
+    required: ['language', 'time_limit_secs', 'memory_limit_mb'],
+    title: 'ComputeContext'
+} as const;
+
 export const FileSchema = {
     properties: {
-        file_name: {
+        name: {
             type: 'string',
-            title: 'File Name'
+            title: 'Name'
         },
         content: {
             type: 'string',
@@ -67,7 +127,7 @@ export const FileSchema = {
         }
     },
     type: 'object',
-    required: ['file_name', 'content'],
+    required: ['name', 'content'],
     title: 'File'
 } as const;
 
@@ -113,6 +173,66 @@ export const HTTPValidationErrorSchema = {
     title: 'HTTPValidationError'
 } as const;
 
+export const IfElseStepSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        inputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Inputs'
+        },
+        outputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Outputs'
+        },
+        type: {
+            '$ref': '#/components/schemas/StepType'
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    required: ['id', 'inputs', 'outputs', 'type'],
+    title: 'IfElseStep'
+} as const;
+
+export const InputStepSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        inputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Inputs'
+        },
+        outputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Outputs'
+        },
+        type: {
+            '$ref': '#/components/schemas/StepType'
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    required: ['id', 'inputs', 'outputs', 'type'],
+    title: 'InputStep'
+} as const;
+
 export const InvitationKeyPublicSchema = {
     properties: {
         key: {
@@ -128,6 +248,42 @@ export const InvitationKeyPublicSchema = {
     },
     type: 'object',
     title: 'InvitationKeyPublic'
+} as const;
+
+export const LanguageSchema = {
+    type: 'string',
+    enum: ['PYTHON'],
+    title: 'Language'
+} as const;
+
+export const LoopStepSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        inputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Inputs'
+        },
+        outputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Outputs'
+        },
+        type: {
+            '$ref': '#/components/schemas/StepType'
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    required: ['id', 'inputs', 'outputs', 'type'],
+    title: 'LoopStep'
 } as const;
 
 export const MultipleChoiceTaskSchema = {
@@ -156,10 +312,14 @@ export const MultipleChoiceTaskSchema = {
             },
             type: 'array',
             title: 'Choices'
+        },
+        expected_answer: {
+            type: 'integer',
+            title: 'Expected Answer'
         }
     },
     type: 'object',
-    required: ['id', 'type', 'question', 'choices'],
+    required: ['id', 'type', 'question', 'choices', 'expected_answer'],
     title: 'MultipleChoiceTask'
 } as const;
 
@@ -254,10 +414,17 @@ export const MultipleResponseTaskSchema = {
             },
             type: 'array',
             title: 'Choices'
+        },
+        expected_answer: {
+            items: {
+                type: 'integer'
+            },
+            type: 'array',
+            title: 'Expected Answer'
         }
     },
     type: 'object',
-    required: ['id', 'type', 'question', 'choices'],
+    required: ['id', 'type', 'question', 'choices', 'expected_answer'],
     title: 'MultipleResponseTask'
 } as const;
 
@@ -356,6 +523,48 @@ export const MultipleResponseTaskResultTypeSchema = {
     type: 'object',
     required: ['correct_choices', 'incorrect_choices', 'num_choices'],
     title: 'MultipleResponseTaskResultType'
+} as const;
+
+export const ObjectAccessStepSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        inputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Inputs'
+        },
+        outputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Outputs'
+        },
+        type: {
+            '$ref': '#/components/schemas/StepType'
+        },
+        key: {
+            type: 'string',
+            title: 'Key'
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    required: ['id', 'inputs', 'outputs', 'type', 'key'],
+    title: 'ObjectAccessStep',
+    description: `A step to retrieve a value from a dictionary.
+To use this step, the user must provide the key value to access the dictionary.`
+} as const;
+
+export const OperatorSchema = {
+    type: 'string',
+    enum: ['<', '=', '>'],
+    title: 'Operator'
 } as const;
 
 export const OrganisationSchema = {
@@ -475,6 +684,97 @@ export const OrganisationUpdateSchema = {
     title: 'OrganisationUpdate'
 } as const;
 
+export const OutputSocketSchema = {
+    properties: {
+        id: {
+            type: 'string',
+            title: 'Id'
+        },
+        data: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'boolean'
+                },
+                {
+                    '$ref': '#/components/schemas/File'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Data'
+        },
+        user_label: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'User Label'
+        },
+        comparison: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Comparison'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        public: {
+            type: 'boolean',
+            title: 'Public',
+            default: true
+        }
+    },
+    type: 'object',
+    required: ['id'],
+    title: 'OutputSocket'
+} as const;
+
+export const OutputStepSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        inputs: {
+            items: {
+                '$ref': '#/components/schemas/OutputSocket'
+            },
+            type: 'array',
+            title: 'Inputs'
+        },
+        outputs: {
+            items: {
+                '$ref': '#/components/schemas/OutputSocket'
+            },
+            type: 'array',
+            title: 'Outputs'
+        },
+        type: {
+            '$ref': '#/components/schemas/StepType'
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    required: ['id', 'inputs', 'outputs', 'type'],
+    title: 'OutputStep'
+} as const;
+
 export const ProblemSchema = {
     properties: {
         name: {
@@ -568,12 +868,6 @@ export const ProblemORMSchema = {
     title: 'ProblemORM'
 } as const;
 
-export const ProgrammingLanguageSchema = {
-    type: 'string',
-    enum: ['PYTHON'],
-    title: 'ProgrammingLanguage'
-} as const;
-
 export const ProgrammingTaskSchema = {
     properties: {
         id: {
@@ -595,7 +889,7 @@ export const ProgrammingTaskSchema = {
             title: 'Question'
         },
         environment: {
-            '$ref': '#/components/schemas/RunnerEnvironment'
+            '$ref': '#/components/schemas/ComputeContext'
         },
         required_inputs: {
             items: {
@@ -665,7 +959,7 @@ export const ProgrammingTaskResultSchema = {
             anyOf: [
                 {
                     items: {
-                        type: 'object'
+                        '$ref': '#/components/schemas/TestcaseResult'
                     },
                     type: 'array'
                 },
@@ -767,6 +1061,52 @@ export const ProjectUpdateSchema = {
     type: 'object',
     required: ['name'],
     title: 'ProjectUpdate'
+} as const;
+
+export const PyRunFunctionStepSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        inputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Inputs'
+        },
+        outputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Outputs'
+        },
+        type: {
+            '$ref': '#/components/schemas/StepType'
+        },
+        function_identifier: {
+            type: 'string',
+            title: 'Function Identifier'
+        },
+        allow_error: {
+            type: 'boolean',
+            title: 'Allow Error',
+            default: false
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    required: ['id', 'inputs', 'outputs', 'type', 'function_identifier'],
+    title: 'PyRunFunctionStep',
+    description: `A step that runs a Python function.
+To use this step, the user must provide the function name and the arguments to the function via the input sockets.
+
+Socket Name Format:
+- DATA.IN.ARG.{index}.{name}: For positional arguments
+- DATA.IN.KWARG.{name}: For keyword arguments
+- DATA.IN.FILE: For the \`File\` object that contains the Python function`
 } as const;
 
 export const RequiredInputSchema = {
@@ -872,36 +1212,6 @@ export const RolePublicWithInvitationKeysSchema = {
     title: 'RolePublicWithInvitationKeys'
 } as const;
 
-export const RunnerEnvironmentSchema = {
-    properties: {
-        language: {
-            '$ref': '#/components/schemas/ProgrammingLanguage'
-        },
-        time_limit: {
-            type: 'integer',
-            title: 'Time Limit'
-        },
-        memory_limit: {
-            type: 'integer',
-            title: 'Memory Limit'
-        },
-        extra_options: {
-            anyOf: [
-                {
-                    type: 'object'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Extra Options'
-        }
-    },
-    type: 'object',
-    required: ['language', 'time_limit', 'memory_limit'],
-    title: 'RunnerEnvironment'
-} as const;
-
 export const ShortAnswerTaskSchema = {
     properties: {
         id: {
@@ -921,6 +1231,17 @@ export const ShortAnswerTaskSchema = {
         question: {
             type: 'string',
             title: 'Question'
+        },
+        expected_answer: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Expected Answer'
         }
     },
     type: 'object',
@@ -1000,34 +1321,31 @@ export const ShortAnswerTaskResultSchema = {
     title: 'ShortAnswerTaskResult'
 } as const;
 
-export const StepSchema = {
+export const SocketResultSchema = {
     properties: {
         id: {
-            type: 'integer',
+            type: 'string',
             title: 'Id'
         },
-        inputs: {
-            items: {
-                '$ref': '#/components/schemas/StepSocket'
-            },
-            type: 'array',
-            title: 'Inputs'
+        value: {
+            title: 'Value'
         },
-        outputs: {
-            items: {
-                '$ref': '#/components/schemas/StepSocket'
-            },
-            type: 'array',
-            title: 'Outputs'
-        },
-        type: {
-            '$ref': '#/components/schemas/StepType'
+        correct: {
+            type: 'boolean',
+            title: 'Correct'
         }
     },
-    additionalProperties: false,
     type: 'object',
-    required: ['id', 'inputs', 'outputs', 'type'],
-    title: 'Step'
+    required: ['id', 'value', 'correct'],
+    title: 'SocketResult',
+    description: `This class is used to store whether the result of an output socket is right or wrong.
+Note that whether or not to show this information (public) and other variables should be derived from data in Testcase.`
+} as const;
+
+export const StatusSchema = {
+    type: 'string',
+    enum: ['OK', 'MLE', 'TLE', 'RTE', 'WA'],
+    title: 'Status'
 } as const;
 
 export const StepSocketSchema = {
@@ -1081,6 +1399,36 @@ export const StepTypeSchema = {
     type: 'string',
     enum: ['PY_RUN_FUNCTION_STEP', 'OBJECT_ACCESS_STEP', 'INPUT_STEP', 'OUTPUT_STEP', 'LOOP_STEP', 'IF_ELSE_STEP', 'STRING_MATCH_STEP'],
     title: 'StepType'
+} as const;
+
+export const StringMatchStepSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        inputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Inputs'
+        },
+        outputs: {
+            items: {
+                '$ref': '#/components/schemas/StepSocket'
+            },
+            type: 'array',
+            title: 'Outputs'
+        },
+        type: {
+            '$ref': '#/components/schemas/StepType'
+        }
+    },
+    additionalProperties: false,
+    type: 'object',
+    required: ['id', 'inputs', 'outputs', 'type'],
+    title: 'StringMatchStep'
 } as const;
 
 export const SubmissionPublicSchema = {
@@ -1219,7 +1567,29 @@ export const TestcaseSchema = {
     properties: {
         nodes: {
             items: {
-                '$ref': '#/components/schemas/Step'
+                anyOf: [
+                    {
+                        '$ref': '#/components/schemas/OutputStep'
+                    },
+                    {
+                        '$ref': '#/components/schemas/InputStep'
+                    },
+                    {
+                        '$ref': '#/components/schemas/PyRunFunctionStep'
+                    },
+                    {
+                        '$ref': '#/components/schemas/LoopStep'
+                    },
+                    {
+                        '$ref': '#/components/schemas/IfElseStep'
+                    },
+                    {
+                        '$ref': '#/components/schemas/StringMatchStep'
+                    },
+                    {
+                        '$ref': '#/components/schemas/ObjectAccessStep'
+                    }
+                ]
             },
             type: 'array',
             title: 'Nodes'
@@ -1239,6 +1609,43 @@ export const TestcaseSchema = {
     type: 'object',
     required: ['nodes', 'edges', 'id'],
     title: 'Testcase'
+} as const;
+
+export const TestcaseResultSchema = {
+    properties: {
+        status: {
+            '$ref': '#/components/schemas/Status'
+        },
+        stdout: {
+            type: 'string',
+            title: 'Stdout'
+        },
+        stderr: {
+            type: 'string',
+            title: 'Stderr'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        results: {
+            anyOf: [
+                {
+                    items: {
+                        '$ref': '#/components/schemas/SocketResult'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Results'
+        }
+    },
+    type: 'object',
+    required: ['status', 'stdout', 'stderr', 'id'],
+    title: 'TestcaseResult'
 } as const;
 
 export const TokenSchema = {

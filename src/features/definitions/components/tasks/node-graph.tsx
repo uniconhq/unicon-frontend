@@ -19,8 +19,9 @@ import {
 } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { GraphEdge, Step } from "@/api";
+import { GraphEdge } from "@/api";
 import { StepNode } from "@/components/node-graph/components/step-node";
+import { Step } from "@/lib/types";
 import getLayoutedElements from "@/utils/graph";
 
 type OwnProps = {

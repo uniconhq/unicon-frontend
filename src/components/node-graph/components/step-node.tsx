@@ -1,7 +1,8 @@
 import { GoDotFill } from "react-icons/go";
 
-import { Step, StepSocket } from "@/api";
+import { StepSocket } from "@/api";
 import { StepNodeColorMap } from "@/lib/colors";
+import { Step } from "@/lib/types";
 
 import { NodeSlot, NodeSlotGroup } from "./node-slot";
 
