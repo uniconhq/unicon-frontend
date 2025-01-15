@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, UIMatch, useMatches } from "react-router-dom";
 
 import {
@@ -34,7 +35,7 @@ const Breadcrumb = () => {
             }
             const part = match.handle.crumb(match);
             return (
-              <>
+              <React.Fragment key={match.id}>
                 {index !== 0 && <BreadcrumbSeparator />}
                 {index !== matchesWithBreadcrumbs.length - 1 && (
                   <BreadcrumbItem>
@@ -52,7 +53,7 @@ const Breadcrumb = () => {
                     <BreadcrumbPage>{part.label}</BreadcrumbPage>
                   </BreadcrumbItem>
                 )}
-              </>
+              </React.Fragment>
             );
           },
         )}

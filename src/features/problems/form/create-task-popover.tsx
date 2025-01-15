@@ -15,7 +15,10 @@ const CreateTaskPopover: React.FC<PropsWithChildren> = ({ children }) => {
   const projectId = useProjectId();
   return (
     <Popover>
-      <PopoverTrigger className="text-purple-400 hover:text-purple-400/80">
+      <PopoverTrigger
+        className="text-purple-400 hover:text-purple-400/80"
+        asChild
+      >
         {children}
       </PopoverTrigger>
       <PopoverContent>

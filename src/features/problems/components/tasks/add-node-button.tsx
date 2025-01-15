@@ -43,6 +43,7 @@ const AddNodeButton: React.FC = () => {
         <div className="flex flex-col">
           {Object.entries(stepTypesToLabel).map(([stepType, label]) => (
             <Button
+              key={`${stepType}.${label}`}
               variant="ghost"
               className="w-full justify-start"
               onClick={() => {
