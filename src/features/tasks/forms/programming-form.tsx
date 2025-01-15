@@ -240,6 +240,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                       </Button>
                     </CollapsibleTrigger>
                     <Button
+                      type="button"
                       variant={"destructive"}
                       onClick={() => {
                         form.setValue(
