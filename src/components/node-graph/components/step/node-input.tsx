@@ -26,7 +26,7 @@ const NodeInput: React.FC<OwnProps> = ({ className = [], value, onChange }) => {
         debouncedHandleChange(newValue);
         setDisplayValue(newValue);
       }}
-      size={displayValue.length - 1}
+      size={displayValue.length}
     />
   );
 };

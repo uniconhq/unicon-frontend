@@ -221,6 +221,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                     key={input.id}
                   >
                     <NodeInput
+                      className={["min-w-[160px]", "font-mono"]}
                       value={input.id}
                       onChange={(newId) =>
                         form.setValue(
