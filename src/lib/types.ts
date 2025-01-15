@@ -66,6 +66,7 @@ export const isFile = (data: unknown): data is FileType => {
     (data as FileType).content !== undefined
   );
 };
+
 export type Step =
   | OutputStep
   | InputStep
