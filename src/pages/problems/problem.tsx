@@ -1,19 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
-import { Link, type Params, useParams } from "react-router-dom";
+import { Pencil, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Task } from "@/components/tasks/task";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getProblemById } from "@/features/definitions/queries";
+import { getProblemById } from "@/features/problems/queries";
+import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
 
-const Contest = () => {
-  const { id, projectId } = useParams<Params<"id" | "projectId">>();
-  const { data } = useQuery(getProblemById(Number(id)));
-  const submitLink = `/projects/${projectId}/problems/${id}/submit`;
+const Problem = () => {
+  const projectId = useProjectId();
+  const id = useProblemId();
+  const { data } = useQuery(getProblemById(id));
+  const submitLink = `/projects/${projectId}/problems/${id}/submissions/new`;
+  const editLink = `/projects/${projectId}/problems/${id}/edit`;
 
   return (
-    <div className="flex w-full flex-col gap-8 py-6">
+    <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex justify-between">
         <div>
           <h1 className="text-2xl font-semibold">
@@ -21,11 +24,18 @@ const Contest = () => {
           </h1>
           <h2 className="mt-4 font-light">{data?.description}</h2>
         </div>
-        <Link to={submitLink} className="flex gap-1">
-          <Button variant="ghost" className="hover:text-purple-300">
-            <Plus /> New Submission
-          </Button>
-        </Link>
+        <div className="flex gap-1">
+          <Link to={editLink} className="flex gap-1">
+            <Button variant="ghost" className="hover:text-purple-300">
+              <Pencil /> Edit problem
+            </Button>
+          </Link>
+          <Link to={submitLink} className="flex gap-1">
+            <Button variant="ghost" className="hover:text-purple-300">
+              <Plus /> New Submission
+            </Button>
+          </Link>
+        </div>
       </div>
       <div className="flex flex-col gap-8">
         {data?.tasks.map((task, index) => (
@@ -55,4 +65,4 @@ const Contest = () => {
   );
 };
 
-export default Contest;
+export default Problem;

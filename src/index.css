@@ -11,6 +11,11 @@
   transform: translate(0, 0);
 }
 
+/* makes edges appear above the nodes, useful for outputstep */
+.react-flow__node {
+  z-index: -1 !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

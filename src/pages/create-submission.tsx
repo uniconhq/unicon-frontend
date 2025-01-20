@@ -1,13 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Params, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import TextareaField from "@/components/form/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useCreateSubmission } from "@/features/definitions/queries";
-import { useProjectId } from "@/features/projects/hooks/use-project-id";
+import { useCreateSubmission } from "@/features/problems/queries";
+import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
 import { json } from "@/utils/json";
 
 const submissionFormSchema = z.object({
@@ -30,11 +30,12 @@ const submissionFormDefault = {
 };
 
 const CreateSubmission = () => {
-  const { id } = useParams<Params<"id">>();
+  const id = useProblemId();
   const projectId = useProjectId();
   const createContestSubmissionMutation = useCreateSubmission(Number(id));
   const navigate = useNavigate();
 
+  // @ts-expect-error - it is infinitely deep because of the definition in json.ts
   const form = useForm<SubmissionFormType>({
     resolver: zodResolver(submissionFormSchema),
     defaultValues: submissionFormDefault,
@@ -56,7 +57,7 @@ const CreateSubmission = () => {
   };
 
   return (
-    <div className="flex w-full flex-col gap-8 px-8">
+    <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Create a new submission</h1>
       </div>

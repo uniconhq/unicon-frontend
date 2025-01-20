@@ -4,8 +4,8 @@ import { Link, useParams } from "react-router-dom";
 
 import TaskResult from "@/components/tasks/submission-results/task-result";
 import { Button } from "@/components/ui/button";
-import { getSubmissionById } from "@/features/definitions/queries";
-import { useProjectId } from "@/features/projects/hooks/use-project-id";
+import { getSubmissionById } from "@/features/problems/queries";
+import { useProjectId } from "@/features/projects/hooks/use-id";
 
 const SubmissionResults = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,7 +25,9 @@ const SubmissionResults = () => {
       task_attempts &&
       pending &&
       task_attempts.every(
-        (task_attempt) => task_attempt.task_results[0]?.status !== "PENDING",
+        (task_attempt) =>
+          task_attempt.task_results.length == 0 ||
+          task_attempt.task_results[0]?.status !== "PENDING",
       )
     ) {
       setPending(false);
@@ -33,7 +35,7 @@ const SubmissionResults = () => {
   }, [task_attempts, pending]);
 
   const contest_id: number = task_attempts
-    ? task_attempts[0].task.problem_id
+    ? task_attempts[0]?.task?.problem_id
     : 0;
 
   return (

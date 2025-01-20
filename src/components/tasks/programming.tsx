@@ -1,5 +1,5 @@
 import { ProgrammingTask } from "@/api";
-import Testcase from "@/features/definitions/components/tasks/testcase";
+import Testcase from "@/features/problems/components/tasks/testcase";
 
 export function Programming({ task }: { task: ProgrammingTask }) {
   return (
@@ -21,7 +21,12 @@ export function Programming({ task }: { task: ProgrammingTask }) {
       <span className="text-xs font-medium text-gray-300">TESTCASES</span>
       <div className="flex gap-2 font-mono">
         {task.testcases.map((testcase, index) => (
-          <Testcase testcase={testcase} index={index} />
+          <Testcase
+            testcase={testcase}
+            index={index}
+            key={testcase.id}
+            task={task}
+          />
         ))}
       </div>
     </div>

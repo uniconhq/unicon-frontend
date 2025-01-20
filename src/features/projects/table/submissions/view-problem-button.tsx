@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import { useProjectId } from "../../hooks/use-project-id";
+import { useProjectId } from "../../hooks/use-id";
 
 type OwnProps = {
   problemId: number;

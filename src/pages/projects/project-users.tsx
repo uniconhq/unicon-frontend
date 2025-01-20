@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Params, useParams } from "react-router-dom";
 
+import { useProjectId } from "@/features/projects/hooks/use-id";
 import {
   getProjectById,
   getProjectUsersById,
@@ -8,10 +8,10 @@ import {
 import UsersTable from "@/features/projects/table/users/users-table";
 
 const ProjectRoles = () => {
-  const { id } = useParams<Params<"id">>();
+  const id = useProjectId();
   const { data: project, isLoading } = useQuery(getProjectById(Number(id)));
   const { data: users, isLoading: isLoadingUsers } = useQuery(
-    getProjectUsersById(Number(id)),
+    getProjectUsersById(id),
   );
 
   if (isLoading) {
@@ -24,9 +24,6 @@ const ProjectRoles = () => {
 
   return (
     <div className="m-auto flex w-full max-w-5xl flex-col gap-8 p-4 px-8">
-      <div className="flex flex-col">
-        <h2 className="text-3xl font-semibold">{project.name}</h2>
-      </div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Users</h2>
       </div>

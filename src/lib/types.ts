@@ -1,3 +1,4 @@
+import { File as FileType } from "@/api";
 import {
   IfElseStep,
   InputStep,
@@ -55,6 +56,16 @@ export type NodeData =
   | GroupNodeData
   | TaskNodeData
   | ArtifactNodeData;
+
+export const isFile = (data: unknown): data is FileType => {
+  if (data === undefined || data === null) {
+    return false;
+  }
+  return (
+    (data as FileType).name !== undefined &&
+    (data as FileType).content !== undefined
+  );
+};
 
 export type Step =
   | OutputStep
