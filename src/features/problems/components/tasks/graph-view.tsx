@@ -186,7 +186,6 @@ const GraphView: React.FC = () => {
         onReconnectEnd={onReconnectEnd}
         onReconnect={onReconnect}
         nodesConnectable={isEditing}
-        fitView={true}
         colorMode="dark"
         proOptions={{ hideAttribution: true }}
       >
