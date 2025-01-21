@@ -108,6 +108,8 @@ const GraphView: React.FC = () => {
 
   const onConnect = useCallback(
     (connection: Connection) => {
+      if (!isEditing) return;
+
       dispatch({
         type: "ADD_EDGE",
         edge: {
@@ -119,17 +121,20 @@ const GraphView: React.FC = () => {
         },
       });
     },
-    [dispatch, edges],
+    [dispatch, edges, isEditing],
   );
 
   const edgeReconnectSuccessful = useRef(true);
 
   const onReconnectStart = useCallback(() => {
+    if (!isEditing) return;
     edgeReconnectSuccessful.current = false;
-  }, []);
+  }, [isEditing]);
 
   const onReconnect = useCallback(
     (oldEdge: Edge, newConnection: Connection) => {
+      if (!isEditing) return;
+
       dispatch({
         type: "DELETE_EDGE",
         edgeId: parseInt(oldEdge.id),
@@ -145,13 +150,14 @@ const GraphView: React.FC = () => {
         },
       });
       edgeReconnectSuccessful.current = true;
-      //   setFlowEdges((els) => reconnectEdge(oldEdge, newConnection, els));
     },
-    [dispatch, edges],
+    [dispatch, edges, isEditing],
   );
 
   const onReconnectEnd = useCallback(
     (_: unknown, edge: Edge) => {
+      if (!isEditing) return;
+
       if (!edgeReconnectSuccessful.current) {
         dispatch({
           type: "DELETE_EDGE",
@@ -162,7 +168,7 @@ const GraphView: React.FC = () => {
 
       edgeReconnectSuccessful.current = true;
     },
-    [dispatch, setFlowEdges],
+    [dispatch, setFlowEdges, isEditing],
   );
 
   return (
@@ -179,13 +185,13 @@ const GraphView: React.FC = () => {
         onReconnectStart={onReconnectStart}
         onReconnectEnd={onReconnectEnd}
         onReconnect={onReconnect}
+        nodesConnectable={isEditing}
+        fitView={true}
         colorMode="dark"
-        fitView
-        // fitViewOptions={{ maxZoom: 1.0 }}
         proOptions={{ hideAttribution: true }}
       >
         <Background variant={BackgroundVariant.Dots} />
-        <Controls />
+        <Controls showInteractive={isEditing} />
         <MiniMap />
       </ReactFlow>
     </div>
