@@ -1,7 +1,13 @@
+import { useState } from "react";
+
 import { ProgrammingTask } from "@/api";
 import Testcase from "@/features/problems/components/tasks/testcase";
 
 export function Programming({ task }: { task: ProgrammingTask }) {
+  const [selectedTestcaseIdx, setSelectedTestcaseIdx] = useState<number | null>(
+    null,
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <span className="text-xs font-medium text-gray-300">QUESTION</span>
@@ -22,6 +28,8 @@ export function Programming({ task }: { task: ProgrammingTask }) {
       <div className="flex gap-2 font-mono">
         {task.testcases.map((testcase, index) => (
           <Testcase
+            isSelected={selectedTestcaseIdx === index}
+            onSelected={setSelectedTestcaseIdx}
             testcase={testcase}
             index={index}
             key={testcase.id}
