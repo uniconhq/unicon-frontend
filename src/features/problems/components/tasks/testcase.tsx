@@ -10,7 +10,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-import NodeGraph from "./node-graph";
+import TestCaseNodeGraph from "./node-graph";
 
 type OwnProps = {
   testcase: Testcase;
@@ -42,7 +42,7 @@ const TestcaseDisplay: React.FC<OwnProps> = ({ testcase, index, task }) => {
         </CollapsibleTrigger>
       </div>
       <CollapsibleContent className="space-y-4">
-        <NodeGraph
+        <TestCaseNodeGraph
           steps={testcase.nodes.concat([userInputNode])}
           edges={testcase.edges}
           isEditing={false}
