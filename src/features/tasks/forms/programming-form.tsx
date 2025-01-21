@@ -220,7 +220,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                 <Collapsible className="w-full" key={index}>
                   <div className="flex gap-4 rounded-md border p-2" key={index}>
                     <NodeInput
-                      className={["min-w-[160px]", "font-mono"]}
+                      className={["min-w-[160px]"]}
                       value={input.id}
                       onChange={(newId) => updateInput(index, { newId })}
                     />
