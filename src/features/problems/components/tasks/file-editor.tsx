@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 type OwnProps = {
   fileName: string;
   fileContent: string;
-  onUpdateFileName: (newFileName: string) => void;
-  onUpdateFileContent: (newFileContent: string) => void;
+  onUpdateFileName?: (newFileName: string) => void;
+  onUpdateFileContent?: (newFileContent: string) => void;
   onDeselectFile?: () => void;
-  isEditing: boolean;
+  editableName: boolean;
+  editableContent: boolean;
 };
 
 // Assumes debouncing is handled by the parent component onUpdateFileName and onUpdateFileContent
@@ -21,14 +22,15 @@ const FileEditor: React.FC<OwnProps> = ({
   onUpdateFileName,
   onUpdateFileContent,
   onDeselectFile,
-  isEditing,
+  editableName,
+  editableContent,
 }) => {
   const [displayFileName, setDisplayFilename] = useState(fileName);
   const [displayFileContent, setDisplayFileValue] = useState(fileContent);
 
   const updateFileName = (newValue: string) => {
     setDisplayFilename(newValue);
-    onUpdateFileName(newValue);
+    if (onUpdateFileName) onUpdateFileName(newValue);
   };
 
   const updateFileContent = (newValue: string | undefined) => {
@@ -36,14 +38,14 @@ const FileEditor: React.FC<OwnProps> = ({
       return;
     }
     setDisplayFileValue(newValue);
-    onUpdateFileContent(newValue);
+    if (onUpdateFileContent) onUpdateFileContent(newValue);
   };
 
   return (
     <div className="flex h-full flex-col">
       {/* file tab */}
       <div className="flex w-fit items-center gap-2 border-b border-purple-200 py-1">
-        {isEditing ? (
+        {editableName ? (
           <NodeInput
             key={displayFileName}
             value={displayFileName}
@@ -69,7 +71,7 @@ const FileEditor: React.FC<OwnProps> = ({
         options={{
           padding: { top: 5 },
           minimap: { enabled: false },
-          ...(!isEditing ? { readOnly: true } : {}),
+          readOnly: !editableContent,
         }}
         value={displayFileContent}
         onChange={updateFileContent}

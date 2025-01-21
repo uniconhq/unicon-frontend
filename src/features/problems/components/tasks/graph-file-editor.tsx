@@ -50,7 +50,8 @@ const GraphFileEditor = () => {
       onUpdateFileName={updateFileName}
       onUpdateFileContent={updateFileContent}
       onDeselectFile={() => dispatch({ type: GraphActionType.DeselectSocket })}
-      isEditing={isEditing && selectedStepId !== 0}
+      editableName={isEditing && selectedStepId !== 0}
+      editableContent={isEditing && selectedStepId !== 0}
     />
   );
 };

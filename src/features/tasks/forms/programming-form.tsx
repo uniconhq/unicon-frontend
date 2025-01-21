@@ -248,7 +248,8 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                         onUpdateFileContent={(newFileContent: string) =>
                           updateInput(index, { newFileContent })
                         }
-                        isEditing
+                        editableContent={true}
+                        editableName={true}
                       />
                     </div>
                   </CollapsibleContent>
