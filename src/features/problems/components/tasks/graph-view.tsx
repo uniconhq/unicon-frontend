@@ -1,8 +1,6 @@
 import "@xyflow/react/dist/style.css";
 
 import {
-  applyEdgeChanges,
-  applyNodeChanges,
   Background,
   BackgroundVariant,
   Connection,
@@ -11,11 +9,11 @@ import {
   MarkerType,
   MiniMap,
   Node,
-  OnEdgesChange,
-  OnNodesChange,
   ReactFlow,
+  ReactFlowInstance,
+  useEdgesState,
   useNodesInitialized,
-  useReactFlow,
+  useNodesState,
 } from "@xyflow/react";
 import {
   useCallback,
@@ -26,6 +24,7 @@ import {
   useState,
 } from "react";
 
+import { GraphEdge } from "@/api";
 import { StepNode } from "@/components/node-graph/components/step/step-node";
 import getLayoutedElements from "@/utils/graph";
 
@@ -33,108 +32,79 @@ import AddNodeButton from "./add-node-button";
 import { GraphContext, GraphDispatchContext } from "./graph-context";
 import { Step } from "./types";
 
+const nodeTypes = { step: StepNode };
+
+const stepNodeToRfNode = (step: Step): Node<Step> => ({
+  id: step.id.toString(),
+  position: { x: 0, y: 0 },
+  data: step,
+  type: "step",
+});
+
+const stepEdgeToRfEdge = (edge: GraphEdge): Edge => ({
+  id: edge.id.toString(),
+  source: edge.from_node_id.toString(),
+  sourceHandle: edge.from_socket_id,
+  target: edge.to_node_id.toString(),
+  targetHandle: edge.to_socket_id,
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    width: 20,
+    height: 20,
+  },
+});
+
+type RfInstance = ReactFlowInstance<Node<Step>, Edge>;
+
 const GraphView: React.FC = () => {
-  const { fitView } = useReactFlow();
-  const initialized = useNodesInitialized(); // Track if nodes are initialized
-  const [ran, setRan] = useState(false);
-
-  const nodeTypes = useMemo(() => ({ step: StepNode }), []);
-
   const { steps, edges, isEditing } = useContext(GraphContext)!;
-  const dispatch = useContext(GraphDispatchContext)!;
 
-  const nodeData: Node<Step>[] = useMemo(
-    () =>
-      steps.map((step) => ({
-        id: step.id.toString(),
-        position: { x: 0, y: 0 },
-        data: step,
-        type: "step",
-      })),
-    [steps],
-  );
+  const nodeData = useMemo(() => steps.map(stepNodeToRfNode), [steps]);
+  const edgeData = useMemo(() => edges.map(stepEdgeToRfEdge), [edges]);
 
-  const edgeData: Edge[] = useMemo(
-    () =>
-      edges.map((edge) => ({
-        id: edge.id.toString(),
-        source: edge.from_node_id.toString(),
-        sourceHandle: edge.from_socket_id,
-        target: edge.to_node_id.toString(),
-        targetHandle: edge.to_socket_id,
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          width: 20,
-          height: 20,
-        },
-      })),
-    [edges],
-  );
+  const flowNodesInitialized = useNodesInitialized();
+  const [layoutApplied, setLayoutApplied] = useState(false);
+  const [rfInstance, setRfInstance] = useState<RfInstance | null>(null);
+  const [flowNodes, setFlowNodes, onFlowNodesChange] = useNodesState(nodeData);
+  const [flowEdges, setFlowEdges, onFlowEdgesChange] = useEdgesState(edgeData);
 
-  const [reactFlowNodes, setReactFlowNodes] = useState(nodeData);
-  const [reactFlowEdges, setReactFlowEdges] = useState(edgeData);
+  const onInit = (rf: RfInstance) => setRfInstance(rf);
 
-  const onLayout = useCallback(() => {
-    if (!initialized) {
-      return;
-    }
+  useEffect(() => {
+    if (!flowNodesInitialized || layoutApplied) return;
 
     const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-      nodeData,
-      edgeData,
+      flowNodes,
+      flowEdges,
     );
+    setFlowNodes([...layoutedNodes]);
+    setFlowEdges([...layoutedEdges]);
 
-    setReactFlowNodes([...layoutedNodes]);
-    setReactFlowEdges([...layoutedEdges]);
-
-    window.requestAnimationFrame(() => {
-      fitView();
-    });
+    setLayoutApplied(true);
   }, [
-    initialized,
-    nodeData,
-    edgeData,
-    setReactFlowNodes,
-    setReactFlowEdges,
-    fitView,
+    flowNodesInitialized,
+    layoutApplied,
+    flowNodes,
+    flowEdges,
+    setFlowNodes,
+    setFlowEdges,
   ]);
 
   useEffect(() => {
-    // keep old positions...
-    setReactFlowNodes((reactFlowNodes) => {
-      const nodeDataModified = nodeData.map((node) => {
-        const oldNode = reactFlowNodes.find((n) => n.id === node.id);
-        return {
-          ...node,
-          position: oldNode?.position || node.position,
-        };
-      });
-      return nodeDataModified;
-    });
-  }, [nodeData]);
+    if (!layoutApplied || !rfInstance) return;
+    rfInstance.fitView();
+  }, [layoutApplied, rfInstance]);
 
   useEffect(() => {
-    setReactFlowEdges(edgeData);
-  }, [edgeData]);
+    const newNodes = nodeData.filter(
+      (node) => !flowNodes.some((n) => n.id === node.id),
+    );
+    setFlowNodes((nodes) => [...nodes, ...newNodes]);
+  }, [nodeData, flowNodes, setFlowNodes]);
 
-  useEffect(() => {
-    if (initialized && !ran) {
-      onLayout(); // Trigger layout once nodes are initialized
-      setTimeout(fitView, 100);
-      setRan(true);
-    }
-  }, [fitView, initialized, onLayout, ran]);
+  useEffect(() => setFlowEdges(edgeData), [edgeData, setFlowEdges]);
 
-  const onNodesChange: OnNodesChange<Node<Step>> = useCallback(
-    (changes) => {
-      setReactFlowNodes((nds) => applyNodeChanges(changes, nds));
-    },
-    [setReactFlowNodes],
-  );
-
-  const onEdgesChange: OnEdgesChange<Edge> = useCallback((changes) => {
-    setReactFlowEdges((eds) => applyEdgeChanges(changes, eds));
-  }, []);
+  const dispatch = useContext(GraphDispatchContext)!;
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -175,7 +145,7 @@ const GraphView: React.FC = () => {
         },
       });
       edgeReconnectSuccessful.current = true;
-      //   setReactFlowEdges((els) => reconnectEdge(oldEdge, newConnection, els));
+      //   setFlowEdges((els) => reconnectEdge(oldEdge, newConnection, els));
     },
     [dispatch, edges],
   );
@@ -187,38 +157,37 @@ const GraphView: React.FC = () => {
           type: "DELETE_EDGE",
           edgeId: parseInt(edge.id),
         });
-        setReactFlowEdges((eds) => eds.filter((e) => e.id !== edge.id));
+        setFlowEdges((eds) => eds.filter((e) => e.id !== edge.id));
       }
 
       edgeReconnectSuccessful.current = true;
     },
-    [dispatch],
+    [dispatch, setFlowEdges],
   );
 
   return (
     <div className="relative h-[60vh] w-full">
       {isEditing && <AddNodeButton />}
-      {reactFlowNodes && (
-        <ReactFlow
-          nodeTypes={nodeTypes}
-          nodes={reactFlowNodes}
-          edges={reactFlowEdges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onReconnectStart={onReconnectStart}
-          onReconnectEnd={onReconnectEnd}
-          onReconnect={onReconnect}
-          colorMode="dark"
-          fitView
-          // fitViewOptions={{ maxZoom: 1.0 }}
-          proOptions={{ hideAttribution: true }}
-        >
-          <Background variant={BackgroundVariant.Dots} />
-          <Controls />
-          <MiniMap />
-        </ReactFlow>
-      )}
+      <ReactFlow
+        onInit={onInit}
+        nodeTypes={nodeTypes}
+        nodes={flowNodes}
+        edges={flowEdges}
+        onNodesChange={onFlowNodesChange}
+        onEdgesChange={onFlowEdgesChange}
+        onConnect={onConnect}
+        onReconnectStart={onReconnectStart}
+        onReconnectEnd={onReconnectEnd}
+        onReconnect={onReconnect}
+        colorMode="dark"
+        fitView
+        // fitViewOptions={{ maxZoom: 1.0 }}
+        proOptions={{ hideAttribution: true }}
+      >
+        <Background variant={BackgroundVariant.Dots} />
+        <Controls />
+        <MiniMap />
+      </ReactFlow>
     </div>
   );
 };
