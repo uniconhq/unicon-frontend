@@ -58,12 +58,12 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
       </div>
     </>
   ) : (
-    <>
+    <div className="flex flex-col items-center gap-1">
       <div>{(step as PyRunFunctionStep).function_identifier}(...)</div>
       <div>
         allow_error: {JSON.stringify((step as PyRunFunctionStep).allow_error)}
       </div>
-    </>
+    </div>
   );
 };
 

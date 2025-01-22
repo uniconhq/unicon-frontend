@@ -62,7 +62,6 @@ const NodeGraph: React.FC<OwnProps> = ({
               <GraphFileEditor />
             </div>
           )}
-
           <GraphView />
         </div>
       </GraphDispatchContext.Provider>
