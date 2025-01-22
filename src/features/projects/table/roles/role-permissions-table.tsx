@@ -59,30 +59,30 @@ const RolePermissionsTable: React.FC<OwnProps> = ({ data, projectId }) => {
             <TableHead rowSpan={2} className="text-center">
               role
             </TableHead>
-            <TableHead colSpan={4} className="text-center">
+            <TableHead colSpan={4} className="border-l text-center">
               problems
             </TableHead>
-            <TableHead colSpan={3} className="text-center">
+            <TableHead colSpan={3} className="border-l text-center">
               restricted problems
             </TableHead>
-            <TableHead colSpan={3} className="text-center">
+            <TableHead colSpan={3} className="border-l text-center">
               submissions
             </TableHead>
           </TableRow>
           <TableRow>
             {/* problems */}
-            <TableHead className="text-center">view</TableHead>
-            <TableHead className="text-center">create</TableHead>
-            <TableHead className="text-center">update</TableHead>
-            <TableHead className="text-center">delete</TableHead>
+            <TableHead className="border-l text-center">view</TableHead>
+            <TableHead className="border-l text-center">create</TableHead>
+            <TableHead className="border-l text-center">update</TableHead>
+            <TableHead className="border-l text-center">delete</TableHead>
             {/* restricted problems */}
-            <TableHead className="text-center">view</TableHead>
-            <TableHead className="text-center">update</TableHead>
-            <TableHead className="text-center">delete</TableHead>
+            <TableHead className="border-l text-center">view</TableHead>
+            <TableHead className="border-l text-center">update</TableHead>
+            <TableHead className="border-l text-center">delete</TableHead>
             {/* submissions */}
-            <TableHead className="text-center">create</TableHead>
-            <TableHead className="text-center">view own</TableHead>
-            <TableHead className="text-center">view all</TableHead>
+            <TableHead className="border-l text-center">create</TableHead>
+            <TableHead className="border-l text-center">view own</TableHead>
+            <TableHead className="border-l text-center">view all</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="align-center">
