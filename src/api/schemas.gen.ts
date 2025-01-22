@@ -868,6 +868,59 @@ export const ProblemORMSchema = {
     title: 'ProblemORM'
 } as const;
 
+export const ProblemPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        tasks: {
+            items: {
+                oneOf: [
+                    {
+                        '$ref': '#/components/schemas/ProgrammingTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleChoiceTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleResponseTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/ShortAnswerTask'
+                    }
+                ],
+                discriminator: {
+                    propertyName: 'type',
+                    mapping: {
+                        MULTIPLE_CHOICE_TASK: '#/components/schemas/MultipleChoiceTask',
+                        MULTIPLE_RESPONSE_TASK: '#/components/schemas/MultipleResponseTask',
+                        PROGRAMMING_TASK: '#/components/schemas/ProgrammingTask',
+                        SHORT_ANSWER_TASK: '#/components/schemas/ShortAnswerTask'
+                    }
+                }
+            },
+            type: 'array',
+            title: 'Tasks'
+        },
+        edit: {
+            type: 'boolean',
+            title: 'Edit'
+        },
+        make_submission: {
+            type: 'boolean',
+            title: 'Make Submission'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'tasks', 'edit', 'make_submission'],
+    title: 'ProblemPublic'
+} as const;
+
 export const ProgrammingTaskSchema = {
     properties: {
         id: {

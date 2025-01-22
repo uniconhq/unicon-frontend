@@ -1,12 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
 import { SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-import { useCreateTask } from "@/features/problems/queries";
+import { getProblemById, useCreateTask } from "@/features/problems/queries";
 import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
 
 import ShortAnswerForm, {
   ShortAnswerFormType,
 } from "../../features/tasks/forms/short-answer-form";
+import { Unauthorized } from "../error";
 
 const CreateShortAnswer = () => {
   const problemId = useProblemId();
@@ -14,6 +16,11 @@ const CreateShortAnswer = () => {
 
   const createTaskMutation = useCreateTask(problemId);
   const navigate = useNavigate();
+
+  const { data } = useQuery(getProblemById(problemId));
+  if (data && !data.edit) {
+    throw Unauthorized;
+  }
 
   const onSubmit: SubmitHandler<ShortAnswerFormType> = async (data) => {
     createTaskMutation.mutate(

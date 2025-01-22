@@ -1,7 +1,12 @@
 import { AxiosError } from "axios";
 import { isRouteErrorResponse, Link, useRouteError } from "react-router-dom";
 
-const Error = () => {
+export const Unauthorized = new Error("Unauthorized");
+
+const ERROR_404 =
+  "Oops, it looks like the page you're looking for doesn't exist.";
+const ERROR_403 = "You are not authorized to view this page.";
+const ErrorPage = () => {
   const error = useRouteError();
 
   let errorMessage = "An unexpected error has occurred.";
@@ -11,8 +16,7 @@ const Error = () => {
     errorStatus = `[${error.status}] ${error.statusText}`;
     switch (error.status) {
       case 404:
-        errorMessage =
-          "Oops, it looks like the page you're looking for doesn't exist.";
+        errorMessage = ERROR_404;
         break;
     }
   }
@@ -22,14 +26,18 @@ const Error = () => {
       errorStatus = `[${error.response.status}] ${error.response.statusText}`;
       switch (error.response.status) {
         case 404:
-          errorMessage =
-            "Oops, it looks like the page you're looking for doesn't exist.";
+          errorMessage = ERROR_404;
           break;
         case 403:
-          errorMessage = "You are not authorized to view this page.";
+          errorMessage = ERROR_403;
           break;
       }
     }
+  }
+
+  if (error === Unauthorized) {
+    errorStatus = `[403] Forbidden`;
+    errorMessage = ERROR_403;
   }
 
   return (
@@ -53,4 +61,4 @@ const Error = () => {
   );
 };
 
-export default Error;
+export default ErrorPage;

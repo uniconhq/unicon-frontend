@@ -197,6 +197,14 @@ export type ProblemORM = {
     project_id: number;
 };
 
+export type ProblemPublic = {
+    name: string;
+    description: string;
+    tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
+    edit: boolean;
+    make_submission: boolean;
+};
+
 export type ProgrammingTask = {
     id: number;
     type: "PROGRAMMING_TASK";
@@ -503,7 +511,7 @@ export type GetProblemData = {
     };
 };
 
-export type GetProblemResponse = (Problem);
+export type GetProblemResponse = (ProblemPublic);
 
 export type GetProblemError = (HTTPValidationError);
 

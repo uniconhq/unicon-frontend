@@ -15,26 +15,33 @@ const Problem = () => {
   const submitLink = `/projects/${projectId}/problems/${id}/submissions/new`;
   const editLink = `/projects/${projectId}/problems/${id}/edit`;
 
+  if (!data) {
+    return;
+  }
   return (
     <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex justify-between">
         <div>
           <h1 className="text-2xl font-semibold">
-            {data?.name} (#{id})
+            {data.name} (#{id})
           </h1>
-          <h2 className="mt-4 font-light">{data?.description}</h2>
+          <h2 className="mt-4 font-light">{data.description}</h2>
         </div>
         <div className="flex gap-1">
-          <Link to={editLink} className="flex gap-1">
-            <Button variant="ghost" className="hover:text-purple-300">
-              <Pencil /> Edit problem
-            </Button>
-          </Link>
-          <Link to={submitLink} className="flex gap-1">
-            <Button variant="ghost" className="hover:text-purple-300">
-              <Plus /> New Submission
-            </Button>
-          </Link>
+          {data.edit && (
+            <Link to={editLink} className="flex gap-1">
+              <Button variant="ghost" className="hover:text-purple-300">
+                <Pencil /> Edit problem
+              </Button>
+            </Link>
+          )}
+          {data.make_submission && (
+            <Link to={submitLink} className="flex gap-1">
+              <Button variant="ghost" className="hover:text-purple-300">
+                <Plus /> New Submission
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-8">
