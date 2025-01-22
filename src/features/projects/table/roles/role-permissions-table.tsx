@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { RolePublicWithInvitationKeys } from "@/api";
@@ -12,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useUpdateRoles } from "../../queries";
+import { getProjectById, useUpdateRoles } from "../../queries";
 
 type OwnProps = {
   projectId: number;
@@ -45,11 +46,17 @@ const RolePermissionsTable: React.FC<OwnProps> = ({ data, projectId }) => {
     });
   };
 
+  const { data: project } = useQuery(getProjectById(projectId));
+
   const updateRolesMutation = useUpdateRoles(projectId);
 
   const onSave = () => {
     updateRolesMutation.mutate(roles);
   };
+
+  if (!project) {
+    return;
+  }
 
   return (
     <div className="flex flex-col items-start gap-4">
@@ -93,6 +100,7 @@ const RolePermissionsTable: React.FC<OwnProps> = ({ data, projectId }) => {
                 <TableCell key={key}>
                   <div className="flex justify-center">
                     <Checkbox
+                      disabled={!project?.edit_roles}
                       checked={role[key] as boolean}
                       onCheckedChange={() => onChange(index, key)}
                     />
@@ -103,7 +111,9 @@ const RolePermissionsTable: React.FC<OwnProps> = ({ data, projectId }) => {
           ))}
         </TableBody>
       </Table>
-      <Button onClick={onSave}>Save permissions</Button>
+      <Button onClick={onSave} disabled={!project?.edit_roles}>
+        Save permissions
+      </Button>
     </div>
   );
 };

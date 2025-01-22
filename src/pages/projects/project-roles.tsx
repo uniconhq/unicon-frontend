@@ -39,11 +39,13 @@ const ProjectRoles = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Roles</h2>
 
-        <AddRoleDialog projectId={id}>
-          <Button variant="ghost" className="hover:text-purple-300">
-            <Plus /> New role
-          </Button>
-        </AddRoleDialog>
+        {project.add_roles && (
+          <AddRoleDialog projectId={id}>
+            <Button variant="ghost" className="hover:text-purple-300">
+              <Plus /> New role
+            </Button>
+          </AddRoleDialog>
+        )}
       </div>
       <div className="flex flex-col gap-8">
         {!isLoadingRoles && roles && (

@@ -37,3 +37,9 @@ export const columns: ColumnDef<SubmissionPublic>[] = [
     },
   },
 ];
+
+export const columnsWithUser: ColumnDef<SubmissionPublic>[] = [
+  columns[0],
+  { header: "User", accessorKey: "user.username" },
+  ...columns.slice(1),
+];

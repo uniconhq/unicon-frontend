@@ -46,6 +46,7 @@ export const getProjectRolesById = (id: number) => {
     queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.Role],
     queryFn: () =>
       getProjectRoles({ path: { id } }).then((response) => response.data),
+    retry: false,
   });
 };
 
