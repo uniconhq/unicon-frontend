@@ -7,6 +7,7 @@ import {
 import {
   createInvitationKey,
   createProject,
+  createRole,
   deleteInvitationKey,
   getAllProjects,
   getProject,
@@ -14,6 +15,7 @@ import {
   getProjectUsers,
   joinProject,
   ProjectCreate,
+  RoleCreate,
   RolePublic,
   updateRole,
 } from "@/api";
@@ -97,6 +99,18 @@ export const useUpdateRoles = (projectId: number) => {
       Promise.all(
         roles.map((role) => updateRole({ body: role, path: { id: role.id } })),
       ),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Role],
+      }),
+  });
+};
+
+export const useAddRole = (projectId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (role: RoleCreate) =>
+      createRole({ body: role, path: { id: projectId } }),
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Role],
