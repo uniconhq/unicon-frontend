@@ -16,6 +16,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     paramsSerializer: (params) => {
       return qs.stringify(params, { indices: false });
     },
+    throwOnError: true,
   });
 
   return (

@@ -22,10 +22,8 @@ const CreateProgramming = () => {
         id: -1,
       },
       {
-        onSuccess: (response) => {
-          if (response.status === 200) {
-            navigate(`/projects/${projectId}/problems/${problemId}/edit`);
-          }
+        onSuccess: () => {
+          navigate(`/projects/${projectId}/problems/${problemId}/edit`);
         },
       },
     );

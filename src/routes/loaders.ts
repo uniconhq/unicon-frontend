@@ -10,6 +10,7 @@ client.setConfig({
   paramsSerializer: (params) => {
     return qs.stringify(params, { indices: false });
   },
+  throwOnError: true,
 });
 
 export const projectLoader = async ({
@@ -18,13 +19,8 @@ export const projectLoader = async ({
   params: Params<"projectId">;
 }) => {
   const { projectId: id } = params;
-  try {
-    const response = await getProject({ path: { id: Number(id) } });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching project data", error);
-    throw new Response("Failed to load project", { status: 500 });
-  }
+  const response = await getProject({ path: { id: Number(id) } });
+  return response.data;
 };
 
 export const problemLoader = async ({
@@ -33,12 +29,6 @@ export const problemLoader = async ({
   params: Params<"problemId">;
 }) => {
   const { problemId: id } = params;
-  try {
-    const response = await getProblem({ path: { id: Number(id) } });
-    console.log({ response });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching problem data", error);
-    throw new Response("Failed to load problem", { status: 500 });
-  }
+  const response = await getProblem({ path: { id: Number(id) } });
+  return response.data;
 };

@@ -14,9 +14,11 @@ import RolesTable from "@/features/projects/table/roles/roles-table";
 const ProjectRoles = () => {
   const id = useProjectId();
   const { data: project, isLoading } = useQuery(getProjectById(Number(id)));
-  const { data: roles, isLoading: isLoadingRoles } = useQuery(
-    getProjectRolesById(id),
-  );
+  const {
+    data: roles,
+    isLoading: isLoadingRoles,
+    error,
+  } = useQuery(getProjectRolesById(id));
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -24,6 +26,12 @@ const ProjectRoles = () => {
 
   if (!project) {
     return <div>Something went wrong.</div>;
+  }
+
+  if (error) {
+    // If unauthorised, throw error to show <Error />.
+    // There is a delay due to the retries by react query.
+    throw error;
   }
 
   return (

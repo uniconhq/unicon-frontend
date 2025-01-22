@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -52,18 +53,15 @@ const CreateProblemModal: React.FC<OwnProps> = ({ setOpen }) => {
     createProblemMutation.mutate(
       { ...data, tasks: [] },
       {
-        onSettled: (response) => {
-          if (!response) {
-            // this should not happen
-            return;
-          }
-          if (response.status === 200) {
-            navigate(
-              `/projects/${projectId}/problems/${response.data?.id}/edit`,
-            );
+        onError: (error) => {
+          if ((error as AxiosError).status === 403) {
+            setError("You don't have permission to create a problem.");
           } else {
-            setError(JSON.stringify(response.error));
+            setError("Something went wrong.");
           }
+        },
+        onSuccess: (response) => {
+          navigate(`/projects/${projectId}/problems/${response.data?.id}/edit`);
         },
       },
     );
