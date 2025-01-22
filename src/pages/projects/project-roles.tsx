@@ -41,7 +41,7 @@ const ProjectRoles = () => {
           <>
             <div>
               <h3 className="mb-2 text-xl font-[450]">Permissions</h3>
-              <RolePermissionsTable data={roles} />
+              <RolePermissionsTable data={roles} projectId={id} />
             </div>
             <div>
               <h3 className="mb-2 text-xl font-[450]">Invitation keys</h3>
