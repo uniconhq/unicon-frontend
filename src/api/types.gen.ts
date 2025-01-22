@@ -275,12 +275,32 @@ export type RolePublic = {
     name: string;
     id: number;
     project_id: number;
+    view_problems_access: boolean;
+    create_problems_access: boolean;
+    edit_problems_access: boolean;
+    delete_problems_access: boolean;
+    view_restricted_problems_access: boolean;
+    edit_restricted_problems_access: boolean;
+    delete_restricted_problems_access: boolean;
+    make_submission_access: boolean;
+    view_own_submission_access: boolean;
+    view_others_submission_access: boolean;
 };
 
 export type RolePublicWithInvitationKeys = {
     name: string;
     id: number;
     project_id: number;
+    view_problems_access: boolean;
+    create_problems_access: boolean;
+    edit_problems_access: boolean;
+    delete_problems_access: boolean;
+    view_restricted_problems_access: boolean;
+    edit_restricted_problems_access: boolean;
+    delete_restricted_problems_access: boolean;
+    make_submission_access: boolean;
+    view_own_submission_access: boolean;
+    view_others_submission_access: boolean;
     invitation_keys: Array<InvitationKeyPublic>;
 };
 

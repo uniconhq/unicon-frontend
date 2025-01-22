@@ -1178,10 +1178,50 @@ export const RolePublicSchema = {
         project_id: {
             type: 'integer',
             title: 'Project Id'
+        },
+        view_problems_access: {
+            type: 'boolean',
+            title: 'View Problems Access'
+        },
+        create_problems_access: {
+            type: 'boolean',
+            title: 'Create Problems Access'
+        },
+        edit_problems_access: {
+            type: 'boolean',
+            title: 'Edit Problems Access'
+        },
+        delete_problems_access: {
+            type: 'boolean',
+            title: 'Delete Problems Access'
+        },
+        view_restricted_problems_access: {
+            type: 'boolean',
+            title: 'View Restricted Problems Access'
+        },
+        edit_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Edit Restricted Problems Access'
+        },
+        delete_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Delete Restricted Problems Access'
+        },
+        make_submission_access: {
+            type: 'boolean',
+            title: 'Make Submission Access'
+        },
+        view_own_submission_access: {
+            type: 'boolean',
+            title: 'View Own Submission Access'
+        },
+        view_others_submission_access: {
+            type: 'boolean',
+            title: 'View Others Submission Access'
         }
     },
     type: 'object',
-    required: ['name', 'id', 'project_id'],
+    required: ['name', 'id', 'project_id', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_others_submission_access'],
     title: 'RolePublic'
 } as const;
 
@@ -1199,6 +1239,46 @@ export const RolePublicWithInvitationKeysSchema = {
             type: 'integer',
             title: 'Project Id'
         },
+        view_problems_access: {
+            type: 'boolean',
+            title: 'View Problems Access'
+        },
+        create_problems_access: {
+            type: 'boolean',
+            title: 'Create Problems Access'
+        },
+        edit_problems_access: {
+            type: 'boolean',
+            title: 'Edit Problems Access'
+        },
+        delete_problems_access: {
+            type: 'boolean',
+            title: 'Delete Problems Access'
+        },
+        view_restricted_problems_access: {
+            type: 'boolean',
+            title: 'View Restricted Problems Access'
+        },
+        edit_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Edit Restricted Problems Access'
+        },
+        delete_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Delete Restricted Problems Access'
+        },
+        make_submission_access: {
+            type: 'boolean',
+            title: 'Make Submission Access'
+        },
+        view_own_submission_access: {
+            type: 'boolean',
+            title: 'View Own Submission Access'
+        },
+        view_others_submission_access: {
+            type: 'boolean',
+            title: 'View Others Submission Access'
+        },
         invitation_keys: {
             items: {
                 '$ref': '#/components/schemas/InvitationKeyPublic'
@@ -1208,7 +1288,7 @@ export const RolePublicWithInvitationKeysSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'project_id', 'invitation_keys'],
+    required: ['name', 'id', 'project_id', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_others_submission_access', 'invitation_keys'],
     title: 'RolePublicWithInvitationKeys'
 } as const;
 

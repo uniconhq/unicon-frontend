@@ -20,7 +20,6 @@ export const projectLoader = async ({
   const { projectId: id } = params;
   try {
     const response = await getProject({ path: { id: Number(id) } });
-    console.log({ response });
     return response.data;
   } catch (error) {
     console.error("Error fetching project data", error);
