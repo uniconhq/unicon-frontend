@@ -1,7 +1,7 @@
 import "@xyflow/react/dist/style.css";
 
 import { ReactFlowProvider } from "@xyflow/react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useImmerReducer } from "use-immer";
 
 import { GraphEdge } from "@/api";
@@ -18,6 +18,7 @@ import GraphView from "./graph-view";
 import { Step } from "./types";
 
 type OwnProps = {
+  input?: Step;
   steps: Step[];
   edges: GraphEdge[];
   isEditing: boolean;
@@ -25,18 +26,24 @@ type OwnProps = {
 };
 
 const NodeGraph: React.FC<OwnProps> = ({
+  input,
   steps: initialSteps,
   edges: initialEdges,
   isEditing,
   onChange,
 }) => {
   const [graph, dispatch] = useImmerReducer(graphReducer, {
-    steps: initialSteps,
+    steps: input ? [input, ...initialSteps] : initialSteps,
     edges: initialEdges,
     selectedSocketId: null,
     selectedStepId: null,
     isEditing,
   });
+
+  useEffect(() => {
+    if (!input) return;
+    dispatch({ type: "UPDATE_INPUT_STEP", step: input });
+  }, [input]);
 
   const wrappedDispatch = useCallback(
     (action: GraphAction) => {

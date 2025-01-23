@@ -313,7 +313,8 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                     <CollapsibleContent>
                       <TestcaseNodeGraph
                         key={testcase.id}
-                        steps={testcase.nodes.concat(userInputNode)}
+                        input={userInputNode}
+                        steps={testcase.nodes}
                         edges={testcase.edges}
                         isEditing
                         // Note: I couldn't figure out how to make this subscribe to the child's nodes/edges
