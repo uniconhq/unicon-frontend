@@ -81,14 +81,7 @@ const GraphView: React.FC = () => {
     setFlowEdges([...layoutedEdges]);
 
     setLayoutApplied(true);
-  }, [
-    flowNodesInitialized,
-    layoutApplied,
-    flowNodes,
-    flowEdges,
-    setFlowNodes,
-    setFlowEdges,
-  ]);
+  }, [flowNodesInitialized, layoutApplied]);
 
   useEffect(() => {
     if (!layoutApplied || !rfInstance) return;
@@ -96,10 +89,12 @@ const GraphView: React.FC = () => {
   }, [layoutApplied, rfInstance]);
 
   useEffect(() => {
-    const newNodes = nodeData.filter(
-      (node) => !flowNodes.some((n) => n.id === node.id),
+    setFlowNodes(
+      nodeData.map((node) => {
+        const existingRfNode = flowNodes.find((n) => n.id === node.id);
+        return existingRfNode ? { ...existingRfNode, data: node.data } : node;
+      }),
     );
-    setFlowNodes((nodes) => [...nodes, ...newNodes]);
   }, [nodeData, flowNodes, setFlowNodes]);
 
   useEffect(() => setFlowEdges(edgeData), [edgeData, setFlowEdges]);
