@@ -179,6 +179,7 @@ export type OutputStep = {
 
 export type Problem = {
     name: string;
+    restricted: boolean;
     description: string;
     tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
 };
@@ -194,11 +195,13 @@ export type ProblemORM = {
     id: number;
     name: string;
     description: string;
+    restricted?: boolean;
     project_id: number;
 };
 
 export type ProblemPublic = {
     name: string;
+    restricted: boolean;
     description: string;
     tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
     edit: boolean;

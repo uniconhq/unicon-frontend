@@ -3,6 +3,7 @@ import { Pencil, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Task } from "@/components/tasks/task";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProblemById } from "@/features/problems/queries";
@@ -22,8 +23,13 @@ const Problem = () => {
     <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">
-            {data.name} (#{id})
+          <h1 className="flex items-center gap-4 text-2xl font-semibold">
+            {data.name} (#{id}){" "}
+            {data.restricted ? (
+              <Badge variant={"destructive"}>restricted</Badge>
+            ) : (
+              <Badge variant={"secondary"}>not restricted</Badge>
+            )}
           </h1>
           <h2 className="mt-4 font-light">{data.description}</h2>
         </div>

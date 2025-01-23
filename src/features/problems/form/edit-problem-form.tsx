@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Problem } from "@/api";
+import CheckboxField from "@/components/form/fields/checkbox-field";
 import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
 import TextareaField from "@/components/form/fields/textarea-field";
@@ -22,6 +23,7 @@ type OwnProps = {
 const problemFormSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
   description: z.string().min(1, "Description cannot be empty"),
+  restricted: z.boolean(),
 });
 
 type ProblemFormType = z.infer<typeof problemFormSchema>;
@@ -78,6 +80,7 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
             <div className="flex w-full flex-col gap-4">
               <TextField label="Title" name="name" />
               <TextareaField label="Description" name="description" rows={5} />
+              <CheckboxField label="Restricted" name="restricted" />
             </div>
           </div>
           <EditTasksDisplay tasks={problem.tasks} />

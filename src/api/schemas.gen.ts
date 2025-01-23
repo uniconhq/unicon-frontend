@@ -781,6 +781,10 @@ export const ProblemSchema = {
             type: 'string',
             title: 'Name'
         },
+        restricted: {
+            type: 'boolean',
+            title: 'Restricted'
+        },
         description: {
             type: 'string',
             title: 'Description'
@@ -816,7 +820,7 @@ export const ProblemSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'description', 'tasks'],
+    required: ['name', 'restricted', 'description', 'tasks'],
     title: 'Problem'
 } as const;
 
@@ -858,6 +862,11 @@ export const ProblemORMSchema = {
             type: 'string',
             title: 'Description'
         },
+        restricted: {
+            type: 'boolean',
+            title: 'Restricted',
+            default: false
+        },
         project_id: {
             type: 'integer',
             title: 'Project Id'
@@ -873,6 +882,10 @@ export const ProblemPublicSchema = {
         name: {
             type: 'string',
             title: 'Name'
+        },
+        restricted: {
+            type: 'boolean',
+            title: 'Restricted'
         },
         description: {
             type: 'string',
@@ -917,7 +930,7 @@ export const ProblemPublicSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'description', 'tasks', 'edit', 'make_submission'],
+    required: ['name', 'restricted', 'description', 'tasks', 'edit', 'make_submission'],
     title: 'ProblemPublic'
 } as const;
 
