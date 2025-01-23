@@ -52,7 +52,7 @@ export function StepNode({ data }: { data: Step }) {
   const deleteStep = useCallback(
     () =>
       dispatch({
-        type: "REMOVE_STEP",
+        type: "DELETE_STEP",
         stepId: data.id,
       }),
     [data.id, dispatch],

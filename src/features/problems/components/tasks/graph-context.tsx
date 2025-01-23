@@ -1,7 +1,13 @@
 import { createContext, Dispatch } from "react";
 import { ImmerReducer } from "use-immer";
 
-import { GraphEdge, OutputSocket, StepSocket, StepType } from "@/api";
+import {
+  GraphEdge,
+  InputStep,
+  OutputSocket,
+  StepSocket,
+  StepType,
+} from "@/api";
 import { isFile } from "@/lib/types";
 
 import { Step } from "./types";
@@ -14,13 +20,18 @@ export type GraphState = {
   isEditing: boolean;
 };
 
+type UpdateInputStepAction = {
+  type: "UPDATE_INPUT_STEP";
+  step: InputStep;
+};
+
 type AddStepAction = {
   type: "ADD_STEP";
   stepType: StepType;
 };
 
-type RemoveStepAction = {
-  type: "REMOVE_STEP";
+type DeleteStepAction = {
+  type: "DELETE_STEP";
   stepId: number;
 };
 
@@ -76,15 +87,24 @@ type DeleteEdgeAction = {
 
 export type GraphAction =
   | AddStepAction
-  | RemoveStepAction
-  | UpdateStepAction
+  | DeleteStepAction
   | SelectStepAction
   | DeselectStepAction
+  | UpdateStepAction
+  | AddStepSocketAction
+  | DeleteStepSocketAction
+  | UpdateStepSocketAction
   | AddEdgeAction
   | DeleteEdgeAction
-  | UpdateStepSocketAction
-  | DeleteStepSocketAction
-  | AddStepSocketAction;
+  | UpdateInputStepAction;
+
+const updateInputStep = (state: GraphState, action: UpdateInputStepAction) => {
+  // TEMP: Assume that input step is always the first step (at idx = 0)
+  // This is currently guaranteed by `NodeGraph`
+  // TODO: refactor this, this is so so so so so bad
+  state.steps[0] = action.step;
+  return state;
+};
 
 const addStep = (state: GraphState, action: AddStepAction) => {
   const baseStep: Step = {
@@ -170,7 +190,7 @@ const addStep = (state: GraphState, action: AddStepAction) => {
   return state;
 };
 
-const removeStep = (state: GraphState, action: RemoveStepAction) => {
+const deleteStep = (state: GraphState, action: DeleteStepAction) => {
   state.steps = state.steps.filter((node) => node.id !== action.stepId);
   state.edges.filter(
     (edge) =>
@@ -371,24 +391,26 @@ export const graphReducer: ImmerReducer<GraphState, GraphAction> = (
   switch (action.type) {
     case "ADD_STEP":
       return addStep(state, action);
-    case "REMOVE_STEP":
-      return removeStep(state, action);
-    case "UPDATE_STEP_EXCLUDING_SOCKETS":
-      return updateStep(state, action);
+    case "DELETE_STEP":
+      return deleteStep(state, action);
     case "SELECT_STEP":
       return selectSocket(state, action);
     case "DESELECT_STEP":
       return deselectSocket(state);
-    case "UPDATE_STEP_SOCKET":
-      return updateStepSocket(state, action);
     case "ADD_STEP_SOCKET":
       return addStepSocket(state, action);
     case "DELETE_STEP_SOCKET":
       return deleteStepSocket(state, action);
+    case "UPDATE_STEP_SOCKET":
+      return updateStepSocket(state, action);
+    case "UPDATE_STEP_EXCLUDING_SOCKETS":
+      return updateStep(state, action);
     case "ADD_EDGE":
       return addEdge(state, action);
     case "DELETE_EDGE":
       return deleteEdge(state, action);
+    case "UPDATE_INPUT_STEP":
+      return updateInputStep(state, action);
   }
 };
 
