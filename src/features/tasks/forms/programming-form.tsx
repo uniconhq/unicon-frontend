@@ -286,10 +286,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
             </div>
             <div className="flex w-full flex-col gap-4">
               {form.watch("testcases").map((testcase) => (
-                <div
-                  className="p-4"
-                  key={testcase.id + JSON.stringify(userInputNode)}
-                >
+                <div className="p-4" key={testcase.id}>
                   <Collapsible defaultOpen>
                     <div className="flex justify-between">
                       <CollapsibleTrigger asChild>
