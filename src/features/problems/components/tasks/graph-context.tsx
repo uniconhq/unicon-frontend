@@ -130,10 +130,8 @@ const updateUserInputStep = (
   state: GraphState,
   { payload }: UpdateUserInputStepAction,
 ) => {
-  // TEMP: Assume that input step is always the first step (at idx = 0)
-  // This is currently guaranteed by `NodeGraph`
-  // TODO: refactor this, this is so so so so so bad
-  state.steps[0] = payload.step;
+  const userInputStepIdx = state.steps.findIndex((node) => node.id === 0);
+  if (userInputStepIdx !== -1) state.steps[userInputStepIdx] = payload.step;
   return state;
 };
 
