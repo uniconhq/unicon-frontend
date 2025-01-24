@@ -11,8 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  GraphActionType,
   GraphContext,
   GraphDispatchContext,
+  SocketType,
 } from "@/features/problems/components/tasks/graph-context";
 import { isControlSocket } from "@/utils/socket";
 
@@ -33,37 +35,34 @@ const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...newMetadataWithoutId } = newMetadata;
       dispatch({
-        type: "UPDATE_STEP_SOCKET",
-        stepId: step.id,
-        oldSocketId: step.inputs[metadataIndex].id,
-        newSocketId: step.inputs[metadataIndex].id,
-        isInput: true,
-        socketFields: newMetadataWithoutId,
+        type: GraphActionType.UpdateSocketMetadata,
+        payload: {
+          stepId: step.id,
+          socketId: step.inputs[metadataIndex].id,
+          socketMetadata: newMetadataWithoutId,
+        },
       });
     };
 
   const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
     dispatch({
-      type: "UPDATE_STEP_SOCKET",
-      stepId: step.id,
-      oldSocketId,
-      newSocketId,
-      // output steps only have inputs
-      isInput: true,
+      type: GraphActionType.UpdateSocketId,
+      payload: { stepId: step.id, oldSocketId, newSocketId },
     });
   };
 
   const addInputSocket = useCallback(() => {
-    dispatch({ type: "ADD_STEP_SOCKET", stepId: step.id, isInput: true });
+    dispatch({
+      type: GraphActionType.AddSocket,
+      payload: { stepId: step.id, socketType: SocketType.Input },
+    });
   }, [dispatch, step]);
 
   const deleteSocket = useCallback(
     (socketId: string) => () => {
       dispatch({
-        type: "DELETE_STEP_SOCKET",
-        stepId: step.id,
-        socketId,
-        isInput: true,
+        type: GraphActionType.DeleteSocket,
+        payload: { stepId: step.id, socketId },
       });
     },
     [dispatch, step],

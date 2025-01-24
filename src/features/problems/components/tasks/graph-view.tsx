@@ -29,7 +29,11 @@ import { StepNode } from "@/components/node-graph/components/step/step-node";
 import getLayoutedElements from "@/utils/graph";
 
 import AddNodeButton from "./add-node-button";
-import { GraphContext, GraphDispatchContext } from "./graph-context";
+import {
+  GraphActionType,
+  GraphContext,
+  GraphDispatchContext,
+} from "./graph-context";
 import { Step } from "./types";
 
 const nodeTypes = { step: StepNode };
@@ -106,9 +110,8 @@ const GraphView: React.FC = () => {
       if (!isEditing) return;
 
       dispatch({
-        type: "ADD_EDGE",
-        edge: {
-          id: Math.max(...edges.map((edge) => edge.id), -1) + 1,
+        type: GraphActionType.AddEdge,
+        payload: {
           from_node_id: parseInt(connection.source),
           from_socket_id: connection.sourceHandle!,
           to_node_id: parseInt(connection.target),
@@ -131,13 +134,12 @@ const GraphView: React.FC = () => {
       if (!isEditing) return;
 
       dispatch({
-        type: "DELETE_EDGE",
-        edgeId: parseInt(oldEdge.id),
+        type: GraphActionType.DeleteEdge,
+        payload: { id: parseInt(oldEdge.id) },
       });
       dispatch({
-        type: "ADD_EDGE",
-        edge: {
-          id: Math.max(...edges.map((edge) => edge.id), -1) + 1,
+        type: GraphActionType.AddEdge,
+        payload: {
           from_node_id: parseInt(newConnection.source),
           from_socket_id: newConnection.sourceHandle!,
           to_node_id: parseInt(newConnection.target),
@@ -155,8 +157,8 @@ const GraphView: React.FC = () => {
 
       if (!edgeReconnectSuccessful.current) {
         dispatch({
-          type: "DELETE_EDGE",
-          edgeId: parseInt(edge.id),
+          type: GraphActionType.DeleteEdge,
+          payload: { id: parseInt(edge.id) },
         });
         setFlowEdges((eds) => eds.filter((e) => e.id !== edge.id));
       }

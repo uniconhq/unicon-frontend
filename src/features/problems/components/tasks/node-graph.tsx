@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 import {
   GraphAction,
+  GraphActionType,
   GraphContext,
   GraphDispatchContext,
   graphReducer,
@@ -42,7 +43,10 @@ const NodeGraph: React.FC<OwnProps> = ({
 
   useEffect(() => {
     if (!input) return;
-    dispatch({ type: "UPDATE_INPUT_STEP", step: input });
+    dispatch({
+      type: GraphActionType.UpdateUserInputStep,
+      payload: { step: input },
+    });
   }, [input]);
 
   const wrappedDispatch = useCallback(

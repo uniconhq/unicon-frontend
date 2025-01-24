@@ -36,17 +36,17 @@ export enum GraphActionType {
 
 interface BaseGraphAction {
   type: GraphActionType;
-  payload: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  payload?: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 interface AddStepAction extends BaseGraphAction {
   type: GraphActionType.AddStep;
-  payload: { stepType: StepType };
+  payload: { type: StepType };
 }
 
 interface DeleteStepAction extends BaseGraphAction {
   type: GraphActionType.DeleteStep;
-  payload: { stepId: number };
+  payload: { id: number };
 }
 
 interface UpdateStepMetadataAction extends BaseGraphAction {
@@ -85,12 +85,17 @@ interface UpdateSocketMetadataAction extends BaseGraphAction {
 
 interface AddEdgeAction extends BaseGraphAction {
   type: GraphActionType.AddEdge;
-  payload: { edge: GraphEdge };
+  payload: {
+    from_node_id: number;
+    from_socket_id: string;
+    to_node_id: number;
+    to_socket_id: string;
+  };
 }
 
 interface DeleteEdgeAction extends BaseGraphAction {
   type: GraphActionType.DeleteEdge;
-  payload: { edgeId: number };
+  payload: { id: number };
 }
 
 interface SelectSocketAction extends BaseGraphAction {
@@ -135,13 +140,13 @@ const updateUserInputStep = (
 const addStep = (state: GraphState, { payload }: AddStepAction) => {
   const baseStep: Step = {
     id: Math.max(...state.steps.map((node) => node.id), -1) + 1,
-    type: payload.stepType,
+    type: payload.type,
     inputs: [{ id: "CONTROL.IN", data: null }],
     outputs: [{ id: "CONTROL.OUT", data: null }],
   };
 
   let newStep: Step;
-  switch (payload.stepType) {
+  switch (payload.type) {
     case "PY_RUN_FUNCTION_STEP":
       newStep = {
         ...baseStep,
@@ -206,14 +211,13 @@ const addStep = (state: GraphState, { payload }: AddStepAction) => {
 };
 
 const deleteStep = (state: GraphState, { payload }: DeleteStepAction) => {
-  state.steps = state.steps.filter((node) => node.id !== payload.stepId);
+  state.steps = state.steps.filter((node) => node.id !== payload.id);
   state.edges.filter(
     (edge) =>
-      edge.from_node_id !== payload.stepId &&
-      edge.to_node_id !== payload.stepId,
+      edge.from_node_id !== payload.id && edge.to_node_id !== payload.id,
   );
 
-  if (state.selectedStepId === payload.stepId) {
+  if (state.selectedStepId === payload.id) {
     state.selectedStepId = null;
     state.selectedSocketId = null;
   }
@@ -353,12 +357,14 @@ const deselectSocket = (state: GraphState) => {
 };
 
 const addEdge = (state: GraphState, { payload }: AddEdgeAction) => {
-  state.edges.push(payload.edge);
+  // Find unique ID for the new edge
+  const newEdgeId = Math.max(...state.edges.map((edge) => edge.id), -1) + 1;
+  state.edges.push({ id: newEdgeId, ...payload });
   return state;
 };
 
 const deleteEdge = (state: GraphState, { payload }: DeleteEdgeAction) => {
-  state.edges = state.edges.filter((edge) => edge.id !== payload.edgeId);
+  state.edges = state.edges.filter((edge) => edge.id !== payload.id);
   return state;
 };
 

@@ -2,6 +2,7 @@ import { useContext } from "react";
 
 import { ObjectAccessStep } from "@/api";
 import {
+  GraphActionType,
   GraphContext,
   GraphDispatchContext,
 } from "@/features/problems/components/tasks/graph-context";
@@ -24,11 +25,10 @@ const ObjectAccessMetadata: React.FC<OwnProps> = ({ step }) => {
           value={step.key}
           onChange={(newKey) =>
             dispatch({
-              type: "UPDATE_STEP_EXCLUDING_SOCKETS",
-              stepId: step.id,
-              step: {
-                ...step,
-                key: newKey,
+              type: GraphActionType.UpdateStepMetadata,
+              payload: {
+                stepId: step.id,
+                stepMetadata: { key: newKey },
               },
             })
           }
