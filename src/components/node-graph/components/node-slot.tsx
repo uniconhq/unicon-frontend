@@ -83,6 +83,7 @@ export function NodeSlot({
               className="h-fit w-fit px-1 py-1"
               variant={"secondary"}
               onClick={onDeleteSocket}
+              asChild={true}
             >
               <Trash className="h-2 w-2" />
             </Button>
