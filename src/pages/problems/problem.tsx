@@ -28,7 +28,9 @@ const Problem = () => {
             {data.restricted ? (
               <Badge variant={"destructive"}>restricted</Badge>
             ) : (
-              <Badge variant={"secondary"}>not restricted</Badge>
+              <Badge variant={"secondary"} className="text-nowrap">
+                not restricted
+              </Badge>
             )}
           </h1>
           <h2 className="mt-4 font-light">{data.description}</h2>
