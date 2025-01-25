@@ -16,6 +16,7 @@ import EditProblem from "@/pages/problems/edit-problem";
 import Problem from "@/pages/problems/problem";
 import CreateProject from "@/pages/projects/create-project";
 import Project from "@/pages/projects/project";
+import ProjectGroups from "@/pages/projects/project-groups";
 import ProjectRoles from "@/pages/projects/project-roles";
 import ProjectUsers from "@/pages/projects/project-users";
 import Projects from "@/pages/projects/projects";
@@ -85,6 +86,13 @@ export const routes = [
                     element: <ProjectUsers />,
                     handle: {
                       crumb: () => ({ label: "Users" }),
+                    },
+                  },
+                  {
+                    path: "groups",
+                    element: <ProjectGroups />,
+                    handle: {
+                      crumb: () => ({ label: "Groups" }),
                     },
                   },
                   {

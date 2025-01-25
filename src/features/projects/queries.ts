@@ -11,6 +11,7 @@ import {
   deleteInvitationKey,
   getAllProjects,
   getProject,
+  getProjectGroups,
   getProjectRoles,
   getProjectUsers,
   joinProject,
@@ -24,6 +25,7 @@ export enum ProjectQueryKeys {
   Project = "Project",
   Role = "Role",
   User = "User",
+  Group = "Group",
 }
 
 export const getProjects = () => {
@@ -50,6 +52,14 @@ export const getProjectRolesById = (id: number) => {
   });
 };
 
+export const getProjectGroupsById = (id: number) => {
+  return queryOptions({
+    queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.Group],
+    queryFn: () =>
+      getProjectGroups({ path: { id } }).then((response) => response.data),
+  });
+};
+
 export const getProjectUsersById = (id: number) => {
   return queryOptions({
     queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.User],
@@ -66,8 +76,13 @@ export const useCreateProject = (id: number) => {
 };
 
 export const useJoinProject = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (key: string) => joinProject({ path: { key } }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ProjectQueryKeys.Project],
+      }),
   });
 };
 
@@ -96,10 +111,12 @@ export const useDeleteInvitationKey = (projectId: number, roleId: number) => {
 export const useUpdateRoles = (projectId: number) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (roles: Omit<RolePublic, "project_id">[]) =>
-      Promise.all(
+    mutationFn: (roles: Omit<RolePublic, "project_id">[]) => {
+      console.log({ mutationRoles: roles });
+      return Promise.all(
         roles.map((role) => updateRole({ body: role, path: { id: role.id } })),
-      ),
+      );
+    },
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Role],

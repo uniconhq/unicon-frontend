@@ -159,6 +159,74 @@ export const GraphEdgeSchema = {
     title: 'GraphEdge'
 } as const;
 
+export const GroupCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'GroupCreate'
+} as const;
+
+export const GroupPublicSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        members: {
+            items: {
+                '$ref': '#/components/schemas/UserPublic'
+            },
+            type: 'array',
+            title: 'Members'
+        },
+        supervisors: {
+            items: {
+                '$ref': '#/components/schemas/UserPublic'
+            },
+            type: 'array',
+            title: 'Supervisors'
+        }
+    },
+    type: 'object',
+    required: ['id', 'name', 'members', 'supervisors'],
+    title: 'GroupPublic'
+} as const;
+
+export const GroupUpdateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        members: {
+            items: {
+                type: 'integer'
+            },
+            type: 'array',
+            title: 'Members'
+        },
+        supervisors: {
+            items: {
+                type: 'integer'
+            },
+            type: 'array',
+            title: 'Supervisors'
+        }
+    },
+    type: 'object',
+    required: ['name', 'members', 'supervisors'],
+    title: 'GroupUpdate'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -1085,6 +1153,10 @@ export const ProjectPublicSchema = {
             type: 'boolean',
             title: 'View Own Submission'
         },
+        view_supervised_submission: {
+            type: 'boolean',
+            title: 'View Supervised Submission'
+        },
         view_others_submission: {
             type: 'boolean',
             title: 'View Others Submission'
@@ -1104,10 +1176,26 @@ export const ProjectPublicSchema = {
         create_problems: {
             type: 'boolean',
             title: 'Create Problems'
+        },
+        view_groups: {
+            type: 'boolean',
+            title: 'View Groups'
+        },
+        create_groups: {
+            type: 'boolean',
+            title: 'Create Groups'
+        },
+        edit_groups: {
+            type: 'boolean',
+            title: 'Edit Groups'
+        },
+        delete_groups: {
+            type: 'boolean',
+            title: 'Delete Groups'
         }
     },
     type: 'object',
-    required: ['name', 'id', 'roles', 'view_own_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems'],
+    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups'],
     title: 'ProjectPublic'
 } as const;
 
@@ -1132,6 +1220,10 @@ export const ProjectPublicWithProblemsSchema = {
             type: 'boolean',
             title: 'View Own Submission'
         },
+        view_supervised_submission: {
+            type: 'boolean',
+            title: 'View Supervised Submission'
+        },
         view_others_submission: {
             type: 'boolean',
             title: 'View Others Submission'
@@ -1152,6 +1244,22 @@ export const ProjectPublicWithProblemsSchema = {
             type: 'boolean',
             title: 'Create Problems'
         },
+        view_groups: {
+            type: 'boolean',
+            title: 'View Groups'
+        },
+        create_groups: {
+            type: 'boolean',
+            title: 'Create Groups'
+        },
+        edit_groups: {
+            type: 'boolean',
+            title: 'Edit Groups'
+        },
+        delete_groups: {
+            type: 'boolean',
+            title: 'Delete Groups'
+        },
         problems: {
             items: {
                 '$ref': '#/components/schemas/ProblemBase'
@@ -1161,7 +1269,7 @@ export const ProjectPublicWithProblemsSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'roles', 'view_own_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems', 'problems'],
+    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups', 'problems'],
     title: 'ProjectPublicWithProblems'
 } as const;
 
@@ -1317,13 +1425,33 @@ export const RolePublicSchema = {
             type: 'boolean',
             title: 'View Own Submission Access'
         },
+        view_supervised_submission_access: {
+            type: 'boolean',
+            title: 'View Supervised Submission Access'
+        },
         view_others_submission_access: {
             type: 'boolean',
             title: 'View Others Submission Access'
+        },
+        view_groups_access: {
+            type: 'boolean',
+            title: 'View Groups Access'
+        },
+        create_groups_access: {
+            type: 'boolean',
+            title: 'Create Groups Access'
+        },
+        edit_groups_access: {
+            type: 'boolean',
+            title: 'Edit Groups Access'
+        },
+        delete_groups_access: {
+            type: 'boolean',
+            title: 'Delete Groups Access'
         }
     },
     type: 'object',
-    required: ['name', 'id', 'project_id', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_others_submission_access'],
+    required: ['name', 'id', 'project_id', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_supervised_submission_access', 'view_others_submission_access', 'view_groups_access', 'create_groups_access', 'edit_groups_access', 'delete_groups_access'],
     title: 'RolePublic'
 } as const;
 
@@ -1377,9 +1505,29 @@ export const RolePublicWithInvitationKeysSchema = {
             type: 'boolean',
             title: 'View Own Submission Access'
         },
+        view_supervised_submission_access: {
+            type: 'boolean',
+            title: 'View Supervised Submission Access'
+        },
         view_others_submission_access: {
             type: 'boolean',
             title: 'View Others Submission Access'
+        },
+        view_groups_access: {
+            type: 'boolean',
+            title: 'View Groups Access'
+        },
+        create_groups_access: {
+            type: 'boolean',
+            title: 'Create Groups Access'
+        },
+        edit_groups_access: {
+            type: 'boolean',
+            title: 'Edit Groups Access'
+        },
+        delete_groups_access: {
+            type: 'boolean',
+            title: 'Delete Groups Access'
         },
         invitation_keys: {
             items: {
@@ -1390,7 +1538,7 @@ export const RolePublicWithInvitationKeysSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'project_id', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_others_submission_access', 'invitation_keys'],
+    required: ['name', 'id', 'project_id', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_supervised_submission_access', 'view_others_submission_access', 'view_groups_access', 'create_groups_access', 'edit_groups_access', 'delete_groups_access', 'invitation_keys'],
     title: 'RolePublicWithInvitationKeys'
 } as const;
 
@@ -1436,13 +1584,33 @@ export const RoleUpdateSchema = {
             type: 'boolean',
             title: 'View Own Submission Access'
         },
+        view_supervised_submission_access: {
+            type: 'boolean',
+            title: 'View Supervised Submission Access'
+        },
         view_others_submission_access: {
             type: 'boolean',
             title: 'View Others Submission Access'
+        },
+        view_groups_access: {
+            type: 'boolean',
+            title: 'View Groups Access'
+        },
+        create_groups_access: {
+            type: 'boolean',
+            title: 'Create Groups Access'
+        },
+        edit_groups_access: {
+            type: 'boolean',
+            title: 'Edit Groups Access'
+        },
+        delete_groups_access: {
+            type: 'boolean',
+            title: 'Delete Groups Access'
         }
     },
     type: 'object',
-    required: ['name', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_others_submission_access'],
+    required: ['name', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_supervised_submission_access', 'view_others_submission_access', 'view_groups_access', 'create_groups_access', 'edit_groups_access', 'delete_groups_access'],
     title: 'RoleUpdate'
 } as const;
 

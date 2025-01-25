@@ -14,7 +14,8 @@ const Submissions = () => {
     return;
   }
 
-  const showUser = project.view_others_submission;
+  const showUser =
+    project.view_others_submission || project.view_supervised_submission;
   return (
     <div className="flex w-full flex-col gap-8 px-8 py-6">
       <h1 className="text-2xl font-semibold">Submissions</h1>
