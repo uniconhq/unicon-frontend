@@ -93,9 +93,9 @@ export function StepNode({ data }: { data: Step }) {
         <div className="text-xs font-light">
           <div className="flex flex-row justify-between">
             <NodeSlotGroup>
-              {data.inputs.map((stepSocket: StepSocket) => (
+              {data.inputs.map((stepSocket: StepSocket, index: number) => (
                 <NodeSlot
-                  key={stepSocket.id}
+                  key={index}
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="target"
@@ -117,9 +117,9 @@ export function StepNode({ data }: { data: Step }) {
               )}
             </NodeSlotGroup>
             <NodeSlotGroup>
-              {data.outputs.map((stepSocket: StepSocket) => (
+              {data.outputs.map((stepSocket: StepSocket, index: number) => (
                 <NodeSlot
-                  key={stepSocket.id}
+                  key={index}
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="source"
