@@ -321,12 +321,12 @@ const updateSocketMetadata = (
   const step = state.steps.find((node) => node.id === payload.stepId);
   if (!step) return state;
 
-  let socket =
+  const socket =
     step.inputs.find((socket) => socket.id === payload.socketId) ||
     step.outputs.find((socket) => socket.id === payload.socketId);
   if (!socket) return state;
 
-  socket = { ...socket, ...payload.socketMetadata };
+  Object.assign(socket, payload.socketMetadata);
 
   return state;
 };
