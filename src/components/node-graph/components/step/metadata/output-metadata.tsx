@@ -32,7 +32,6 @@ const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
   // Does not handle updating socket ids. See handleEditSocketId for that
   const updateSocketMetadata =
     (metadataIndex: number) => (newMetadata: Partial<OutputSocket>) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...newMetadataWithoutId } = newMetadata;
       dispatch({
         type: GraphActionType.UpdateSocketMetadata,

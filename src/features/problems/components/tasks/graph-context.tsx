@@ -107,6 +107,10 @@ interface DeselectSocketAction extends BaseGraphAction {
   type: GraphActionType.DeselectSocket;
 }
 
+interface DeselectSocketAction extends BaseGraphAction {
+  type: GraphActionType.DeselectSocket;
+}
+
 interface UpdateUserInputStepAction extends BaseGraphAction {
   type: GraphActionType.UpdateUserInputStep;
   payload: { step: InputStep };
@@ -348,7 +352,7 @@ const selectSocket = (state: GraphState, { payload }: SelectSocketAction) => {
   return state;
 };
 
-const deselectSocket = (state: GraphState) => {
+const deselectSocket = (state: GraphState, _action: DeselectSocketAction) => {
   state.selectedStepId = null;
   state.selectedSocketId = null;
   return state;
@@ -366,36 +370,26 @@ const deleteEdge = (state: GraphState, { payload }: DeleteEdgeAction) => {
   return state;
 };
 
+const actionHandlers = {
+  [GraphActionType.AddStep]: addStep,
+  [GraphActionType.DeleteStep]: deleteStep,
+  [GraphActionType.UpdateStepMetadata]: updateStepMetadata,
+  [GraphActionType.AddSocket]: addSocket,
+  [GraphActionType.DeleteSocket]: deleteSocket,
+  [GraphActionType.UpdateSocketId]: updateSocketId,
+  [GraphActionType.UpdateSocketMetadata]: updateSocketMetadata,
+  [GraphActionType.SelectSocket]: selectSocket,
+  [GraphActionType.DeselectSocket]: deselectSocket,
+  [GraphActionType.AddEdge]: addEdge,
+  [GraphActionType.DeleteEdge]: deleteEdge,
+  [GraphActionType.UpdateUserInputStep]: updateUserInputStep,
+};
+
 export const graphReducer: ImmerReducer<GraphState, GraphAction> = (
   state: GraphState,
   action: GraphAction,
 ): GraphState => {
-  switch (action.type) {
-    case GraphActionType.AddStep:
-      return addStep(state, action);
-    case GraphActionType.DeleteStep:
-      return deleteStep(state, action);
-    case GraphActionType.UpdateStepMetadata:
-      return updateStepMetadata(state, action);
-    case GraphActionType.AddSocket:
-      return addSocket(state, action);
-    case GraphActionType.DeleteSocket:
-      return deleteSocket(state, action);
-    case GraphActionType.UpdateSocketId:
-      return updateSocketId(state, action);
-    case GraphActionType.UpdateSocketMetadata:
-      return updateSocketMetadata(state, action);
-    case GraphActionType.SelectSocket:
-      return selectSocket(state, action);
-    case GraphActionType.DeselectSocket:
-      return deselectSocket(state);
-    case GraphActionType.AddEdge:
-      return addEdge(state, action);
-    case GraphActionType.DeleteEdge:
-      return deleteEdge(state, action);
-    case GraphActionType.UpdateUserInputStep:
-      return updateUserInputStep(state, action);
-  }
+  return actionHandlers[action.type](state, action as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 export const GraphContext = createContext<GraphState | null>(null);
