@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 
 import {
+  createGroup,
   createInvitationKey,
   createProject,
   createRole,
@@ -14,6 +15,7 @@ import {
   getProjectGroups,
   getProjectRoles,
   getProjectUsers,
+  GroupCreate,
   joinProject,
   ProjectCreate,
   RoleCreate,
@@ -132,6 +134,18 @@ export const useAddRole = (projectId: number) => {
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Role],
+      }),
+  });
+};
+
+export const useAddGroup = (projectId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (group: GroupCreate) =>
+      createGroup({ body: group, path: { id: projectId } }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Group],
       }),
   });
 };

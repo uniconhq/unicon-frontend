@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 
-import { useAddRole } from "../../queries";
+import { useAddGroup } from "../queries";
 
 const roleFormSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
@@ -34,7 +34,7 @@ type OwnProps = {
   projectId: number;
 } & PropsWithChildren;
 
-const AddRoleDialog: React.FC<OwnProps> = ({ children, projectId }) => {
+const AddGroupDialog: React.FC<OwnProps> = ({ children, projectId }) => {
   const form = useForm<RoleFormType>({
     resolver: zodResolver(roleFormSchema),
     defaultValues: roleFormDefault,
@@ -42,10 +42,10 @@ const AddRoleDialog: React.FC<OwnProps> = ({ children, projectId }) => {
 
   const [error, setError] = useState("");
 
-  const addRoleMutation = useAddRole(projectId);
+  const addGroupMutation = useAddGroup(projectId);
 
   const onSubmit: SubmitHandler<RoleFormType> = (data) => {
-    addRoleMutation.mutate(data, {
+    addGroupMutation.mutate(data, {
       onError: () => {
         setError("Something went wrong.");
       },
@@ -64,7 +64,7 @@ const AddRoleDialog: React.FC<OwnProps> = ({ children, projectId }) => {
             <DialogHeader>
               <DialogTitle>Add role</DialogTitle>
               <DialogDescription>
-                Enter the name of your new role.
+                Enter the name of your new group.
               </DialogDescription>
               {error && <ErrorAlert message={error} />}
             </DialogHeader>
@@ -73,7 +73,7 @@ const AddRoleDialog: React.FC<OwnProps> = ({ children, projectId }) => {
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="submit">Add role</Button>
+                <Button type="submit">Add group</Button>
               </DialogClose>
             </DialogFooter>
           </form>
@@ -83,4 +83,4 @@ const AddRoleDialog: React.FC<OwnProps> = ({ children, projectId }) => {
   );
 };
 
-export default AddRoleDialog;
+export default AddGroupDialog;

@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import AddGroupDialog from "@/features/projects/components/add-group-dialog";
 import { useProjectId } from "@/features/projects/hooks/use-id";
 import {
   getProjectById,
@@ -37,12 +38,14 @@ const ProjectGroups = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Groups</h2>
         {project.create_groups && (
-          <Button variant="ghost" className="hover:text-purple-300">
-            <Plus /> New group
-          </Button>
+          <AddGroupDialog projectId={id}>
+            <Button variant="ghost" className="hover:text-purple-300">
+              <Plus /> New group
+            </Button>
+          </AddGroupDialog>
         )}
       </div>
-      <div>
+      <div className="flex flex-col gap-2">
         {groups.map((group) => (
           <Card className="p-4">
             <CardTitle className="p-2">
@@ -94,6 +97,11 @@ const ProjectGroups = () => {
                       </TableCell>
                     </TableRow>
                   ))}
+                  {group.members.length + group.supervisors.length === 0 && (
+                    <TableRow className="text-center">
+                      <TableCell colSpan={3}>No members.</TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
