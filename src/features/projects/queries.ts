@@ -9,6 +9,7 @@ import {
   createInvitationKey,
   createProject,
   createRole,
+  deleteGroup,
   deleteInvitationKey,
   getAllProjects,
   getGroup,
@@ -78,11 +79,12 @@ export const getProjectGroupById = (projectId: number, groupId: number) => {
   });
 };
 
-export const getProjectUsersById = (id: number) => {
+export const getProjectUsersById = (id: number, disabled?: boolean) => {
   return queryOptions({
     queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.User],
     queryFn: () =>
       getProjectUsers({ path: { id } }).then((response) => response.data),
+    enabled: !disabled,
   });
 };
 
@@ -179,6 +181,17 @@ export const useUpdateGroup = (projectId: number, groupId: number) => {
           ProjectQueryKeys.Group,
           groupId,
         ],
+      }),
+  });
+};
+
+export const useDeleteGroup = (projectId: number, groupId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => deleteGroup({ path: { id: groupId } }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Group],
       }),
   });
 };

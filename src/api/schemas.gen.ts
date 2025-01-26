@@ -393,6 +393,22 @@ export const MiniGroupPublicSchema = {
     title: 'MiniGroupPublic'
 } as const;
 
+export const MiniProblemPublicSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['id', 'name'],
+    title: 'MiniProblemPublic'
+} as const;
+
 export const MultipleChoiceTaskSchema = {
     properties: {
         id: {
@@ -1906,11 +1922,14 @@ export const SubmissionPublicSchema = {
             title: 'Task Attempts'
         },
         user: {
-            '$ref': '#/components/schemas/UserPublic'
+            '$ref': '#/components/schemas/UserPublicWithRolesAndGroups'
+        },
+        problem: {
+            '$ref': '#/components/schemas/MiniProblemPublic'
         }
     },
     type: 'object',
-    required: ['id', 'problem_id', 'user_id', 'submitted_at', 'task_attempts', 'user'],
+    required: ['id', 'problem_id', 'user_id', 'submitted_at', 'task_attempts', 'user', 'problem'],
     title: 'SubmissionPublic'
 } as const;
 

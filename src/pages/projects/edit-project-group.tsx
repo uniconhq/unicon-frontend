@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { GoPencil } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
 
 import { MiniGroupMemberPublic, UserPublicWithRolesAndGroups } from "@/api";
+import ConfirmationDialog from "@/components/confirmation-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,12 +17,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import AddGroupDialog from "@/features/projects/components/add-group-dialog";
+import EditGroupDialog from "@/features/projects/components/edit-group-dialog";
 import { useGroupId, useProjectId } from "@/features/projects/hooks/use-id";
 import {
   getProjectById,
   getProjectGroupById,
   getProjectUsersById,
+  useDeleteGroup,
   useUpdateGroup,
 } from "@/features/projects/queries";
 import { cn } from "@/lib/utils";
@@ -42,6 +46,7 @@ const EditProjectGroup = () => {
     [] as MiniGroupMemberPublic[],
   );
   const [hideUsersInOtherGroups, setHideUsersInOtherGroups] = useState(true);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   useEffect(() => {
     if (group && group.members) {
@@ -50,6 +55,8 @@ const EditProjectGroup = () => {
   }, [group]);
 
   const updateGroupMutation = useUpdateGroup(projectId, groupId);
+  const deleteGroupMutation = useDeleteGroup(projectId, groupId);
+  const navigate = useNavigate();
 
   if (isLoading || isLoadingGroup || isLoadingUsers) {
     return <div>Loading...</div>;
@@ -88,14 +95,38 @@ const EditProjectGroup = () => {
     <div className="m-auto flex w-full flex-col gap-8 p-4 px-8">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">{group.name}</h2>
-        {project.create_groups && (
-          <AddGroupDialog projectId={projectId}>
-            <Button variant="ghost" className="hover:text-purple-300">
-              <GoPencil /> Edit details
+        <div className="flex gap-2">
+          {project.create_groups && (
+            <EditGroupDialog projectId={projectId} group={group}>
+              <Button variant="ghost" className="hover:text-purple-300">
+                <GoPencil /> Edit details
+              </Button>
+            </EditGroupDialog>
+          )}
+
+          {project.delete_groups && (
+            <Button
+              variant={"destructive"}
+              onClick={() => setOpenDeleteDialog(true)}
+            >
+              <TrashIcon />
             </Button>
-          </AddGroupDialog>
-        )}
+          )}
+        </div>
       </div>
+      {project.delete_groups && openDeleteDialog && (
+        <ConfirmationDialog
+          setOpen={setOpenDeleteDialog}
+          onConfirm={() => {
+            deleteGroupMutation.mutate(undefined, {
+              onSettled: () => {
+                navigate(`/projects/${projectId}/groups`);
+              },
+            });
+          }}
+          description={`This will delete the group '${group.name}' and cannot be undone.`}
+        />
+      )}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <h3 className="text-xl font-[450]">Users that can be added</h3>

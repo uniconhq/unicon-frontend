@@ -4,6 +4,7 @@ import { PropsWithChildren, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { GroupPublic } from "@/api";
 import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 
-import { useAddGroup } from "../queries";
+import { useUpdateGroup } from "../queries";
 
 const groupFormSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
@@ -26,33 +27,45 @@ const groupFormSchema = z.object({
 
 type GroupFormType = z.infer<typeof groupFormSchema>;
 
-const groupFormDefault = {
-  name: "",
-};
-
 type OwnProps = {
   projectId: number;
+  group: GroupPublic;
 } & PropsWithChildren;
 
-const AddGroupDialog: React.FC<OwnProps> = ({ children, projectId }) => {
+const EditGroupDialog: React.FC<OwnProps> = ({
+  children,
+  projectId,
+  group,
+}) => {
   const form = useForm<GroupFormType>({
     resolver: zodResolver(groupFormSchema),
-    defaultValues: groupFormDefault,
+    defaultValues: { name: group.name },
   });
 
   const [error, setError] = useState("");
 
-  const addGroupMutation = useAddGroup(projectId);
+  const updateGroupMutation = useUpdateGroup(projectId, group.id);
 
   const onSubmit: SubmitHandler<GroupFormType> = (data) => {
-    addGroupMutation.mutate(data, {
-      onError: () => {
-        setError("Something went wrong.");
+    updateGroupMutation.mutate(
+      {
+        ...data,
+        supervisors: group.members
+          .filter((member) => member.is_supervisor)
+          .map((member) => member.user.id),
+        members: group.members
+          .filter((member) => !member.is_supervisor)
+          .map((member) => member.user.id),
       },
-      onSuccess: () => {
-        form.reset();
+      {
+        onError: () => {
+          setError("Something went wrong.");
+        },
+        onSuccess: () => {
+          form.reset();
+        },
       },
-    });
+    );
   };
 
   return (
@@ -62,9 +75,9 @@ const AddGroupDialog: React.FC<OwnProps> = ({ children, projectId }) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Add group</DialogTitle>
+              <DialogTitle>Edit group</DialogTitle>
               <DialogDescription>
-                Enter the name of your new group.
+                Edit the name of your group.
               </DialogDescription>
               {error && <ErrorAlert message={error} />}
             </DialogHeader>
@@ -73,7 +86,7 @@ const AddGroupDialog: React.FC<OwnProps> = ({ children, projectId }) => {
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="submit">Add group</Button>
+                <Button type="submit">Edit group</Button>
               </DialogClose>
             </DialogFooter>
           </form>
@@ -83,4 +96,4 @@ const AddGroupDialog: React.FC<OwnProps> = ({ children, projectId }) => {
   );
 };
 
-export default AddGroupDialog;
+export default EditGroupDialog;

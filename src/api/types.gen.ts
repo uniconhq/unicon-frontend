@@ -101,6 +101,11 @@ export type MiniGroupPublic = {
     name: string;
 };
 
+export type MiniProblemPublic = {
+    id: number;
+    name: string;
+};
+
 export type MultipleChoiceTask = {
     id: number;
     type: "MULTIPLE_CHOICE_TASK";
@@ -459,7 +464,8 @@ export type SubmissionPublic = {
     user_id: number;
     submitted_at: (string | null);
     task_attempts: Array<TaskAttemptPublic>;
-    user: UserPublic;
+    user: UserPublicWithRolesAndGroups;
+    problem: MiniProblemPublic;
 };
 
 export type TaskAttemptPublic = {
