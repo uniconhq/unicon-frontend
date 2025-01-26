@@ -40,7 +40,7 @@ const FileEditor: React.FC<OwnProps> = ({
   };
 
   return (
-    <div className="h-full gap-2">
+    <div className="flex h-full flex-col">
       {/* file tab */}
       <div className="flex w-fit gap-2 border-b border-purple-200 py-1">
         {isEditing ? (

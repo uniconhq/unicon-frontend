@@ -169,28 +169,26 @@ const GraphView: React.FC = () => {
   );
 
   return (
-    <div className="relative h-[60vh] w-full">
+    <ReactFlow
+      onInit={onInit}
+      nodeTypes={nodeTypes}
+      nodes={flowNodes}
+      edges={flowEdges}
+      onNodesChange={onFlowNodesChange}
+      onEdgesChange={onFlowEdgesChange}
+      onConnect={onConnect}
+      onReconnectStart={onReconnectStart}
+      onReconnectEnd={onReconnectEnd}
+      onReconnect={onReconnect}
+      nodesConnectable={isEditing}
+      colorMode="dark"
+      proOptions={{ hideAttribution: true }}
+    >
       {isEditing && <AddNodeButton />}
-      <ReactFlow
-        onInit={onInit}
-        nodeTypes={nodeTypes}
-        nodes={flowNodes}
-        edges={flowEdges}
-        onNodesChange={onFlowNodesChange}
-        onEdgesChange={onFlowEdgesChange}
-        onConnect={onConnect}
-        onReconnectStart={onReconnectStart}
-        onReconnectEnd={onReconnectEnd}
-        onReconnect={onReconnect}
-        nodesConnectable={isEditing}
-        colorMode="dark"
-        proOptions={{ hideAttribution: true }}
-      >
-        <Background variant={BackgroundVariant.Dots} />
-        <Controls showInteractive={isEditing} />
-        <MiniMap />
-      </ReactFlow>
-    </div>
+      <Background variant={BackgroundVariant.Dots} />
+      <Controls showInteractive={isEditing} />
+      <MiniMap />
+    </ReactFlow>
   );
 };
 
