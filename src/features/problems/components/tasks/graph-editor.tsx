@@ -15,6 +15,7 @@ import {
   useNodesInitialized,
   useNodesState,
 } from "@xyflow/react";
+import { ExpandIcon } from "lucide-react";
 import {
   useCallback,
   useContext,
@@ -26,6 +27,7 @@ import {
 
 import { GraphEdge } from "@/api";
 import { StepNode } from "@/components/node-graph/components/step/step-node";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import getLayoutedElements from "@/utils/graph";
 
@@ -78,6 +80,8 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ className }) => {
   const [rfInstance, setRfInstance] = useState<RfInstance | null>(null);
   const [flowNodes, setFlowNodes, onFlowNodesChange] = useNodesState(nodeData);
   const [flowEdges, setFlowEdges, onFlowEdgesChange] = useEdgesState(edgeData);
+
+  const [expanded, setExpanded] = useState(false);
 
   const onInit = (rf: RfInstance) => setRfInstance(rf);
 
@@ -179,7 +183,9 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ className }) => {
     <div
       className={cn("grid gap-1", className, {
         "grid-cols-3": selectedSocketId,
+        "fixed inset-0 z-30 h-full bg-black/100 animate-in fade-in": expanded,
       })}
+      data-state={expanded ? "open" : "closed"}
     >
       {selectedSocketId && <GraphFileEditor />}
       <div className={selectedSocketId ? "col-span-2" : ""}>
@@ -198,7 +204,22 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ className }) => {
           colorMode="dark"
           proOptions={{ hideAttribution: true }}
         >
-          {isEditing && <AddNodeButton />}
+          {/* Custom controls */}
+          <div
+            className={cn(
+              "absolute right-1 top-1 z-10 mt-4 flex space-x-1 px-2",
+              { "z-30": expanded },
+            )}
+          >
+            {isEditing && <AddNodeButton />}
+            <Button
+              onClick={() => setExpanded((prev) => !prev)}
+              type="button"
+              variant="outline"
+            >
+              <ExpandIcon className={cn({ "text-purple-400": expanded })} />
+            </Button>
+          </div>
           <Background variant={BackgroundVariant.Dots} />
           <Controls showInteractive={isEditing} />
           <MiniMap />

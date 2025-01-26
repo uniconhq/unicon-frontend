@@ -27,14 +27,7 @@ const AddNodeButton: React.FC = () => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className="absolute right-1 top-1 z-50"
-          type="button"
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
+        <Button variant={"outline"} type="button" onClick={() => setOpen(true)}>
           <PlusIcon />
           Add node
         </Button>
