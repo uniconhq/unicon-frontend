@@ -215,11 +215,8 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                 Add input
               </Button>
               {form.getValues("required_inputs").map((input, index) => (
-                <Collapsible className="w-full" key={input.id}>
-                  <div
-                    className="flex gap-4 rounded-md border p-2"
-                    key={input.id}
-                  >
+                <Collapsible className="w-full" key={index}>
+                  <div className="flex gap-4 rounded-md border p-2" key={index}>
                     <NodeInput
                       className={["min-w-[160px]", "font-mono"]}
                       value={input.id}

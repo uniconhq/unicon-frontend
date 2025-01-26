@@ -13,6 +13,7 @@ type OwnProps = {
 const NodeInput: React.FC<OwnProps> = ({ className = [], value, onChange }) => {
   const debouncedHandleChange = useDebouncedCallback(onChange, 1000);
   const [displayValue, setDisplayValue] = useState(value);
+
   return (
     <input
       type="text"
@@ -23,8 +24,8 @@ const NodeInput: React.FC<OwnProps> = ({ className = [], value, onChange }) => {
       value={displayValue}
       onChange={(e) => {
         const newValue = e.target.value;
-        debouncedHandleChange(newValue);
         setDisplayValue(newValue);
+        debouncedHandleChange(newValue);
       }}
       size={displayValue.length}
     />

@@ -119,7 +119,7 @@ const GraphView: React.FC = () => {
         },
       });
     },
-    [dispatch, edges, isEditing],
+    [dispatch, isEditing],
   );
 
   const edgeReconnectSuccessful = useRef(true);
@@ -148,7 +148,7 @@ const GraphView: React.FC = () => {
       });
       edgeReconnectSuccessful.current = true;
     },
-    [dispatch, edges, isEditing],
+    [dispatch, isEditing],
   );
 
   const onReconnectEnd = useCallback(
