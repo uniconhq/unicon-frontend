@@ -2,7 +2,11 @@ import "@/index.css";
 
 import { Navigate, UIMatch } from "react-router-dom";
 
-import { Problem as ProblemType, ProjectPublicWithProblems } from "@/api";
+import {
+  GroupPublic,
+  Problem as ProblemType,
+  ProjectPublicWithProblems,
+} from "@/api";
 import AuthenticatedPage from "@/components/layout/authenticated-page";
 import Layout from "@/components/layout/layout.tsx";
 import CreateSubmission from "@/pages/create-submission";
@@ -15,6 +19,7 @@ import CreateProblem from "@/pages/problems/create-problem";
 import EditProblem from "@/pages/problems/edit-problem";
 import Problem from "@/pages/problems/problem";
 import CreateProject from "@/pages/projects/create-project";
+import EditProjectGroup from "@/pages/projects/edit-project-group";
 import Project from "@/pages/projects/project";
 import ProjectGroups from "@/pages/projects/project-groups";
 import ProjectRoles from "@/pages/projects/project-roles";
@@ -28,7 +33,7 @@ import CreateMultipleResponse from "@/pages/tasks/create-multiple-response";
 import CreateProgramming from "@/pages/tasks/create-programming";
 import CreateShortAnswer from "@/pages/tasks/create-short-answer";
 
-import { problemLoader, projectLoader } from "./loaders";
+import { groupLoader, problemLoader, projectLoader } from "./loaders";
 
 export const routes = [
   {
@@ -73,7 +78,13 @@ export const routes = [
                 },
                 loader: projectLoader,
                 children: [
-                  { index: true, element: <Project /> },
+                  {
+                    index: true,
+                    element: <Project />,
+                    handle: {
+                      crumb: () => ({ label: "Problems" }),
+                    },
+                  },
                   {
                     path: "roles",
                     element: <ProjectRoles />,
@@ -90,10 +101,29 @@ export const routes = [
                   },
                   {
                     path: "groups",
-                    element: <ProjectGroups />,
                     handle: {
-                      crumb: () => ({ label: "Groups" }),
+                      crumb: (match: UIMatch) => ({
+                        label: "Groups",
+                        href: `/projects/${match.params.projectId}/groups`,
+                      }),
                     },
+                    children: [
+                      { index: true, element: <ProjectGroups /> },
+                      {
+                        path: ":groupId",
+                        element: <EditProjectGroup />,
+                        loader: groupLoader,
+                        handle: {
+                          crumb: (match: UIMatch<GroupPublic>) => {
+                            console.log({ match });
+                            return {
+                              label: match.data.name,
+                              href: `/projects/${match.params.projectId}/groups/${match.params.groupId}`,
+                            };
+                          },
+                        },
+                      },
+                    ],
                   },
                   {
                     path: "submissions",

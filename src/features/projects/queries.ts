@@ -11,15 +11,18 @@ import {
   createRole,
   deleteInvitationKey,
   getAllProjects,
+  getGroup,
   getProject,
   getProjectGroups,
   getProjectRoles,
   getProjectUsers,
   GroupCreate,
+  GroupUpdate,
   joinProject,
   ProjectCreate,
   RoleCreate,
   RolePublic,
+  updateGroup,
   updateRole,
 } from "@/api";
 
@@ -59,6 +62,19 @@ export const getProjectGroupsById = (id: number) => {
     queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.Group],
     queryFn: () =>
       getProjectGroups({ path: { id } }).then((response) => response.data),
+  });
+};
+
+export const getProjectGroupById = (projectId: number, groupId: number) => {
+  return queryOptions({
+    queryKey: [
+      ProjectQueryKeys.Project,
+      projectId,
+      ProjectQueryKeys.Group,
+      groupId,
+    ],
+    queryFn: () =>
+      getGroup({ path: { id: groupId } }).then((response) => response.data),
   });
 };
 
@@ -146,6 +162,23 @@ export const useAddGroup = (projectId: number) => {
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Group],
+      }),
+  });
+};
+
+export const useUpdateGroup = (projectId: number, groupId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (group: GroupUpdate) =>
+      updateGroup({ body: group, path: { id: groupId } }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [
+          ProjectQueryKeys.Project,
+          projectId,
+          ProjectQueryKeys.Group,
+          groupId,
+        ],
       }),
   });
 };

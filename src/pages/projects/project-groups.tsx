@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -52,18 +53,17 @@ const ProjectGroups = () => {
               <div className="flex justify-between">
                 <div>
                   <h4 className="text-2xl font-[450]">
-                    {group.name} (
-                    {group.members.length + group.supervisors.length})
+                    {group.name} ({group.members.length})
                   </h4>
                   <p className="text-sm font-normal text-gray-400">
                     {group.members.length} member
-                    {group.members.length !== 1 && "s"},{" "}
-                    {group.supervisors.length} supervisor
-                    {group.supervisors.length !== 1 && "s"}
+                    {group.members.length !== 1 && "s"}
                   </p>
                 </div>
                 {project.edit_groups && (
-                  <Button variant={"secondary"}>Edit group</Button>
+                  <Link to={`/projects/${id}/groups/${group.id}`}>
+                    <Button variant={"secondary"}>Edit group</Button>
+                  </Link>
                 )}
               </div>
             </CardTitle>
@@ -77,27 +77,20 @@ const ProjectGroups = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {group.supervisors.map((member, index) => (
-                    <TableRow key={member.id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{member.username}</TableCell>
-                      <TableCell>
-                        <Badge variant={"green"}>Supervisor</Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
                   {group.members.map((member, index) => (
-                    <TableRow key={member.id}>
+                    <TableRow key={member.user.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{member.user.username}</TableCell>
                       <TableCell>
-                        {index + 1 + group.supervisors.length}
-                      </TableCell>
-                      <TableCell>{member.username}</TableCell>
-                      <TableCell>
-                        <Badge>Member</Badge>
+                        {member.is_supervisor ? (
+                          <Badge variant={"green"}>supervisor</Badge>
+                        ) : (
+                          <Badge>member</Badge>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
-                  {group.members.length + group.supervisors.length === 0 && (
+                  {group.members.length === 0 && (
                     <TableRow className="text-center">
                       <TableCell colSpan={3}>No members.</TableCell>
                     </TableRow>

@@ -42,11 +42,15 @@ export type GroupCreate = {
     name: string;
 };
 
+export type GroupMemberPublicWithGroup = {
+    is_supervisor: boolean;
+    group: MiniGroupPublic;
+};
+
 export type GroupPublic = {
     id: number;
     name: string;
-    members: Array<UserPublic>;
-    supervisors: Array<UserPublic>;
+    members: Array<MiniGroupMemberPublic>;
 };
 
 export type GroupUpdate = {
@@ -85,6 +89,16 @@ export type LoopStep = {
     inputs: Array<StepSocket>;
     outputs: Array<StepSocket>;
     type: StepType;
+};
+
+export type MiniGroupMemberPublic = {
+    is_supervisor: boolean;
+    user: UserPublic;
+};
+
+export type MiniGroupPublic = {
+    id: number;
+    name: string;
 };
 
 export type MultipleChoiceTask = {
@@ -512,10 +526,11 @@ export type UserPublic = {
     username: string;
 };
 
-export type UserPublicWithRoles = {
+export type UserPublicWithRolesAndGroups = {
     id: number;
     username: string;
     roles: Array<RolePublic>;
+    group_members: Array<GroupMemberPublicWithGroup>;
 };
 
 export type ValidationError = {
@@ -728,7 +743,7 @@ export type GetProjectUsersData = {
     };
 };
 
-export type GetProjectUsersResponse = (Array<UserPublicWithRoles>);
+export type GetProjectUsersResponse = (Array<UserPublicWithRolesAndGroups>);
 
 export type GetProjectUsersError = (HTTPValidationError);
 

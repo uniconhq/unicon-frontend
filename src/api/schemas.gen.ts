@@ -171,6 +171,21 @@ export const GroupCreateSchema = {
     title: 'GroupCreate'
 } as const;
 
+export const GroupMemberPublicWithGroupSchema = {
+    properties: {
+        is_supervisor: {
+            type: 'boolean',
+            title: 'Is Supervisor'
+        },
+        group: {
+            '$ref': '#/components/schemas/MiniGroupPublic'
+        }
+    },
+    type: 'object',
+    required: ['is_supervisor', 'group'],
+    title: 'GroupMemberPublicWithGroup'
+} as const;
+
 export const GroupPublicSchema = {
     properties: {
         id: {
@@ -183,21 +198,14 @@ export const GroupPublicSchema = {
         },
         members: {
             items: {
-                '$ref': '#/components/schemas/UserPublic'
+                '$ref': '#/components/schemas/MiniGroupMemberPublic'
             },
             type: 'array',
             title: 'Members'
-        },
-        supervisors: {
-            items: {
-                '$ref': '#/components/schemas/UserPublic'
-            },
-            type: 'array',
-            title: 'Supervisors'
         }
     },
     type: 'object',
-    required: ['id', 'name', 'members', 'supervisors'],
+    required: ['id', 'name', 'members'],
     title: 'GroupPublic'
 } as const;
 
@@ -352,6 +360,37 @@ export const LoopStepSchema = {
     type: 'object',
     required: ['id', 'inputs', 'outputs', 'type'],
     title: 'LoopStep'
+} as const;
+
+export const MiniGroupMemberPublicSchema = {
+    properties: {
+        is_supervisor: {
+            type: 'boolean',
+            title: 'Is Supervisor'
+        },
+        user: {
+            '$ref': '#/components/schemas/UserPublic'
+        }
+    },
+    type: 'object',
+    required: ['is_supervisor', 'user'],
+    title: 'MiniGroupMemberPublic'
+} as const;
+
+export const MiniGroupPublicSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['id', 'name'],
+    title: 'MiniGroupPublic'
 } as const;
 
 export const MultipleChoiceTaskSchema = {
@@ -2124,7 +2163,7 @@ export const UserPublicSchema = {
     title: 'UserPublic'
 } as const;
 
-export const UserPublicWithRolesSchema = {
+export const UserPublicWithRolesAndGroupsSchema = {
     properties: {
         id: {
             type: 'integer',
@@ -2140,11 +2179,18 @@ export const UserPublicWithRolesSchema = {
             },
             type: 'array',
             title: 'Roles'
+        },
+        group_members: {
+            items: {
+                '$ref': '#/components/schemas/GroupMemberPublicWithGroup'
+            },
+            type: 'array',
+            title: 'Group Members'
         }
     },
     type: 'object',
-    required: ['id', 'username', 'roles'],
-    title: 'UserPublicWithRoles'
+    required: ['id', 'username', 'roles', 'group_members'],
+    title: 'UserPublicWithRolesAndGroups'
 } as const;
 
 export const ValidationErrorSchema = {
