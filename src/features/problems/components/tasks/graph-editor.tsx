@@ -26,6 +26,7 @@ import {
 
 import { GraphEdge } from "@/api";
 import { StepNode } from "@/components/node-graph/components/step/step-node";
+import { cn } from "@/lib/utils";
 import getLayoutedElements from "@/utils/graph";
 
 import AddNodeButton from "./add-node-button";
@@ -34,6 +35,7 @@ import {
   GraphContext,
   GraphDispatchContext,
 } from "./graph-context";
+import GraphFileEditor from "./graph-file-editor";
 import { Step } from "./types";
 
 const nodeTypes = { step: StepNode };
@@ -60,8 +62,13 @@ const stepEdgeToRfEdge = (edge: GraphEdge): Edge => ({
 
 type RfInstance = ReactFlowInstance<Node<Step>, Edge>;
 
-const GraphView: React.FC = () => {
-  const { steps, edges, isEditing } = useContext(GraphContext)!;
+type GraphEditorProps = {
+  className?: string;
+};
+
+const GraphEditor: React.FC<GraphEditorProps> = ({ className }) => {
+  const { steps, edges, isEditing, selectedSocketId } =
+    useContext(GraphContext)!;
 
   const nodeData = useMemo(() => steps.map(stepNodeToRfNode), [steps]);
   const edgeData = useMemo(() => edges.map(stepEdgeToRfEdge), [edges]);
@@ -169,27 +176,36 @@ const GraphView: React.FC = () => {
   );
 
   return (
-    <ReactFlow
-      onInit={onInit}
-      nodeTypes={nodeTypes}
-      nodes={flowNodes}
-      edges={flowEdges}
-      onNodesChange={onFlowNodesChange}
-      onEdgesChange={onFlowEdgesChange}
-      onConnect={onConnect}
-      onReconnectStart={onReconnectStart}
-      onReconnectEnd={onReconnectEnd}
-      onReconnect={onReconnect}
-      nodesConnectable={isEditing}
-      colorMode="dark"
-      proOptions={{ hideAttribution: true }}
+    <div
+      className={cn("grid gap-1", className, {
+        "grid-cols-3": selectedSocketId,
+      })}
     >
-      {isEditing && <AddNodeButton />}
-      <Background variant={BackgroundVariant.Dots} />
-      <Controls showInteractive={isEditing} />
-      <MiniMap />
-    </ReactFlow>
+      {selectedSocketId && <GraphFileEditor />}
+      <div className={selectedSocketId ? "col-span-2" : ""}>
+        <ReactFlow
+          onInit={onInit}
+          nodeTypes={nodeTypes}
+          nodes={flowNodes}
+          edges={flowEdges}
+          onNodesChange={onFlowNodesChange}
+          onEdgesChange={onFlowEdgesChange}
+          onConnect={onConnect}
+          onReconnectStart={onReconnectStart}
+          onReconnectEnd={onReconnectEnd}
+          onReconnect={onReconnect}
+          nodesConnectable={isEditing}
+          colorMode="dark"
+          proOptions={{ hideAttribution: true }}
+        >
+          {isEditing && <AddNodeButton />}
+          <Background variant={BackgroundVariant.Dots} />
+          <Controls showInteractive={isEditing} />
+          <MiniMap />
+        </ReactFlow>
+      </div>
+    </div>
   );
 };
 
-export default GraphView;
+export default GraphEditor;

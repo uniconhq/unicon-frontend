@@ -24,7 +24,7 @@ import {
   GraphAction,
   graphReducer,
 } from "@/features/problems/components/tasks/graph-context";
-import TestcaseNodeGraph from "@/features/problems/components/tasks/node-graph";
+import NodeGraph from "@/features/problems/components/tasks/node-graph";
 
 const fileSchema = z.object({
   name: z.string(),
@@ -272,7 +272,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
           </FormSection>
           <hr />
           <div className="flex w-full flex-col items-start">
-            <div className="sticky top-0 w-full">
+            <div className="sticky top-0 z-50 w-full">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-medium">Testcases</h2>
                 <Button variant="secondary" type="button" onClick={addTestcase}>
@@ -283,7 +283,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
             </div>
             <div className="flex w-full flex-col gap-4">
               {form.watch("testcases").map((testcase) => (
-                <div className="p-4" key={testcase.id}>
+                <div className="mt-2" key={testcase.id}>
                   <Collapsible defaultOpen>
                     <div className="flex justify-between">
                       <CollapsibleTrigger asChild>
@@ -306,9 +306,8 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                         <Trash />
                       </Button>
                     </div>
-
-                    <CollapsibleContent>
-                      <TestcaseNodeGraph
+                    <CollapsibleContent className="mt-4">
+                      <NodeGraph
                         key={testcase.id}
                         input={userInputNode}
                         steps={testcase.nodes}

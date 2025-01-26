@@ -5,7 +5,6 @@ import { useCallback, useEffect } from "react";
 import { useImmerReducer } from "use-immer";
 
 import { GraphEdge } from "@/api";
-import { cn } from "@/lib/utils";
 
 import {
   GraphAction,
@@ -14,11 +13,10 @@ import {
   GraphDispatchContext,
   graphReducer,
 } from "./graph-context";
-import GraphFileEditor from "./graph-file-editor";
-import GraphView from "./graph-view";
+import GraphEditor from "./graph-editor";
 import { Step } from "./types";
 
-type OwnProps = {
+type NodeGraphProps = {
   input?: Step;
   steps: Step[];
   edges: GraphEdge[];
@@ -26,7 +24,7 @@ type OwnProps = {
   onChange?: (action: GraphAction) => void;
 };
 
-const NodeGraph: React.FC<OwnProps> = ({
+const NodeGraph: React.FC<NodeGraphProps> = ({
   input,
   steps: initialSteps,
   edges: initialEdges,
@@ -60,28 +58,14 @@ const NodeGraph: React.FC<OwnProps> = ({
   );
 
   return (
-    <GraphContext.Provider value={graph}>
-      <GraphDispatchContext.Provider value={wrappedDispatch}>
-        <div
-          className={cn("grid h-[60vh] gap-1", {
-            // show editor only if a socket is selected
-            "grid-cols-3": graph.selectedSocketId,
-          })}
-        >
-          {graph.selectedSocketId !== null && <GraphFileEditor />}
-          <div className={graph.selectedSocketId ? "col-span-2" : ""}>
-            <GraphView />
-          </div>
-        </div>
-      </GraphDispatchContext.Provider>
-    </GraphContext.Provider>
+    <ReactFlowProvider>
+      <GraphContext.Provider value={graph}>
+        <GraphDispatchContext.Provider value={wrappedDispatch}>
+          <GraphEditor className="h-[60vh]" />
+        </GraphDispatchContext.Provider>
+      </GraphContext.Provider>
+    </ReactFlowProvider>
   );
 };
 
-export default function TestcaseNodeGraph(props: OwnProps) {
-  return (
-    <ReactFlowProvider>
-      <NodeGraph {...props} />
-    </ReactFlowProvider>
-  );
-}
+export default NodeGraph;
