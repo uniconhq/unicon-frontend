@@ -65,11 +65,13 @@ const NodeGraph: React.FC<OwnProps> = ({
         <div
           className={cn("grid h-[60vh] gap-1", {
             // show editor only if a socket is selected
-            "grid-cols-2": graph.selectedSocketId !== null,
+            "grid-cols-3": graph.selectedSocketId,
           })}
         >
           {graph.selectedSocketId !== null && <GraphFileEditor />}
-          <GraphView />
+          <div className={graph.selectedSocketId ? "col-span-2" : ""}>
+            <GraphView />
+          </div>
         </div>
       </GraphDispatchContext.Provider>
     </GraphContext.Provider>
