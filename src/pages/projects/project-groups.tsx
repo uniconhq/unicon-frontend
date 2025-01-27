@@ -47,6 +47,11 @@ const ProjectGroups = () => {
         )}
       </div>
       <div className="flex flex-col gap-2">
+        {groups.length === 0 && (
+          <div className="-mt-4 bg-black p-4 py-8 text-center shadow-inner">
+            No groups found.{" "}
+          </div>
+        )}
         {groups.map((group) => (
           <Card className="p-4">
             <CardTitle className="p-2">
