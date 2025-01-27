@@ -10,8 +10,10 @@ import { Programming } from "@/components/tasks/programming";
 import { ShortAnswer } from "@/components/tasks/short-answer";
 
 export function Task({
+  problemId,
   task,
 }: {
+  problemId: number;
   task:
     | MultipleChoiceTask
     | MultipleResponseTask
@@ -27,7 +29,7 @@ export function Task({
     case "SHORT_ANSWER_TASK":
       return <ShortAnswer task={task} />;
     case "PROGRAMMING_TASK":
-      return <Programming task={task} />;
+      return <Programming problemId={problemId} task={task} />;
     default:
       return (
         <div className="font-mono text-red-400">Task type not supported</div>

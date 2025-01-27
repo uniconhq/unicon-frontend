@@ -1,13 +1,19 @@
 import { useState } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-import { File, ProgrammingTask } from "@/api";
+import { File, ProgrammingTask, submitProblemTaskAttempt } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Testcase from "@/features/problems/components/tasks/testcase";
 
-export function Programming({ task }: { task: ProgrammingTask }) {
+export function Programming({
+  problemId,
+  task,
+}: {
+  problemId: number;
+  task: ProgrammingTask;
+}) {
   const [selectedTestcaseIdx, setSelectedTestcaseIdx] = useState<number | null>(
     null,
   );
@@ -21,8 +27,22 @@ export function Programming({ task }: { task: ProgrammingTask }) {
       name: (input.data as File).name,
     }));
 
-  const submitForm: SubmitHandler<FieldValues> = (formData) => {
-    console.log(formData);
+  const submitForm: SubmitHandler<Record<string, FileList>> = (formData) => {
+    Promise.all(
+      requiredInputs.map(async ({ id, name }) => {
+        const file = formData[id.replace(/\./g, "_")];
+        const content = await file[0].text();
+        return { id, data: { name, content } };
+      }),
+    ).then((files) => {
+      submitProblemTaskAttempt({
+        path: { id: problemId, task_id: task.id },
+        body: {
+          task_id: task.id,
+          value: files,
+        },
+      });
+    });
   };
 
   return (

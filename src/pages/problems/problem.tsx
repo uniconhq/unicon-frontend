@@ -55,7 +55,7 @@ const Problem = () => {
                 </div>
               </CardTitle>
               <CardContent className="p-0 py-2">
-                <Task task={task} />
+                <Task problemId={id} task={task} />
               </CardContent>
             </CardHeader>
           </Card>
