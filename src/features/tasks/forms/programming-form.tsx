@@ -6,7 +6,7 @@ import {
 } from "@radix-ui/react-collapsible";
 import { produce } from "immer";
 import { PlusIcon, Trash } from "lucide-react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useDebouncedCallback } from "use-debounce";
 import { z } from "zod";
 
@@ -86,16 +86,8 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
     defaultValues: initialValue ?? programmingFormDefault,
   });
 
-  const addTestcase = () => {
-    form.setValue("testcases", [
-      ...form.watch("testcases"),
-      {
-        id: Math.max(...form.watch("testcases").map((t) => t.id), -1) + 1,
-        nodes: [],
-        edges: [],
-      },
-    ]);
-  };
+  const inputs = useFieldArray({ control: form.control, name: "required_inputs" }); // prettier-ignore
+  const testcases = useFieldArray({ control: form.control, name: "testcases" });
 
   const userInputNode: InputStep = {
     id: 0,
@@ -104,60 +96,74 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
     outputs: form.getValues("required_inputs"),
   };
 
-  const addRequiredInput = () => {
-    let uniqueId = "DATA.TEMP";
-    let i = 0;
-    while (
-      form.watch().required_inputs.some((input) => input.id === uniqueId)
-    ) {
-      uniqueId = `DATA.TEMP${i}`;
-      i++;
-    }
-    form.setValue("required_inputs", [
-      ...form.watch().required_inputs,
-      {
-        id: uniqueId,
-        data: {
-          name: `file${form.watch("required_inputs").length}.py`,
-          content: "def some_function():\n\tpass",
-        },
-      },
-    ]);
+  const addTestcase = () => {
+    const newId = Math.max(...form.watch("testcases").map((t) => t.id), -1) + 1;
+    testcases.append({ id: newId, nodes: [], edges: [] });
   };
 
-  const onUpdateFileName = useDebouncedCallback(
-    (index: number, newName: string) => {
-      form.setValue(
-        "required_inputs",
-        form.watch("required_inputs").map((input, i) =>
-          i === index
-            ? {
-                ...input,
-                data: { ...(input.data as FileType), name: newName },
-              }
-            : input,
-        ),
-      );
+  const addInput = () => {
+    const parseInputId = (id: string) => parseInt(id.split(".").slice(-1)[0]);
+    const newId =
+      Math.max(
+        ...form.watch("required_inputs").map((input) => parseInputId(input.id)),
+        -1,
+      ) + 1;
+    inputs.append({
+      id: `DATA.TEMP.${newId}`,
+      data: {
+        name: `file${newId}.py`,
+        content: "def some_function():\n\tpass",
+      },
+    });
+  };
+
+  const updateInput = useDebouncedCallback(
+    (
+      index: number,
+      {
+        newId,
+        newFileName,
+        newFileContent,
+      }: { newId?: string; newFileName?: string; newFileContent?: string },
+    ) => {
+      const oldInput = form.watch("required_inputs")[index];
+      const oldInputFileData = oldInput.data as FileType;
+      inputs.update(index, {
+        ...oldInput,
+        id: newId ?? oldInput.id,
+        data: {
+          ...(oldInput.data as FileType),
+          name: newFileName ?? oldInputFileData.name,
+          content: newFileContent ?? oldInputFileData.content,
+        },
+      });
     },
-    1000,
+    500,
   );
 
-  const onUpdateFileContent = useDebouncedCallback(
-    (index: number, newContent: string) => {
-      form.setValue(
-        "required_inputs",
-        form.watch("required_inputs").map((input, i) =>
-          i === index
-            ? {
-                ...input,
-                data: { ...(input.data as FileType), content: newContent },
-              }
-            : input,
-        ),
-      );
-    },
-    1000,
-  );
+  const updateTestcase = (index: number) => (action: GraphAction) => {
+    const testcase = form.getValues("testcases")[index];
+    const newState = produce(
+      {
+        id: `${testcase.id}`,
+        steps: testcase.nodes,
+        edges: testcase.edges,
+        selectedStepId: null,
+        selectedSocketId: null,
+        isEditing: true,
+      },
+      (draft) => {
+        graphReducer(draft, action);
+      },
+    );
+
+    testcases.update(index, {
+      ...testcase,
+      // NOTE: We remove the user input node since it is separately added to the graph on re-render
+      nodes: newState.steps.filter((node) => node.id !== 0),
+      edges: newState.edges,
+    });
+  };
 
   return (
     <div className="flex w-full flex-col gap-8 px-8 py-6">
@@ -206,11 +212,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
           <hr />
           <FormSection title="Required inputs">
             <div className="flex flex-col items-start gap-4">
-              <Button
-                variant="secondary"
-                type="button"
-                onClick={addRequiredInput}
-              >
+              <Button variant="secondary" type="button" onClick={addInput}>
                 <PlusIcon />
                 Add input
               </Button>
@@ -220,16 +222,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                     <NodeInput
                       className={["min-w-[160px]", "font-mono"]}
                       value={input.id}
-                      onChange={(newId) =>
-                        form.setValue(
-                          "required_inputs",
-                          form
-                            .getValues("required_inputs")
-                            .map((input, i) =>
-                              i === index ? { ...input, id: newId } : input,
-                            ),
-                        )
-                      }
+                      onChange={(newId) => updateInput(index, { newId })}
                     />
                     <CollapsibleTrigger asChild>
                       <Button variant={"secondary"} type="button">
@@ -239,14 +232,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                     <Button
                       type="button"
                       variant={"destructive"}
-                      onClick={() => {
-                        form.setValue(
-                          "required_inputs",
-                          form
-                            .watch("required_inputs")
-                            .filter((_, i) => i !== index),
-                        );
-                      }}
+                      onClick={() => inputs.remove(index)}
                     >
                       <Trash />
                     </Button>
@@ -256,12 +242,12 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                       <FileEditor
                         fileName={(input.data as FileType).name}
                         fileContent={(input.data as FileType).content}
-                        onUpdateFileName={(newFileName: string) => {
-                          onUpdateFileName(index, newFileName);
-                        }}
-                        onUpdateFileContent={(newFileContent: string) => {
-                          onUpdateFileContent(index, newFileContent);
-                        }}
+                        onUpdateFileName={(newFileName: string) =>
+                          updateInput(index, { newFileName })
+                        }
+                        onUpdateFileContent={(newFileContent: string) =>
+                          updateInput(index, { newFileContent })
+                        }
                         isEditing
                       />
                     </div>
@@ -282,7 +268,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
               </div>
             </div>
             <div className="flex w-full flex-col gap-4">
-              {form.watch("testcases").map((testcase) => (
+              {form.watch("testcases").map((testcase, index) => (
                 <div className="mt-2" key={testcase.id}>
                   <Collapsible defaultOpen>
                     <div className="flex justify-between">
@@ -294,14 +280,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                       <Button
                         variant="destructive"
                         type="button"
-                        onClick={() => {
-                          form.setValue(
-                            "testcases",
-                            form
-                              .watch("testcases")
-                              .filter((t) => t.id !== testcase.id),
-                          );
-                        }}
+                        onClick={() => testcases.remove(index)}
                       >
                         <Trash />
                       </Button>
@@ -314,44 +293,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                         steps={testcase.nodes}
                         edges={testcase.edges}
                         isEditing
-                        // Note: I couldn't figure out how to make this subscribe to the child's nodes/edges
-                        // so I am just replaying the dispatched actions...
-                        onChange={(action: GraphAction) => {
-                          const target = form
-                            .getValues()
-                            .testcases.filter((t) => testcase.id === t.id)[0];
-                          const nextState = produce(
-                            {
-                              id: `${testcase.id}`,
-                              steps: target.nodes.concat({ ...userInputNode }),
-                              edges: target.edges,
-                              selectedStepId: null,
-                              selectedSocketId: null,
-                              isEditing: true,
-                            },
-                            (draft) => {
-                              graphReducer(draft, action);
-                            },
-                          );
-
-                          const { steps, edges } = nextState;
-
-                          const updatedTestcases = [
-                            ...form.getValues("testcases").map((t) =>
-                              t.id === testcase.id
-                                ? {
-                                    ...t,
-                                    nodes: steps.filter(
-                                      (node) => node.id !== 0,
-                                    ),
-                                    edges,
-                                  }
-                                : t,
-                            ),
-                          ];
-
-                          form.setValue("testcases", updatedTestcases);
-                        }}
+                        onChange={updateTestcase(index)}
                       />
                     </CollapsibleContent>
                   </Collapsible>
