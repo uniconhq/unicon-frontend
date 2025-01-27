@@ -15,7 +15,7 @@ import {
   useNodesInitialized,
   useNodesState,
 } from "@xyflow/react";
-import { ExpandIcon } from "lucide-react";
+import { ExpandIcon, ShrinkIcon } from "lucide-react";
 import {
   useCallback,
   useContext,
@@ -217,7 +217,7 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ className }) => {
               type="button"
               variant="outline"
             >
-              <ExpandIcon className={cn({ "text-purple-400": expanded })} />
+              {expanded ? <ShrinkIcon /> : <ExpandIcon />}
             </Button>
           </div>
           <Background variant={BackgroundVariant.Dots} />
