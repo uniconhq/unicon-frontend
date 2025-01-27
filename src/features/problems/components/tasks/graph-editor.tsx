@@ -15,6 +15,7 @@ import {
   useNodesInitialized,
   useNodesState,
 } from "@xyflow/react";
+import { ExpandIcon, ShrinkIcon } from "lucide-react";
 import {
   useCallback,
   useContext,
@@ -26,6 +27,8 @@ import {
 
 import { GraphEdge } from "@/api";
 import { StepNode } from "@/components/node-graph/components/step/step-node";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import getLayoutedElements from "@/utils/graph";
 
 import AddNodeButton from "./add-node-button";
@@ -34,6 +37,7 @@ import {
   GraphContext,
   GraphDispatchContext,
 } from "./graph-context";
+import GraphFileEditor from "./graph-file-editor";
 import { Step } from "./types";
 
 const nodeTypes = { step: StepNode };
@@ -60,8 +64,13 @@ const stepEdgeToRfEdge = (edge: GraphEdge): Edge => ({
 
 type RfInstance = ReactFlowInstance<Node<Step>, Edge>;
 
-const GraphView: React.FC = () => {
-  const { steps, edges, isEditing } = useContext(GraphContext)!;
+type GraphEditorProps = {
+  className?: string;
+};
+
+const GraphEditor: React.FC<GraphEditorProps> = ({ className }) => {
+  const { steps, edges, isEditing, selectedSocketId } =
+    useContext(GraphContext)!;
 
   const nodeData = useMemo(() => steps.map(stepNodeToRfNode), [steps]);
   const edgeData = useMemo(() => edges.map(stepEdgeToRfEdge), [edges]);
@@ -71,6 +80,8 @@ const GraphView: React.FC = () => {
   const [rfInstance, setRfInstance] = useState<RfInstance | null>(null);
   const [flowNodes, setFlowNodes, onFlowNodesChange] = useNodesState(nodeData);
   const [flowEdges, setFlowEdges, onFlowEdgesChange] = useEdgesState(edgeData);
+
+  const [expanded, setExpanded] = useState(false);
 
   const onInit = (rf: RfInstance) => setRfInstance(rf);
 
@@ -169,29 +180,57 @@ const GraphView: React.FC = () => {
   );
 
   return (
-    <div className="relative h-[60vh] w-full">
-      {isEditing && <AddNodeButton />}
-      <ReactFlow
-        onInit={onInit}
-        nodeTypes={nodeTypes}
-        nodes={flowNodes}
-        edges={flowEdges}
-        onNodesChange={onFlowNodesChange}
-        onEdgesChange={onFlowEdgesChange}
-        onConnect={onConnect}
-        onReconnectStart={onReconnectStart}
-        onReconnectEnd={onReconnectEnd}
-        onReconnect={onReconnect}
-        nodesConnectable={isEditing}
-        colorMode="dark"
-        proOptions={{ hideAttribution: true }}
-      >
-        <Background variant={BackgroundVariant.Dots} />
-        <Controls showInteractive={isEditing} />
-        <MiniMap />
-      </ReactFlow>
+    <div
+      className={cn("grid gap-1", className, {
+        "grid-cols-5": selectedSocketId,
+        "fixed inset-0 z-30 h-full bg-black/100 animate-in fade-in": expanded,
+      })}
+      data-state={expanded ? "open" : "closed"}
+    >
+      {selectedSocketId && (
+        <div className="col-span-2">
+          <GraphFileEditor />
+        </div>
+      )}
+      <div className={selectedSocketId ? "col-span-3" : ""}>
+        <ReactFlow
+          onInit={onInit}
+          nodeTypes={nodeTypes}
+          nodes={flowNodes}
+          edges={flowEdges}
+          onNodesChange={onFlowNodesChange}
+          onEdgesChange={onFlowEdgesChange}
+          onConnect={onConnect}
+          onReconnectStart={onReconnectStart}
+          onReconnectEnd={onReconnectEnd}
+          onReconnect={onReconnect}
+          nodesConnectable={isEditing}
+          colorMode="dark"
+          proOptions={{ hideAttribution: true }}
+        >
+          {/* Custom controls */}
+          <div
+            className={cn(
+              "absolute right-1 top-1 z-10 mt-4 flex space-x-1 px-2",
+              { "z-30": expanded },
+            )}
+          >
+            {isEditing && <AddNodeButton />}
+            <Button
+              onClick={() => setExpanded((prev) => !prev)}
+              type="button"
+              variant="outline"
+            >
+              {expanded ? <ShrinkIcon /> : <ExpandIcon />}
+            </Button>
+          </div>
+          <Background variant={BackgroundVariant.Dots} />
+          <Controls showInteractive={isEditing} />
+          <MiniMap />
+        </ReactFlow>
+      </div>
     </div>
   );
 };
 
-export default GraphView;
+export default GraphEditor;
