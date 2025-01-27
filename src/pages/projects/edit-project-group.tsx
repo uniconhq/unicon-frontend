@@ -28,6 +28,8 @@ import {
 } from "@/features/projects/queries";
 import { cn } from "@/lib/utils";
 
+import { Unauthorized } from "../error";
+
 const EditProjectGroup = () => {
   const projectId = useProjectId();
   const groupId = useGroupId();
@@ -38,6 +40,10 @@ const EditProjectGroup = () => {
   const { data: users, isLoading: isLoadingUsers } = useQuery(
     getProjectUsersById(projectId),
   );
+
+  if (project && !project.edit_groups) {
+    throw Unauthorized;
+  }
 
   const userMap = new Map<number, UserPublicWithRolesAndGroups>();
   users?.forEach((user) => userMap.set(user.id, user));
@@ -119,7 +125,7 @@ const EditProjectGroup = () => {
           setOpen={setOpenDeleteDialog}
           onConfirm={() => {
             deleteGroupMutation.mutate(undefined, {
-              onSettled: () => {
+              onSuccess: () => {
                 navigate(`/projects/${projectId}/groups`);
               },
             });

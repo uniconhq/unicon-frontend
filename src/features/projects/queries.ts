@@ -3,6 +3,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 import {
   createGroup,
@@ -187,11 +188,14 @@ export const useUpdateGroup = (projectId: number, groupId: number) => {
 
 export const useDeleteGroup = (projectId: number, groupId: number) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: () => deleteGroup({ path: { id: groupId } }),
-    onSuccess: () =>
+    onSuccess: () => {
+      navigate(`/projects/${projectId}/groups`);
       queryClient.invalidateQueries({
         queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Group],
-      }),
+      });
+    },
   });
 };
