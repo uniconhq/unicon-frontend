@@ -7,6 +7,7 @@ import { isFile } from "@/lib/types";
 import { Step } from "./types";
 
 export type GraphState = {
+  id: string;
   steps: Step[];
   edges: GraphEdge[];
   selectedStepId: number | null;

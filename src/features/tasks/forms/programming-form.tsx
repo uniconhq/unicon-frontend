@@ -308,6 +308,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                     </div>
                     <CollapsibleContent className="mt-4">
                       <NodeGraph
+                        id={`${testcase.id}`}
                         key={testcase.id}
                         input={userInputNode}
                         steps={testcase.nodes}
@@ -321,6 +322,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                             .testcases.filter((t) => testcase.id === t.id)[0];
                           const nextState = produce(
                             {
+                              id: `${testcase.id}`,
                               steps: target.nodes.concat({ ...userInputNode }),
                               edges: target.edges,
                               selectedStepId: null,

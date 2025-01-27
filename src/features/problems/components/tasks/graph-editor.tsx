@@ -65,10 +65,11 @@ const stepEdgeToRfEdge = (edge: GraphEdge): Edge => ({
 type RfInstance = ReactFlowInstance<Node<Step>, Edge>;
 
 type GraphEditorProps = {
+  graphId: string;
   className?: string;
 };
 
-const GraphEditor: React.FC<GraphEditorProps> = ({ className }) => {
+const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
   const { steps, edges, isEditing, selectedSocketId } =
     useContext(GraphContext)!;
 
@@ -194,6 +195,7 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ className }) => {
       )}
       <div className={selectedSocketId ? "col-span-3" : ""}>
         <ReactFlow
+          id={graphId}
           onInit={onInit}
           nodeTypes={nodeTypes}
           nodes={flowNodes}
