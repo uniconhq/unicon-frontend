@@ -182,13 +182,17 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ className }) => {
   return (
     <div
       className={cn("grid gap-1", className, {
-        "grid-cols-3": selectedSocketId,
+        "grid-cols-5": selectedSocketId,
         "fixed inset-0 z-30 h-full bg-black/100 animate-in fade-in": expanded,
       })}
       data-state={expanded ? "open" : "closed"}
     >
-      {selectedSocketId && <GraphFileEditor />}
-      <div className={selectedSocketId ? "col-span-2" : ""}>
+      {selectedSocketId && (
+        <div className="col-span-2">
+          <GraphFileEditor />
+        </div>
+      )}
+      <div className={selectedSocketId ? "col-span-3" : ""}>
         <ReactFlow
           onInit={onInit}
           nodeTypes={nodeTypes}
