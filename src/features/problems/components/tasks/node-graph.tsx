@@ -17,6 +17,7 @@ import GraphEditor from "./graph-editor";
 import { Step } from "./types";
 
 type NodeGraphProps = {
+  id: string;
   input?: Step;
   steps: Step[];
   edges: GraphEdge[];
@@ -25,6 +26,7 @@ type NodeGraphProps = {
 };
 
 const NodeGraph: React.FC<NodeGraphProps> = ({
+  id,
   input,
   steps: initialSteps,
   edges: initialEdges,
@@ -32,6 +34,7 @@ const NodeGraph: React.FC<NodeGraphProps> = ({
   onChange,
 }) => {
   const [graph, dispatch] = useImmerReducer(graphReducer, {
+    id,
     steps: input ? [input, ...initialSteps] : initialSteps,
     edges: initialEdges,
     selectedSocketId: null,
@@ -61,7 +64,7 @@ const NodeGraph: React.FC<NodeGraphProps> = ({
     <ReactFlowProvider>
       <GraphContext.Provider value={graph}>
         <GraphDispatchContext.Provider value={wrappedDispatch}>
-          <GraphEditor className="h-[60vh]" />
+          <GraphEditor graphId={id} className="h-[60vh]" />
         </GraphDispatchContext.Provider>
       </GraphContext.Provider>
     </ReactFlowProvider>
