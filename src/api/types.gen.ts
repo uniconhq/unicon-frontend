@@ -280,6 +280,7 @@ export type ProjectPublic = {
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
+    view_restricted_problems: boolean;
     create_problems: boolean;
     view_groups: boolean;
     create_groups: boolean;
@@ -297,6 +298,7 @@ export type ProjectPublicWithProblems = {
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
+    view_restricted_problems: boolean;
     create_problems: boolean;
     view_groups: boolean;
     create_groups: boolean;

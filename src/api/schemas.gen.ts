@@ -1228,6 +1228,10 @@ export const ProjectPublicSchema = {
             type: 'boolean',
             title: 'Edit Roles'
         },
+        view_restricted_problems: {
+            type: 'boolean',
+            title: 'View Restricted Problems'
+        },
         create_problems: {
             type: 'boolean',
             title: 'Create Problems'
@@ -1250,7 +1254,7 @@ export const ProjectPublicSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups'],
+    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'view_restricted_problems', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups'],
     title: 'ProjectPublic'
 } as const;
 
@@ -1295,6 +1299,10 @@ export const ProjectPublicWithProblemsSchema = {
             type: 'boolean',
             title: 'Edit Roles'
         },
+        view_restricted_problems: {
+            type: 'boolean',
+            title: 'View Restricted Problems'
+        },
         create_problems: {
             type: 'boolean',
             title: 'Create Problems'
@@ -1324,7 +1332,7 @@ export const ProjectPublicWithProblemsSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups', 'problems'],
+    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'view_restricted_problems', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups', 'problems'],
     title: 'ProjectPublicWithProblems'
 } as const;
 
