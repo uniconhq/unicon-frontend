@@ -27,13 +27,15 @@ const Project = () => {
       {newProblemOpen && <CreateProblemModal setOpen={setNewProblemOpen} />}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Problems</h2>
-        <Button
-          variant="ghost"
-          className="hover:text-purple-300"
-          onClick={() => setNewProblemOpen(true)}
-        >
-          <Plus /> New Problem
-        </Button>
+        {project.create_problems && (
+          <Button
+            variant="ghost"
+            className="hover:text-purple-300"
+            onClick={() => setNewProblemOpen(true)}
+          >
+            <Plus /> New Problem
+          </Button>
+        )}
       </div>
       <div className="flex flex-col gap-4">
         <DefinitionsTable data={project.problems} />

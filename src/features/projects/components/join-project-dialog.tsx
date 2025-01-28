@@ -47,12 +47,11 @@ export function JoinProjectDialog({ open, onOpenChange }: OwnProps) {
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<JoinProjectFormType> = async (data) => {
     joinProjectMutation.mutate(data.invitation_key, {
-      onSettled: (response) => {
-        if (response?.status === 200) {
-          navigate(`/projects/${response.data?.id}`);
-        } else {
-          setError("Invalid invitation key.");
-        }
+      onSuccess: (response) => {
+        navigate(`/projects/${response.data?.id}`);
+      },
+      onError: () => {
+        setError("Invalid invitation key.");
       },
     });
   };

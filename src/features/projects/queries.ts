@@ -7,6 +7,7 @@ import {
 import {
   createInvitationKey,
   createProject,
+  createRole,
   deleteInvitationKey,
   getAllProjects,
   getProject,
@@ -14,6 +15,9 @@ import {
   getProjectUsers,
   joinProject,
   ProjectCreate,
+  RoleCreate,
+  RolePublic,
+  updateRole,
 } from "@/api";
 
 export enum ProjectQueryKeys {
@@ -42,6 +46,7 @@ export const getProjectRolesById = (id: number) => {
     queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.Role],
     queryFn: () =>
       getProjectRoles({ path: { id } }).then((response) => response.data),
+    retry: false,
   });
 };
 
@@ -84,6 +89,32 @@ export const useDeleteInvitationKey = (projectId: number, roleId: number) => {
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [ProjectQueryKeys.Project, projectId],
+      }),
+  });
+};
+
+export const useUpdateRoles = (projectId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (roles: Omit<RolePublic, "project_id">[]) =>
+      Promise.all(
+        roles.map((role) => updateRole({ body: role, path: { id: role.id } })),
+      ),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Role],
+      }),
+  });
+};
+
+export const useAddRole = (projectId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (role: RoleCreate) =>
+      createRole({ body: role, path: { id: projectId } }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Role],
       }),
   });
 };

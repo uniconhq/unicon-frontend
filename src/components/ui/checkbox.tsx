@@ -4,11 +4,12 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+type OwnProps = {
+  iconClassName?: string;
+};
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
-    iconClassName?: string;
-  }
+  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & OwnProps
 >(({ className, iconClassName, ...props }, ref) => (
   <CheckboxPrimitive.Root
     ref={ref}
@@ -21,7 +22,7 @@ const Checkbox = React.forwardRef<
     <CheckboxPrimitive.Indicator
       className={cn("flex items-center justify-center text-current")}
     >
-      <CheckIcon className={iconClassName || "h-4 w-4"} />
+      <CheckIcon className={cn("h-4 w-4", iconClassName)} />
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 ));

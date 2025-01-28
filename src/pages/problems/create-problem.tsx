@@ -48,16 +48,11 @@ const CreateProblem = () => {
   const onSubmit: SubmitHandler<DefinitionFormType> = async (data) => {
     // @ts-expect-error - just let the backend validate it
     createDefinitionMutation.mutate(data.definition, {
-      onSettled: (response) => {
-        if (!response) {
-          // this should not happen
-          return;
-        }
-        if (response.status === 200) {
-          navigate(`/projects/${id}/problems/${response.data?.id}`);
-        } else {
-          setError(JSON.stringify(response.error));
-        }
+      onSuccess: (response) => {
+        navigate(`/projects/${id}/problems/${response.data?.id}`);
+      },
+      onError: (error) => {
+        setError(JSON.stringify(error));
       },
     });
   };

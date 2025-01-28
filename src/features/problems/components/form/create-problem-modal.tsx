@@ -1,9 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
+import CheckboxField from "@/components/form/fields/checkbox-field";
 import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
 import TextareaField from "@/components/form/fields/textarea-field";
@@ -26,6 +28,7 @@ type OwnProps = {
 const problemFormSchema = z.object({
   name: z.string().min(1, "Title cannot be empty"),
   description: z.string().min(1, "Description cannot be empty"),
+  restricted: z.boolean(),
 });
 
 type ProblemFormType = z.infer<typeof problemFormSchema>;
@@ -33,6 +36,7 @@ type ProblemFormType = z.infer<typeof problemFormSchema>;
 const problemFormDefault = {
   name: "",
   description: "",
+  restricted: false,
 };
 
 const CreateProblemModal: React.FC<OwnProps> = ({ setOpen }) => {
@@ -52,18 +56,15 @@ const CreateProblemModal: React.FC<OwnProps> = ({ setOpen }) => {
     createProblemMutation.mutate(
       { ...data, tasks: [] },
       {
-        onSettled: (response) => {
-          if (!response) {
-            // this should not happen
-            return;
-          }
-          if (response.status === 200) {
-            navigate(
-              `/projects/${projectId}/problems/${response.data?.id}/edit`,
-            );
+        onError: (error) => {
+          if ((error as AxiosError).status === 403) {
+            setError("You don't have permission to create a problem.");
           } else {
-            setError(JSON.stringify(response.error));
+            setError("Something went wrong.");
           }
+        },
+        onSuccess: (response) => {
+          navigate(`/projects/${projectId}/problems/${response.data?.id}/edit`);
         },
       },
     );
@@ -84,6 +85,7 @@ const CreateProblemModal: React.FC<OwnProps> = ({ setOpen }) => {
             >
               <TextField label="Title" name="name" />
               <TextareaField label="Description" name="description" rows={5} />
+              <CheckboxField label="Restricted" name="restricted" />
               <div className="mt-6 flex justify-between">
                 <Button
                   variant="outline"

@@ -4,6 +4,7 @@ import { RolePublicWithInvitationKeys } from "@/api";
 
 import CreateInvitationKeyButton from "./create-invitation-key-button";
 import DeleteInvitationKeyButton from "./delete-invitation-key-button";
+import InvitationKeyDisplay from "./invitation-key-display";
 
 export const columns: ColumnDef<RolePublicWithInvitationKeys>[] = [
   {
@@ -12,15 +13,18 @@ export const columns: ColumnDef<RolePublicWithInvitationKeys>[] = [
   },
   {
     cell: ({ row }) => {
-      const invitationKey = row.original.invitation_keys[0]?.key;
-      return <div>{invitationKey ?? "-"}</div>;
+      return (
+        <InvitationKeyDisplay
+          invitationKey={row.original.invitation_keys[0]?.key}
+        />
+      );
     },
     header: "Invitation Key",
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const invitationKey = row.original.invitation_keys[0];
+      const invitationKey = row.original.invitation_keys[0]?.key;
 
       return invitationKey === undefined ? (
         <CreateInvitationKeyButton role={row.original} />

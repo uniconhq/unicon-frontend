@@ -44,14 +44,8 @@ const CreateSubmission = () => {
   const onSubmit: SubmitHandler<SubmissionFormType> = async (data) => {
     // @ts-expect-error - just let the backend validate it
     createContestSubmissionMutation.mutate(data.submission, {
-      onSettled: (response) => {
-        if (!response) {
-          // this should not happen
-          return;
-        }
-        if (response.status === 200) {
-          navigate(`/projects/${projectId}/submissions/${response.data?.id}`);
-        }
+      onSuccess: (response) => {
+        navigate(`/projects/${projectId}/submissions/${response.data?.id}`);
       },
     });
   };

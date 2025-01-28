@@ -179,6 +179,7 @@ export type OutputStep = {
 
 export type Problem = {
     name: string;
+    restricted: boolean;
     description: string;
     tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
 };
@@ -194,7 +195,17 @@ export type ProblemORM = {
     id: number;
     name: string;
     description: string;
+    restricted?: boolean;
     project_id: number;
+};
+
+export type ProblemPublic = {
+    name: string;
+    restricted: boolean;
+    description: string;
+    tasks: Array<(ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask)>;
+    edit: boolean;
+    make_submission: boolean;
 };
 
 export type ProgrammingTask = {
@@ -227,12 +238,24 @@ export type ProjectPublic = {
     name: string;
     id: number;
     roles: Array<RolePublic>;
+    view_own_submission: boolean;
+    view_others_submission: boolean;
+    view_roles: boolean;
+    add_roles: boolean;
+    edit_roles: boolean;
+    create_problems: boolean;
 };
 
 export type ProjectPublicWithProblems = {
     name: string;
     id: number;
     roles: Array<RolePublic>;
+    view_own_submission: boolean;
+    view_others_submission: boolean;
+    view_roles: boolean;
+    add_roles: boolean;
+    edit_roles: boolean;
+    create_problems: boolean;
     problems: Array<ProblemBase>;
 };
 
@@ -263,10 +286,6 @@ export type RequiredInput = {
     data: (string | number | boolean | File);
 };
 
-export type RoleBase = {
-    name: string;
-};
-
 export type RoleCreate = {
     name: string;
 };
@@ -275,13 +294,47 @@ export type RolePublic = {
     name: string;
     id: number;
     project_id: number;
+    view_problems_access: boolean;
+    create_problems_access: boolean;
+    edit_problems_access: boolean;
+    delete_problems_access: boolean;
+    view_restricted_problems_access: boolean;
+    edit_restricted_problems_access: boolean;
+    delete_restricted_problems_access: boolean;
+    make_submission_access: boolean;
+    view_own_submission_access: boolean;
+    view_others_submission_access: boolean;
 };
 
 export type RolePublicWithInvitationKeys = {
     name: string;
     id: number;
     project_id: number;
+    view_problems_access: boolean;
+    create_problems_access: boolean;
+    edit_problems_access: boolean;
+    delete_problems_access: boolean;
+    view_restricted_problems_access: boolean;
+    edit_restricted_problems_access: boolean;
+    delete_restricted_problems_access: boolean;
+    make_submission_access: boolean;
+    view_own_submission_access: boolean;
+    view_others_submission_access: boolean;
     invitation_keys: Array<InvitationKeyPublic>;
+};
+
+export type RoleUpdate = {
+    name: string;
+    view_problems_access: boolean;
+    create_problems_access: boolean;
+    edit_problems_access: boolean;
+    delete_problems_access: boolean;
+    view_restricted_problems_access: boolean;
+    edit_restricted_problems_access: boolean;
+    delete_restricted_problems_access: boolean;
+    make_submission_access: boolean;
+    view_own_submission_access: boolean;
+    view_others_submission_access: boolean;
 };
 
 export type ShortAnswerTask = {
@@ -350,6 +403,7 @@ export type SubmissionPublic = {
     user_id: number;
     submitted_at: (string | null);
     task_attempts: Array<TaskAttemptPublic>;
+    user: UserPublic;
 };
 
 export type TaskAttemptPublic = {
@@ -460,7 +514,7 @@ export type GetProblemData = {
     };
 };
 
-export type GetProblemResponse = (Problem);
+export type GetProblemResponse = (ProblemPublic);
 
 export type GetProblemError = (HTTPValidationError);
 
@@ -671,7 +725,7 @@ export type CreateProblemResponse = (ProblemORM);
 export type CreateProblemError = (HTTPValidationError);
 
 export type UpdateRoleData = {
-    body: RoleBase;
+    body: RoleUpdate;
     path: {
         id: number;
     };

@@ -781,6 +781,10 @@ export const ProblemSchema = {
             type: 'string',
             title: 'Name'
         },
+        restricted: {
+            type: 'boolean',
+            title: 'Restricted'
+        },
         description: {
             type: 'string',
             title: 'Description'
@@ -816,7 +820,7 @@ export const ProblemSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'description', 'tasks'],
+    required: ['name', 'restricted', 'description', 'tasks'],
     title: 'Problem'
 } as const;
 
@@ -858,6 +862,11 @@ export const ProblemORMSchema = {
             type: 'string',
             title: 'Description'
         },
+        restricted: {
+            type: 'boolean',
+            title: 'Restricted',
+            default: false
+        },
         project_id: {
             type: 'integer',
             title: 'Project Id'
@@ -866,6 +875,63 @@ export const ProblemORMSchema = {
     type: 'object',
     required: ['id', 'name', 'description', 'project_id'],
     title: 'ProblemORM'
+} as const;
+
+export const ProblemPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        restricted: {
+            type: 'boolean',
+            title: 'Restricted'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        tasks: {
+            items: {
+                oneOf: [
+                    {
+                        '$ref': '#/components/schemas/ProgrammingTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleChoiceTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/MultipleResponseTask'
+                    },
+                    {
+                        '$ref': '#/components/schemas/ShortAnswerTask'
+                    }
+                ],
+                discriminator: {
+                    propertyName: 'type',
+                    mapping: {
+                        MULTIPLE_CHOICE_TASK: '#/components/schemas/MultipleChoiceTask',
+                        MULTIPLE_RESPONSE_TASK: '#/components/schemas/MultipleResponseTask',
+                        PROGRAMMING_TASK: '#/components/schemas/ProgrammingTask',
+                        SHORT_ANSWER_TASK: '#/components/schemas/ShortAnswerTask'
+                    }
+                }
+            },
+            type: 'array',
+            title: 'Tasks'
+        },
+        edit: {
+            type: 'boolean',
+            title: 'Edit'
+        },
+        make_submission: {
+            type: 'boolean',
+            title: 'Make Submission'
+        }
+    },
+    type: 'object',
+    required: ['name', 'restricted', 'description', 'tasks', 'edit', 'make_submission'],
+    title: 'ProblemPublic'
 } as const;
 
 export const ProgrammingTaskSchema = {
@@ -1014,10 +1080,34 @@ export const ProjectPublicSchema = {
             },
             type: 'array',
             title: 'Roles'
+        },
+        view_own_submission: {
+            type: 'boolean',
+            title: 'View Own Submission'
+        },
+        view_others_submission: {
+            type: 'boolean',
+            title: 'View Others Submission'
+        },
+        view_roles: {
+            type: 'boolean',
+            title: 'View Roles'
+        },
+        add_roles: {
+            type: 'boolean',
+            title: 'Add Roles'
+        },
+        edit_roles: {
+            type: 'boolean',
+            title: 'Edit Roles'
+        },
+        create_problems: {
+            type: 'boolean',
+            title: 'Create Problems'
         }
     },
     type: 'object',
-    required: ['name', 'id', 'roles'],
+    required: ['name', 'id', 'roles', 'view_own_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems'],
     title: 'ProjectPublic'
 } as const;
 
@@ -1038,6 +1128,30 @@ export const ProjectPublicWithProblemsSchema = {
             type: 'array',
             title: 'Roles'
         },
+        view_own_submission: {
+            type: 'boolean',
+            title: 'View Own Submission'
+        },
+        view_others_submission: {
+            type: 'boolean',
+            title: 'View Others Submission'
+        },
+        view_roles: {
+            type: 'boolean',
+            title: 'View Roles'
+        },
+        add_roles: {
+            type: 'boolean',
+            title: 'Add Roles'
+        },
+        edit_roles: {
+            type: 'boolean',
+            title: 'Edit Roles'
+        },
+        create_problems: {
+            type: 'boolean',
+            title: 'Create Problems'
+        },
         problems: {
             items: {
                 '$ref': '#/components/schemas/ProblemBase'
@@ -1047,7 +1161,7 @@ export const ProjectPublicWithProblemsSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'roles', 'problems'],
+    required: ['name', 'id', 'roles', 'view_own_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems', 'problems'],
     title: 'ProjectPublicWithProblems'
 } as const;
 
@@ -1141,18 +1255,6 @@ export const RequiredInputSchema = {
     title: 'RequiredInput'
 } as const;
 
-export const RoleBaseSchema = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        }
-    },
-    type: 'object',
-    required: ['name'],
-    title: 'RoleBase'
-} as const;
-
 export const RoleCreateSchema = {
     properties: {
         name: {
@@ -1178,10 +1280,50 @@ export const RolePublicSchema = {
         project_id: {
             type: 'integer',
             title: 'Project Id'
+        },
+        view_problems_access: {
+            type: 'boolean',
+            title: 'View Problems Access'
+        },
+        create_problems_access: {
+            type: 'boolean',
+            title: 'Create Problems Access'
+        },
+        edit_problems_access: {
+            type: 'boolean',
+            title: 'Edit Problems Access'
+        },
+        delete_problems_access: {
+            type: 'boolean',
+            title: 'Delete Problems Access'
+        },
+        view_restricted_problems_access: {
+            type: 'boolean',
+            title: 'View Restricted Problems Access'
+        },
+        edit_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Edit Restricted Problems Access'
+        },
+        delete_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Delete Restricted Problems Access'
+        },
+        make_submission_access: {
+            type: 'boolean',
+            title: 'Make Submission Access'
+        },
+        view_own_submission_access: {
+            type: 'boolean',
+            title: 'View Own Submission Access'
+        },
+        view_others_submission_access: {
+            type: 'boolean',
+            title: 'View Others Submission Access'
         }
     },
     type: 'object',
-    required: ['name', 'id', 'project_id'],
+    required: ['name', 'id', 'project_id', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_others_submission_access'],
     title: 'RolePublic'
 } as const;
 
@@ -1199,6 +1341,46 @@ export const RolePublicWithInvitationKeysSchema = {
             type: 'integer',
             title: 'Project Id'
         },
+        view_problems_access: {
+            type: 'boolean',
+            title: 'View Problems Access'
+        },
+        create_problems_access: {
+            type: 'boolean',
+            title: 'Create Problems Access'
+        },
+        edit_problems_access: {
+            type: 'boolean',
+            title: 'Edit Problems Access'
+        },
+        delete_problems_access: {
+            type: 'boolean',
+            title: 'Delete Problems Access'
+        },
+        view_restricted_problems_access: {
+            type: 'boolean',
+            title: 'View Restricted Problems Access'
+        },
+        edit_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Edit Restricted Problems Access'
+        },
+        delete_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Delete Restricted Problems Access'
+        },
+        make_submission_access: {
+            type: 'boolean',
+            title: 'Make Submission Access'
+        },
+        view_own_submission_access: {
+            type: 'boolean',
+            title: 'View Own Submission Access'
+        },
+        view_others_submission_access: {
+            type: 'boolean',
+            title: 'View Others Submission Access'
+        },
         invitation_keys: {
             items: {
                 '$ref': '#/components/schemas/InvitationKeyPublic'
@@ -1208,8 +1390,60 @@ export const RolePublicWithInvitationKeysSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'project_id', 'invitation_keys'],
+    required: ['name', 'id', 'project_id', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_others_submission_access', 'invitation_keys'],
     title: 'RolePublicWithInvitationKeys'
+} as const;
+
+export const RoleUpdateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        view_problems_access: {
+            type: 'boolean',
+            title: 'View Problems Access'
+        },
+        create_problems_access: {
+            type: 'boolean',
+            title: 'Create Problems Access'
+        },
+        edit_problems_access: {
+            type: 'boolean',
+            title: 'Edit Problems Access'
+        },
+        delete_problems_access: {
+            type: 'boolean',
+            title: 'Delete Problems Access'
+        },
+        view_restricted_problems_access: {
+            type: 'boolean',
+            title: 'View Restricted Problems Access'
+        },
+        edit_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Edit Restricted Problems Access'
+        },
+        delete_restricted_problems_access: {
+            type: 'boolean',
+            title: 'Delete Restricted Problems Access'
+        },
+        make_submission_access: {
+            type: 'boolean',
+            title: 'Make Submission Access'
+        },
+        view_own_submission_access: {
+            type: 'boolean',
+            title: 'View Own Submission Access'
+        },
+        view_others_submission_access: {
+            type: 'boolean',
+            title: 'View Others Submission Access'
+        }
+    },
+    type: 'object',
+    required: ['name', 'view_problems_access', 'create_problems_access', 'edit_problems_access', 'delete_problems_access', 'view_restricted_problems_access', 'edit_restricted_problems_access', 'delete_restricted_problems_access', 'make_submission_access', 'view_own_submission_access', 'view_others_submission_access'],
+    title: 'RoleUpdate'
 } as const;
 
 export const ShortAnswerTaskSchema = {
@@ -1463,10 +1697,13 @@ export const SubmissionPublicSchema = {
             },
             type: 'array',
             title: 'Task Attempts'
+        },
+        user: {
+            '$ref': '#/components/schemas/UserPublic'
         }
     },
     type: 'object',
-    required: ['id', 'problem_id', 'user_id', 'submitted_at', 'task_attempts'],
+    required: ['id', 'problem_id', 'user_id', 'submitted_at', 'task_attempts', 'user'],
     title: 'SubmissionPublic'
 } as const;
 
