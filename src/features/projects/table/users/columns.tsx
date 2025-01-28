@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { UserPublicWithRoles } from "@/api";
+import { UserPublicWithRolesAndGroups } from "@/api";
 import { Badge } from "@/components/ui/badge";
 
-export const columns: ColumnDef<UserPublicWithRoles>[] = [
+export const columns: ColumnDef<UserPublicWithRolesAndGroups>[] = [
   {
     accessorKey: "username",
     header: "Username",

@@ -30,7 +30,12 @@ const keys: (keyof RolePublicWithInvitationKeys)[] = [
   "delete_restricted_problems_access",
   "make_submission_access",
   "view_own_submission_access",
+  "view_supervised_submission_access",
   "view_others_submission_access",
+  "view_groups_access",
+  "create_groups_access",
+  "edit_groups_access",
+  "delete_groups_access",
 ];
 
 const RolePermissionsTable: React.FC<OwnProps> = ({ data, projectId }) => {
@@ -51,9 +56,11 @@ const RolePermissionsTable: React.FC<OwnProps> = ({ data, projectId }) => {
   const updateRolesMutation = useUpdateRoles(projectId);
 
   const onSave = () => {
+    console.log({ isThisOutdated: roles });
     updateRolesMutation.mutate(roles);
   };
 
+  console.log({ roles });
   if (!project) {
     return;
   }
@@ -72,8 +79,11 @@ const RolePermissionsTable: React.FC<OwnProps> = ({ data, projectId }) => {
             <TableHead colSpan={3} className="border-l text-center">
               restricted problems
             </TableHead>
-            <TableHead colSpan={3} className="border-l text-center">
+            <TableHead colSpan={4} className="border-l text-center">
               submissions
+            </TableHead>
+            <TableHead colSpan={4} className="border-l text-center">
+              groups
             </TableHead>
           </TableRow>
           <TableRow>
@@ -89,7 +99,15 @@ const RolePermissionsTable: React.FC<OwnProps> = ({ data, projectId }) => {
             {/* submissions */}
             <TableHead className="border-l text-center">create</TableHead>
             <TableHead className="border-l text-center">view own</TableHead>
+            <TableHead className="border-l text-center">
+              view supervised
+            </TableHead>
             <TableHead className="border-l text-center">view all</TableHead>
+            {/* groups */}
+            <TableHead className="border-l text-center">view</TableHead>
+            <TableHead className="border-l text-center">create</TableHead>
+            <TableHead className="border-l text-center">update</TableHead>
+            <TableHead className="border-l text-center">delete</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="align-center">

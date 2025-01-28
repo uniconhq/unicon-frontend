@@ -4,6 +4,7 @@ import { PropsWithChildren, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { GroupPublic } from "@/api";
 import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
 import { Button } from "@/components/ui/button";
@@ -18,41 +19,53 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 
-import { useAddRole } from "../../queries";
+import { useUpdateGroup } from "../queries";
 
-const roleFormSchema = z.object({
+const groupFormSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
 });
 
-type RoleFormType = z.infer<typeof roleFormSchema>;
-
-const roleFormDefault = {
-  name: "",
-};
+type GroupFormType = z.infer<typeof groupFormSchema>;
 
 type OwnProps = {
   projectId: number;
+  group: GroupPublic;
 } & PropsWithChildren;
 
-const AddRoleDialog: React.FC<OwnProps> = ({ children, projectId }) => {
-  const form = useForm<RoleFormType>({
-    resolver: zodResolver(roleFormSchema),
-    defaultValues: roleFormDefault,
+const EditGroupDialog: React.FC<OwnProps> = ({
+  children,
+  projectId,
+  group,
+}) => {
+  const form = useForm<GroupFormType>({
+    resolver: zodResolver(groupFormSchema),
+    defaultValues: { name: group.name },
   });
 
   const [error, setError] = useState("");
 
-  const addRoleMutation = useAddRole(projectId);
+  const updateGroupMutation = useUpdateGroup(projectId, group.id);
 
-  const onSubmit: SubmitHandler<RoleFormType> = (data) => {
-    addRoleMutation.mutate(data, {
-      onError: () => {
-        setError("Something went wrong.");
+  const onSubmit: SubmitHandler<GroupFormType> = (data) => {
+    updateGroupMutation.mutate(
+      {
+        ...data,
+        supervisors: group.members
+          .filter((member) => member.is_supervisor)
+          .map((member) => member.user.id),
+        members: group.members
+          .filter((member) => !member.is_supervisor)
+          .map((member) => member.user.id),
       },
-      onSuccess: () => {
-        form.reset();
+      {
+        onError: () => {
+          setError("Something went wrong.");
+        },
+        onSuccess: () => {
+          form.reset();
+        },
       },
-    });
+    );
   };
 
   return (
@@ -62,9 +75,9 @@ const AddRoleDialog: React.FC<OwnProps> = ({ children, projectId }) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Add role</DialogTitle>
+              <DialogTitle>Edit group</DialogTitle>
               <DialogDescription>
-                Enter the name of your new role.
+                Edit the name of your group.
               </DialogDescription>
               {error && <ErrorAlert message={error} />}
             </DialogHeader>
@@ -73,7 +86,7 @@ const AddRoleDialog: React.FC<OwnProps> = ({ children, projectId }) => {
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="submit">Add role</Button>
+                <Button type="submit">Edit group</Button>
               </DialogClose>
             </DialogFooter>
           </form>
@@ -83,4 +96,4 @@ const AddRoleDialog: React.FC<OwnProps> = ({ children, projectId }) => {
   );
 };
 
-export default AddRoleDialog;
+export default EditGroupDialog;

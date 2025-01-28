@@ -38,6 +38,27 @@ export type GraphEdge = {
     to_socket_id: string;
 };
 
+export type GroupCreate = {
+    name: string;
+};
+
+export type GroupMemberPublicWithGroup = {
+    is_supervisor: boolean;
+    group: MiniGroupPublic;
+};
+
+export type GroupPublic = {
+    id: number;
+    name: string;
+    members: Array<MiniGroupMemberPublic>;
+};
+
+export type GroupUpdate = {
+    name: string;
+    members: Array<(number)>;
+    supervisors: Array<(number)>;
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -68,6 +89,21 @@ export type LoopStep = {
     inputs: Array<StepSocket>;
     outputs: Array<StepSocket>;
     type: StepType;
+};
+
+export type MiniGroupMemberPublic = {
+    is_supervisor: boolean;
+    user: UserPublic;
+};
+
+export type MiniGroupPublic = {
+    id: number;
+    name: string;
+};
+
+export type MiniProblemPublic = {
+    id: number;
+    name: string;
 };
 
 export type MultipleChoiceTask = {
@@ -239,11 +275,17 @@ export type ProjectPublic = {
     id: number;
     roles: Array<RolePublic>;
     view_own_submission: boolean;
+    view_supervised_submission: boolean;
     view_others_submission: boolean;
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
+    view_restricted_problems: boolean;
     create_problems: boolean;
+    view_groups: boolean;
+    create_groups: boolean;
+    edit_groups: boolean;
+    delete_groups: boolean;
 };
 
 export type ProjectPublicWithProblems = {
@@ -251,11 +293,17 @@ export type ProjectPublicWithProblems = {
     id: number;
     roles: Array<RolePublic>;
     view_own_submission: boolean;
+    view_supervised_submission: boolean;
     view_others_submission: boolean;
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
+    view_restricted_problems: boolean;
     create_problems: boolean;
+    view_groups: boolean;
+    create_groups: boolean;
+    edit_groups: boolean;
+    delete_groups: boolean;
     problems: Array<ProblemBase>;
 };
 
@@ -303,7 +351,12 @@ export type RolePublic = {
     delete_restricted_problems_access: boolean;
     make_submission_access: boolean;
     view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
     view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
 };
 
 export type RolePublicWithInvitationKeys = {
@@ -319,7 +372,12 @@ export type RolePublicWithInvitationKeys = {
     delete_restricted_problems_access: boolean;
     make_submission_access: boolean;
     view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
     view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
     invitation_keys: Array<InvitationKeyPublic>;
 };
 
@@ -334,7 +392,12 @@ export type RoleUpdate = {
     delete_restricted_problems_access: boolean;
     make_submission_access: boolean;
     view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
     view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
 };
 
 export type ShortAnswerTask = {
@@ -403,7 +466,8 @@ export type SubmissionPublic = {
     user_id: number;
     submitted_at: (string | null);
     task_attempts: Array<TaskAttemptPublic>;
-    user: UserPublic;
+    user: UserPublicWithRolesAndGroups;
+    problem: MiniProblemPublic;
 };
 
 export type TaskAttemptPublic = {
@@ -470,10 +534,11 @@ export type UserPublic = {
     username: string;
 };
 
-export type UserPublicWithRoles = {
+export type UserPublicWithRolesAndGroups = {
     id: number;
     username: string;
     roles: Array<RolePublic>;
+    group_members: Array<GroupMemberPublicWithGroup>;
 };
 
 export type ValidationError = {
@@ -686,9 +751,30 @@ export type GetProjectUsersData = {
     };
 };
 
-export type GetProjectUsersResponse = (Array<UserPublicWithRoles>);
+export type GetProjectUsersResponse = (Array<UserPublicWithRolesAndGroups>);
 
 export type GetProjectUsersError = (HTTPValidationError);
+
+export type GetProjectGroupsData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetProjectGroupsResponse = (Array<GroupPublic>);
+
+export type GetProjectGroupsError = (HTTPValidationError);
+
+export type CreateGroupData = {
+    body: GroupCreate;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateGroupResponse = (GroupPublic);
+
+export type CreateGroupError = (HTTPValidationError);
 
 export type GetProjectSubmissionsData = {
     path: {
@@ -764,3 +850,34 @@ export type DeleteInvitationKeyData = {
 export type DeleteInvitationKeyResponse = (unknown);
 
 export type DeleteInvitationKeyError = (HTTPValidationError);
+
+export type GetGroupData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetGroupResponse = (GroupPublic);
+
+export type GetGroupError = (HTTPValidationError);
+
+export type UpdateGroupData = {
+    body: GroupUpdate;
+    path: {
+        id: number;
+    };
+};
+
+export type UpdateGroupResponse = (GroupPublic);
+
+export type UpdateGroupError = (HTTPValidationError);
+
+export type DeleteGroupData = {
+    path: {
+        id: number;
+    };
+};
+
+export type DeleteGroupResponse = (unknown);
+
+export type DeleteGroupError = (HTTPValidationError);

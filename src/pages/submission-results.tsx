@@ -39,7 +39,7 @@ const SubmissionResults = () => {
     : 0;
 
   return (
-    <div className="flex w-full flex-col gap-8 py-6">
+    <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-semibold">Submission (#{id})</h1>
         <Link to={`/projects/${projectId}/problems/${contest_id}`}>

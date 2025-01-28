@@ -3,20 +3,28 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 import {
+  createGroup,
   createInvitationKey,
   createProject,
   createRole,
+  deleteGroup,
   deleteInvitationKey,
   getAllProjects,
+  getGroup,
   getProject,
+  getProjectGroups,
   getProjectRoles,
   getProjectUsers,
+  GroupCreate,
+  GroupUpdate,
   joinProject,
   ProjectCreate,
   RoleCreate,
   RolePublic,
+  updateGroup,
   updateRole,
 } from "@/api";
 
@@ -24,6 +32,7 @@ export enum ProjectQueryKeys {
   Project = "Project",
   Role = "Role",
   User = "User",
+  Group = "Group",
 }
 
 export const getProjects = () => {
@@ -50,11 +59,33 @@ export const getProjectRolesById = (id: number) => {
   });
 };
 
-export const getProjectUsersById = (id: number) => {
+export const getProjectGroupsById = (id: number) => {
+  return queryOptions({
+    queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.Group],
+    queryFn: () =>
+      getProjectGroups({ path: { id } }).then((response) => response.data),
+  });
+};
+
+export const getProjectGroupById = (projectId: number, groupId: number) => {
+  return queryOptions({
+    queryKey: [
+      ProjectQueryKeys.Project,
+      projectId,
+      ProjectQueryKeys.Group,
+      groupId,
+    ],
+    queryFn: () =>
+      getGroup({ path: { id: groupId } }).then((response) => response.data),
+  });
+};
+
+export const getProjectUsersById = (id: number, disabled?: boolean) => {
   return queryOptions({
     queryKey: [ProjectQueryKeys.Project, id, ProjectQueryKeys.User],
     queryFn: () =>
       getProjectUsers({ path: { id } }).then((response) => response.data),
+    enabled: !disabled,
   });
 };
 
@@ -66,8 +97,13 @@ export const useCreateProject = (id: number) => {
 };
 
 export const useJoinProject = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (key: string) => joinProject({ path: { key } }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ProjectQueryKeys.Project],
+      }),
   });
 };
 
@@ -96,10 +132,12 @@ export const useDeleteInvitationKey = (projectId: number, roleId: number) => {
 export const useUpdateRoles = (projectId: number) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (roles: Omit<RolePublic, "project_id">[]) =>
-      Promise.all(
+    mutationFn: (roles: Omit<RolePublic, "project_id">[]) => {
+      console.log({ mutationRoles: roles });
+      return Promise.all(
         roles.map((role) => updateRole({ body: role, path: { id: role.id } })),
-      ),
+      );
+    },
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Role],
@@ -116,5 +154,48 @@ export const useAddRole = (projectId: number) => {
       queryClient.invalidateQueries({
         queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Role],
       }),
+  });
+};
+
+export const useAddGroup = (projectId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (group: GroupCreate) =>
+      createGroup({ body: group, path: { id: projectId } }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Group],
+      }),
+  });
+};
+
+export const useUpdateGroup = (projectId: number, groupId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (group: GroupUpdate) =>
+      updateGroup({ body: group, path: { id: groupId } }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [
+          ProjectQueryKeys.Project,
+          projectId,
+          ProjectQueryKeys.Group,
+          groupId,
+        ],
+      }),
+  });
+};
+
+export const useDeleteGroup = (projectId: number, groupId: number) => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: () => deleteGroup({ path: { id: groupId } }),
+    onSuccess: () => {
+      navigate(`/projects/${projectId}/groups`);
+      queryClient.invalidateQueries({
+        queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Group],
+      });
+    },
   });
 };

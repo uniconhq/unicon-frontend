@@ -14,8 +14,8 @@ export const columns: ColumnDef<SubmissionPublic>[] = [
     accessorKey: "definition",
     header: "Problem ID",
     cell: ({ row }) => {
-      const problemId = row.original.problem_id;
-      return <ViewProblemButton problemId={problemId} />;
+      const problem = row.original.problem;
+      return <ViewProblemButton problem={problem} />;
     },
   },
   {
@@ -41,5 +41,15 @@ export const columns: ColumnDef<SubmissionPublic>[] = [
 export const columnsWithUser: ColumnDef<SubmissionPublic>[] = [
   columns[0],
   { header: "User", accessorKey: "user.username" },
+  {
+    header: "Group",
+    cell: ({ row }) => {
+      const groups = row.original.user.group_members.map(
+        (group_member) => group_member.group.name,
+      );
+
+      return groups.join(", ");
+    },
+  },
   ...columns.slice(1),
 ];
