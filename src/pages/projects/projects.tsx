@@ -3,6 +3,7 @@ import { ArrowRight, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import EmptyPlaceholder from "@/components/layout/empty-placeholder";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -52,15 +53,14 @@ const Projects = () => {
             </Link>
           ))}
         {!isLoading && !projects && (
-          <div className="bg-black p-4 text-center shadow-inner">
-            No projects found.{" "}
+          <EmptyPlaceholder description="No projects found.">
             <span
               className="cursor-pointer text-purple-400 hover:opacity-80"
               onClick={() => setJoinDialogOpen(true)}
             >
               Join a project with an invitation key.
             </span>
-          </div>
+          </EmptyPlaceholder>
         )}
       </div>
     </div>
