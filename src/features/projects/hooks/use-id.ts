@@ -1,5 +1,10 @@
 import { useParams } from "react-router-dom";
 
+export const useOrganisationId = () => {
+  const { organisationId: organisationIdStr } = useParams<"organisationId">();
+  return parseInt(organisationIdStr!);
+};
+
 export const useProjectId = () => {
   const { projectId: projectIdStr } = useParams<"projectId">();
   return parseInt(projectIdStr!);
