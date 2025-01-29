@@ -61,20 +61,21 @@ const Submissions = () => {
   const showUser =
     project.view_others_submission || project.view_supervised_submission;
 
-  const users = getUsersFromSubmissions(submissions);
   const groups = getGroupsFromSubmissions(submissions);
 
   let filteredSubmissions = submissions;
-  if (userFilter) {
-    filteredSubmissions = filteredSubmissions.filter(
-      (submission) => submission.user_id === userFilter,
-    );
-  }
+
   if (groupFilter) {
     filteredSubmissions = filteredSubmissions.filter((submission) =>
       submission.user.group_members.some(
         (group_member) => group_member.group.id === groupFilter,
       ),
+    );
+  }
+  const users = getUsersFromSubmissions(filteredSubmissions);
+  if (userFilter) {
+    filteredSubmissions = filteredSubmissions.filter(
+      (submission) => submission.user_id === userFilter,
     );
   }
   if (problemFilter) {
@@ -108,9 +109,12 @@ const Submissions = () => {
         {/* Group filter */}
         {showUser && (
           <Select
-            onValueChange={(value) =>
-              setGroupFilter(value === "all" ? null : Number(value))
-            }
+            onValueChange={(value) => {
+              setGroupFilter(value === "all" ? null : Number(value));
+              if (value !== "all") {
+                setUserFilter(null);
+              }
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder="Filter by group" />
@@ -128,6 +132,7 @@ const Submissions = () => {
         {/* User filter */}
         {showUser && (
           <Select
+            value={userFilter?.toString() || "all"}
             onValueChange={(value) =>
               setUserFilter(value === "all" ? null : Number(value))
             }
