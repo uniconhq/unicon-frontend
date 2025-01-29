@@ -1,10 +1,16 @@
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import {
   createOrganisation,
   getAllOrganisations,
   getOrganisation,
   OrganisationCreate,
+  OrganisationUpdate,
+  updateOrganisation,
 } from "@/api";
 
 export enum OrganisationQueryKeys {
@@ -26,8 +32,27 @@ export const getOrganisationById = (id: number) => {
 };
 
 export const useCreateOrganisation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: OrganisationCreate) =>
       createOrganisation({ body: data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: OrganisationQueryKeys.Organisation,
+      });
+    },
+  });
+};
+
+export const useUpdateOrganisation = (id: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: OrganisationUpdate) =>
+      updateOrganisation({ path: { id }, body: data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [OrganisationQueryKeys.Organisation, id],
+      });
+    },
   });
 };
