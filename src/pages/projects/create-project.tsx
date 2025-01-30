@@ -2,13 +2,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Params, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import ErrorAlert from "@/components/form/fields/error-alert";
 import TextField from "@/components/form/fields/text-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useOrganisationId } from "@/features/projects/hooks/use-id";
 import {
   ProjectQueryKeys,
   useCreateProject,
@@ -32,9 +33,9 @@ const CreateProject = () => {
     defaultValues: projectFormDefault,
   });
 
-  const { id } = useParams<Params<"id">>();
+  const id = useOrganisationId();
 
-  const createProjectMutation = useCreateProject(parseInt(id!));
+  const createProjectMutation = useCreateProject(id);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -45,7 +46,7 @@ const CreateProject = () => {
       },
       onSuccess: (response) => {
         navigate(`/projects/${response.data?.id}`, {});
-        // Invalidatattion needed to display project in sidebar
+        // Invalidatation needed to display project in sidebar
         queryClient.invalidateQueries({ queryKey: [ProjectQueryKeys.Project] });
       },
     });
