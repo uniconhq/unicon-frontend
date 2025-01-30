@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import EmptyPlaceholder from "@/components/layout/empty-placeholder";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { getOrganisations } from "@/features/organisations/queries";
@@ -32,6 +33,21 @@ const Organisations = () => {
               </Card>
             </Link>
           ))}
+        {!isLoading && organisations?.length === 0 && (
+          <EmptyPlaceholder description="No organisations found.">
+            <br />
+            <span className="text-gray-500">
+              If you're looking to submit solutions, check out{" "}
+              <Link
+                to="/projects"
+                className="text-purple-500 hover:text-purple-500/80"
+              >
+                Projects
+              </Link>
+              .
+            </span>
+          </EmptyPlaceholder>
+        )}
       </div>
     </div>
   );
