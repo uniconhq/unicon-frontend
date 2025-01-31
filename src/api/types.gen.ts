@@ -200,7 +200,7 @@ export type OrganisationMemberPublic = {
 };
 
 export type OrganisationMemberUpdate = {
-    role: unicon_backend__schemas__organisation__RoleUpdate__1;
+    role: UpdatableRole;
 };
 
 export type OrganisationPublic = {
@@ -224,6 +224,7 @@ export type OrganisationPublicWithProjects = {
     description: string;
     id: number;
     projects: Array<ProjectPublic>;
+    delete: boolean;
 };
 
 export type OrganisationRole = 'admin' | 'observer';
@@ -415,6 +416,25 @@ export type RolePublicWithInvitationKeys = {
     invitation_keys: Array<InvitationKeyPublic>;
 };
 
+export type RoleUpdate = {
+    name: string;
+    view_problems_access: boolean;
+    create_problems_access: boolean;
+    edit_problems_access: boolean;
+    delete_problems_access: boolean;
+    view_restricted_problems_access: boolean;
+    edit_restricted_problems_access: boolean;
+    delete_restricted_problems_access: boolean;
+    make_submission_access: boolean;
+    view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
+    view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
+};
+
 export type ShortAnswerTask = {
     id: number;
     type: "SHORT_ANSWER_TASK";
@@ -536,26 +556,7 @@ export type Token = {
 /**
  * this is OrganisationRole + owner
  */
-export type unicon_backend__schemas__organisation__RoleUpdate__1 = 'admin' | 'observer' | 'owner';
-
-export type unicon_backend__schemas__organisation__RoleUpdate__2 = {
-    name: string;
-    view_problems_access: boolean;
-    create_problems_access: boolean;
-    edit_problems_access: boolean;
-    delete_problems_access: boolean;
-    view_restricted_problems_access: boolean;
-    edit_restricted_problems_access: boolean;
-    delete_restricted_problems_access: boolean;
-    make_submission_access: boolean;
-    view_own_submission_access: boolean;
-    view_supervised_submission_access: boolean;
-    view_others_submission_access: boolean;
-    view_groups_access: boolean;
-    create_groups_access: boolean;
-    edit_groups_access: boolean;
-    delete_groups_access: boolean;
-};
+export type UpdatableRole = 'admin' | 'observer' | 'owner';
 
 export type UserCreate = {
     username: string;
@@ -913,7 +914,7 @@ export type CreateProblemResponse = (ProblemORM);
 export type CreateProblemError = (HTTPValidationError);
 
 export type UpdateRoleData = {
-    body: unicon_backend__schemas__organisation__RoleUpdate__2;
+    body: RoleUpdate;
     path: {
         id: number;
     };

@@ -52,7 +52,7 @@ const Projects = () => {
               </Card>
             </Link>
           ))}
-        {!isLoading && !projects && (
+        {!isLoading && !projects?.length && (
           <EmptyPlaceholder description="No projects found.">
             <span
               className="cursor-pointer text-purple-400 hover:opacity-80"

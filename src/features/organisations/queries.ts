@@ -8,6 +8,7 @@ import {
   createOrganisation,
   createOrganisationInvitationKey,
   deleteMember,
+  deleteOrganisation,
   deleteOrganisationInvitationKey,
   getAllOrganisations,
   getOrganisation,
@@ -48,7 +49,7 @@ export const useCreateOrganisation = () => {
       createOrganisation({ body: data }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: OrganisationQueryKeys.Organisation,
+        queryKey: [OrganisationQueryKeys.Organisation],
       });
     },
   });
@@ -62,6 +63,20 @@ export const useUpdateOrganisation = (id: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [OrganisationQueryKeys.Organisation, id],
+      });
+    },
+  });
+};
+
+export const useDeleteOrganisation = (id: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => {
+      return deleteOrganisation({ path: { id } });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [OrganisationQueryKeys.Organisation],
       });
     },
   });
