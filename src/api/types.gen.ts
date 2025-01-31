@@ -180,10 +180,43 @@ export type OrganisationCreate = {
     description: string;
 };
 
+export type OrganisationInvitationKeyCreate = {
+    role: OrganisationRole;
+};
+
+export type OrganisationInvitationKeyPublic = {
+    id: number;
+    role: OrganisationRole;
+    key: string;
+};
+
+export type OrganisationJoinRequest = {
+    key: string;
+};
+
+export type OrganisationMemberPublic = {
+    user: UserPublic;
+    role: OrganisationRole;
+};
+
+export type OrganisationMemberUpdate = {
+    role: UpdatableRole;
+};
+
 export type OrganisationPublic = {
     name: string;
     description: string;
     id: number;
+};
+
+export type OrganisationPublicWithMembers = {
+    name: string;
+    description: string;
+    id: number;
+    owner: UserPublic;
+    members: Array<OrganisationMemberPublic>;
+    invitation_keys: (Array<OrganisationInvitationKeyPublic> | null);
+    edit_roles: boolean;
 };
 
 export type OrganisationPublicWithProjects = {
@@ -191,7 +224,10 @@ export type OrganisationPublicWithProjects = {
     description: string;
     id: number;
     projects: Array<ProjectPublic>;
+    delete: boolean;
 };
+
+export type OrganisationRole = 'admin' | 'observer';
 
 export type OrganisationUpdate = {
     name: string;
@@ -225,6 +261,7 @@ export type ProblemBase = {
     name: string;
     description: string;
     project_id: number;
+    restricted: boolean;
 };
 
 export type ProblemORM = {
@@ -280,7 +317,6 @@ export type ProjectPublic = {
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
-    view_restricted_problems: boolean;
     create_problems: boolean;
     view_groups: boolean;
     create_groups: boolean;
@@ -298,7 +334,6 @@ export type ProjectPublicWithProblems = {
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
-    view_restricted_problems: boolean;
     create_problems: boolean;
     view_groups: boolean;
     create_groups: boolean;
@@ -518,6 +553,11 @@ export type Token = {
     user: UserPublic;
 };
 
+/**
+ * this is OrganisationRole + owner
+ */
+export type UpdatableRole = 'admin' | 'observer' | 'owner';
+
 export type UserCreate = {
     username: string;
     password: string;
@@ -696,6 +736,69 @@ export type CreateProjectData = {
 export type CreateProjectResponse = (ProjectPublic);
 
 export type CreateProjectError = (HTTPValidationError);
+
+export type GetOrganisationMembersData = {
+    path: {
+        id: number;
+    };
+};
+
+export type GetOrganisationMembersResponse = (OrganisationPublicWithMembers);
+
+export type GetOrganisationMembersError = (HTTPValidationError);
+
+export type CreateOrganisationInvitationKeyData = {
+    body: OrganisationInvitationKeyCreate;
+    path: {
+        id: number;
+    };
+};
+
+export type CreateOrganisationInvitationKeyResponse = (unknown);
+
+export type CreateOrganisationInvitationKeyError = (HTTPValidationError);
+
+export type DeleteOrganisationInvitationKeyData = {
+    path: {
+        id: number;
+        key_id: number;
+    };
+};
+
+export type DeleteOrganisationInvitationKeyResponse = (unknown);
+
+export type DeleteOrganisationInvitationKeyError = (HTTPValidationError);
+
+export type JoinOrganisationData = {
+    body: OrganisationJoinRequest;
+};
+
+export type JoinOrganisationResponse = (OrganisationPublic);
+
+export type JoinOrganisationError = (HTTPValidationError);
+
+export type UpdateMemberData = {
+    body: OrganisationMemberUpdate;
+    path: {
+        id: number;
+        user_id: number;
+    };
+};
+
+export type UpdateMemberResponse = (unknown);
+
+export type UpdateMemberError = (HTTPValidationError);
+
+export type DeleteMemberData = {
+    path: {
+        id: number;
+        user_id: number;
+    };
+};
+
+export type DeleteMemberResponse = (unknown);
+
+export type DeleteMemberError = (HTTPValidationError);
 
 export type GetAllProjectsData = unknown;
 

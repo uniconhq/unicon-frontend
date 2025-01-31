@@ -744,6 +744,74 @@ export const OrganisationCreateSchema = {
     title: 'OrganisationCreate'
 } as const;
 
+export const OrganisationInvitationKeyCreateSchema = {
+    properties: {
+        role: {
+            '$ref': '#/components/schemas/OrganisationRole'
+        }
+    },
+    type: 'object',
+    required: ['role'],
+    title: 'OrganisationInvitationKeyCreate'
+} as const;
+
+export const OrganisationInvitationKeyPublicSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        role: {
+            '$ref': '#/components/schemas/OrganisationRole'
+        },
+        key: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Key'
+        }
+    },
+    type: 'object',
+    required: ['id', 'role', 'key'],
+    title: 'OrganisationInvitationKeyPublic'
+} as const;
+
+export const OrganisationJoinRequestSchema = {
+    properties: {
+        key: {
+            type: 'string',
+            title: 'Key'
+        }
+    },
+    type: 'object',
+    required: ['key'],
+    title: 'OrganisationJoinRequest'
+} as const;
+
+export const OrganisationMemberPublicSchema = {
+    properties: {
+        user: {
+            '$ref': '#/components/schemas/UserPublic'
+        },
+        role: {
+            '$ref': '#/components/schemas/OrganisationRole'
+        }
+    },
+    type: 'object',
+    required: ['user', 'role'],
+    title: 'OrganisationMemberPublic'
+} as const;
+
+export const OrganisationMemberUpdateSchema = {
+    properties: {
+        role: {
+            '$ref': '#/components/schemas/UpdatableRole'
+        }
+    },
+    type: 'object',
+    required: ['role'],
+    title: 'OrganisationMemberUpdate'
+} as const;
+
 export const OrganisationPublicSchema = {
     properties: {
         name: {
@@ -762,6 +830,54 @@ export const OrganisationPublicSchema = {
     type: 'object',
     required: ['name', 'description', 'id'],
     title: 'OrganisationPublic'
+} as const;
+
+export const OrganisationPublicWithMembersSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        owner: {
+            '$ref': '#/components/schemas/UserPublic'
+        },
+        members: {
+            items: {
+                '$ref': '#/components/schemas/OrganisationMemberPublic'
+            },
+            type: 'array',
+            title: 'Members'
+        },
+        invitation_keys: {
+            anyOf: [
+                {
+                    items: {
+                        '$ref': '#/components/schemas/OrganisationInvitationKeyPublic'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Invitation Keys'
+        },
+        edit_roles: {
+            type: 'boolean',
+            title: 'Edit Roles'
+        }
+    },
+    type: 'object',
+    required: ['name', 'description', 'id', 'owner', 'members', 'invitation_keys', 'edit_roles'],
+    title: 'OrganisationPublicWithMembers'
 } as const;
 
 export const OrganisationPublicWithProjectsSchema = {
@@ -784,11 +900,21 @@ export const OrganisationPublicWithProjectsSchema = {
             },
             type: 'array',
             title: 'Projects'
+        },
+        delete: {
+            type: 'boolean',
+            title: 'Delete'
         }
     },
     type: 'object',
-    required: ['name', 'description', 'id', 'projects'],
+    required: ['name', 'description', 'id', 'projects', 'delete'],
     title: 'OrganisationPublicWithProjects'
+} as const;
+
+export const OrganisationRoleSchema = {
+    type: 'string',
+    enum: ['admin', 'observer'],
+    title: 'OrganisationRole'
 } as const;
 
 export const OrganisationUpdateSchema = {
@@ -964,10 +1090,14 @@ export const ProblemBaseSchema = {
         project_id: {
             type: 'integer',
             title: 'Project Id'
+        },
+        restricted: {
+            type: 'boolean',
+            title: 'Restricted'
         }
     },
     type: 'object',
-    required: ['id', 'name', 'description', 'project_id'],
+    required: ['id', 'name', 'description', 'project_id', 'restricted'],
     title: 'ProblemBase'
 } as const;
 
@@ -1228,10 +1358,6 @@ export const ProjectPublicSchema = {
             type: 'boolean',
             title: 'Edit Roles'
         },
-        view_restricted_problems: {
-            type: 'boolean',
-            title: 'View Restricted Problems'
-        },
         create_problems: {
             type: 'boolean',
             title: 'Create Problems'
@@ -1254,7 +1380,7 @@ export const ProjectPublicSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'view_restricted_problems', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups'],
+    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups'],
     title: 'ProjectPublic'
 } as const;
 
@@ -1299,10 +1425,6 @@ export const ProjectPublicWithProblemsSchema = {
             type: 'boolean',
             title: 'Edit Roles'
         },
-        view_restricted_problems: {
-            type: 'boolean',
-            title: 'View Restricted Problems'
-        },
         create_problems: {
             type: 'boolean',
             title: 'Create Problems'
@@ -1332,7 +1454,7 @@ export const ProjectPublicWithProblemsSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'view_restricted_problems', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups', 'problems'],
+    required: ['name', 'id', 'roles', 'view_own_submission', 'view_supervised_submission', 'view_others_submission', 'view_roles', 'add_roles', 'edit_roles', 'create_problems', 'view_groups', 'create_groups', 'edit_groups', 'delete_groups', 'problems'],
     title: 'ProjectPublicWithProblems'
 } as const;
 
@@ -2136,6 +2258,13 @@ export const TokenSchema = {
     type: 'object',
     required: ['access_token', 'token_type', 'user'],
     title: 'Token'
+} as const;
+
+export const UpdatableRoleSchema = {
+    type: 'string',
+    enum: ['admin', 'observer', 'owner'],
+    title: 'UpdatableRole',
+    description: 'this is OrganisationRole + owner'
 } as const;
 
 export const UserCreateSchema = {

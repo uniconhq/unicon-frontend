@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, UIMatch, useMatches } from "react-router-dom";
+import { Link, UIMatch, useLocation, useMatches } from "react-router-dom";
 
 import {
   Breadcrumb as ShadcnBreadcrumb,
@@ -24,6 +24,7 @@ const Breadcrumb = () => {
   const matchesWithBreadcrumbs = matches.filter(
     (match) => !!match.handle?.crumb,
   );
+  const pathname = useLocation().pathname;
   return (
     <ShadcnBreadcrumb className="px-8">
       <BreadcrumbList>
@@ -39,7 +40,7 @@ const Breadcrumb = () => {
                 {index !== 0 && <BreadcrumbSeparator />}
                 {index !== matchesWithBreadcrumbs.length - 1 && (
                   <BreadcrumbItem>
-                    {part.href ? (
+                    {part.href && part.href !== pathname ? (
                       <BreadcrumbLink asChild>
                         <Link to={part.href}>{part.label}</Link>
                       </BreadcrumbLink>

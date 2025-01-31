@@ -28,6 +28,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { getOrganisations } from "@/features/organisations/queries";
 import { getProjects } from "@/features/projects/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
@@ -42,6 +43,19 @@ type SidebarItem = {
   label: string;
   permission?: keyof Omit<ProjectPublicWithProblems, "problems">;
 };
+
+const ORGANISATION_SIDEBAR_ITEMS: SidebarItem[] = [
+  {
+    path: "",
+    icon: <GoProject />,
+    label: "Projects",
+  },
+  {
+    path: "/users",
+    icon: <GoPeople />,
+    label: "Users",
+  },
+];
 
 const PROJECT_SIDEBAR_ITEMS: SidebarItem[] = [
   {
@@ -82,17 +96,26 @@ const AppSidebar: React.FC<OwnProps> = ({ pathname }) => {
   const { user, setUser } = useUserStore((store) => store);
   const navigate = useNavigate();
 
-  const isProjectPath = pathname.match(/\/projects\/\d+.*/)?.length ?? 0 > 0;
-
   const { data: projects } = useQuery(getProjects());
+  const { data: organisations } = useQuery(getOrganisations());
 
   if (!user) {
     return;
   }
 
+  const isProjectPath = pathname.match(/\/projects\/\d+.*/)?.length ?? 0 > 0;
   const currentProjectId = isProjectPath ? Number(pathname.split("/")[2]) : -1;
   const currentProject = projects?.find(
     (project) => project.id == currentProjectId,
+  );
+
+  const isOrganisationPath =
+    pathname.match(/\/organisations\/\d+.*/)?.length ?? 0 > 0;
+  const currentOrganisationId = isOrganisationPath
+    ? Number(pathname.split("/")[2])
+    : -1;
+  const currentOrganisation = organisations?.find(
+    (organisation) => organisation.id == currentOrganisationId,
   );
 
   const signout = async () => {
@@ -163,6 +186,48 @@ const AppSidebar: React.FC<OwnProps> = ({ pathname }) => {
                   );
                 },
               )}
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
+        {currentOrganisation && (
+          <SidebarGroup>
+            <SidebarMenu>
+              <SidebarMenuItem key={"organisations"}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton>
+                      {<GoProjectSymlink />}
+                      {currentOrganisation.name}
+                      <ChevronDown className="ml-auto" />
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
+                    {organisations?.map((organisation) => (
+                      <DropdownMenuItem asChild key={organisation.id}>
+                        <Link to={`/organisations/${organisation.id}`}>
+                          {organisation.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+              {ORGANISATION_SIDEBAR_ITEMS.map(({ icon, label, path }) => {
+                const fullPath = `/organisations/${currentOrganisationId}${path}`;
+                // if (permission && !currentOrganisation[permission]) {
+                //   return;
+                // }
+                return (
+                  <SidebarMenuItem key={path}>
+                    <SidebarMenuButton asChild isActive={pathname === fullPath}>
+                      <Link to={fullPath}>
+                        {icon}
+                        <span>{label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroup>
         )}

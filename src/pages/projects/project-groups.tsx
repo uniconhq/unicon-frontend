@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import EmptyPlaceholder from "@/components/layout/empty-placeholder";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
@@ -48,9 +49,7 @@ const ProjectGroups = () => {
       </div>
       <div className="flex flex-col gap-2">
         {groups.length === 0 && (
-          <div className="-mt-4 bg-black p-4 py-8 text-center shadow-inner">
-            No groups found.{" "}
-          </div>
+          <EmptyPlaceholder description="No groups found." />
         )}
         {groups.map((group) => (
           <Card className="p-4">
