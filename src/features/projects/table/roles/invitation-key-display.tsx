@@ -1,9 +1,16 @@
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 type OwnProps = {
   invitationKey: string | undefined;
+  className?: string;
+  variant?: "default" | "border";
 };
-const InvitationKeyDisplay: React.FC<OwnProps> = ({ invitationKey }) => {
+const InvitationKeyDisplay: React.FC<OwnProps> = ({
+  invitationKey,
+  variant,
+  className,
+}) => {
   const toast = useToast();
   if (!invitationKey) return <div>-</div>;
 
@@ -14,8 +21,13 @@ const InvitationKeyDisplay: React.FC<OwnProps> = ({ invitationKey }) => {
       description: invitationKey,
     });
   };
+
+  const variantClasses =
+    variant === "border"
+      ? "text-mono w-fit cursor-pointer text-nowrap rounded-md border border-slate-500 p-2 text-slate-300"
+      : "cursor-pointer";
   return (
-    <div onClick={onClick} className="hover:cursor-pointer">
+    <div onClick={onClick} className={cn(variantClasses, className)}>
       {invitationKey ?? "-"}
     </div>
   );
