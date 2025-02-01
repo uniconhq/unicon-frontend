@@ -116,11 +116,11 @@ export function Programming({
         {taskAttemptResults
           ?.sort((r1, r2) => r2.id - r1.id) // Descending order of task attempts
           .map(
-            (taskAttempt) =>
+            (taskAttempt, index) =>
               taskAttempt.task_results.length > 0 && (
                 <TaskResultCard
                   key={taskAttempt.id}
-                  title={`Attempt #${taskAttempt.id}`}
+                  title={`Attempt #${taskAttemptResults.length - index}`}
                   taskAttempt={{
                     ...taskAttempt,
                     task: {
