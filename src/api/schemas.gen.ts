@@ -1507,6 +1507,40 @@ export const TaskAttemptPublicSchema = {
     title: 'TaskAttemptPublic'
 } as const;
 
+export const TaskAttemptResultSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        user_id: {
+            type: 'integer',
+            title: 'User Id'
+        },
+        task_id: {
+            type: 'integer',
+            title: 'Task Id'
+        },
+        task_type: {
+            '$ref': '#/components/schemas/TaskType'
+        },
+        other_fields: {
+            type: 'object',
+            title: 'Other Fields'
+        },
+        task_results: {
+            items: {
+                '$ref': '#/components/schemas/TaskResult'
+            },
+            type: 'array',
+            title: 'Task Results'
+        }
+    },
+    type: 'object',
+    required: ['id', 'user_id', 'task_id', 'task_type', 'other_fields', 'task_results'],
+    title: 'TaskAttemptResult'
+} as const;
+
 export const TaskEvalStatusSchema = {
     type: 'string',
     enum: ['SUCCESS', 'PENDING', 'SKIPPED', 'FAILED'],

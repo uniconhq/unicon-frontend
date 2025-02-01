@@ -364,6 +364,17 @@ export type TaskAttemptPublic = {
     task: TaskORM;
 };
 
+export type TaskAttemptResult = {
+    id: number;
+    user_id: number;
+    task_id: number;
+    task_type: TaskType;
+    other_fields: {
+        [key: string]: unknown;
+    };
+    task_results: Array<TaskResult>;
+};
+
 export type TaskEvalStatus = 'SUCCESS' | 'PENDING' | 'SKIPPED' | 'FAILED';
 
 export type TaskORM = {
@@ -497,6 +508,17 @@ export type SubmitProblemTaskAttemptData = {
 export type SubmitProblemTaskAttemptResponse = (TaskAttemptPublic);
 
 export type SubmitProblemTaskAttemptError = (HTTPValidationError);
+
+export type GetProblemTaskAttemptResultsData = {
+    path: {
+        id: number;
+        task_id: number;
+    };
+};
+
+export type GetProblemTaskAttemptResultsResponse = (Array<TaskAttemptResult>);
+
+export type GetProblemTaskAttemptResultsError = (HTTPValidationError);
 
 export type MakeSubmissionData = {
     body: Array<(number)>;
