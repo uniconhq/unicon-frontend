@@ -1,16 +1,18 @@
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import {
-  File,
-  InputStep,
-  ProgrammingTask,
-  submitProblemTaskAttempt,
-} from "@/api";
+import { File, InputStep, ProgrammingTask } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Testcase from "@/features/problems/components/tasks/testcase";
+import {
+  getTaskAttemptResults,
+  useCreateTaskAttempt,
+} from "@/features/problems/queries";
+
+import TaskResultCard from "./submission-results/task-result";
 
 export function Programming({
   problemId,
@@ -21,6 +23,11 @@ export function Programming({
   task: ProgrammingTask;
 }) {
   const { register, handleSubmit } = useForm();
+  const createTaskAttemptMutation = useCreateTaskAttempt(problemId, task.id);
+  const { data: taskAttemptResults } = useQuery({
+    ...getTaskAttemptResults(problemId, task.id),
+    refetchInterval: 5000,
+  });
 
   // NOTE: Assume that all required inputs are files
   const requiredInputs: { id: string; name: string }[] =
@@ -37,12 +44,9 @@ export function Programming({
         return { id, data: { name, content } };
       }),
     ).then((files) => {
-      submitProblemTaskAttempt({
-        path: { id: problemId, task_id: task.id },
-        body: {
-          task_id: task.id,
-          value: files,
-        },
+      createTaskAttemptMutation.mutate({
+        task_id: task.id,
+        value: files,
       });
     });
   };
@@ -107,6 +111,29 @@ export function Programming({
           Submit
         </Button>
       </form>
+      <span className="text-xs font-medium text-gray-300">RESULTS</span>
+      <div className="flex flex-col gap-2">
+        {taskAttemptResults
+          ?.sort((r1, r2) => r2.id - r1.id) // Descending order of task attempts
+          .map(
+            (taskAttempt) =>
+              taskAttempt.task_results.length > 0 && (
+                <TaskResultCard
+                  key={taskAttempt.id}
+                  title={`Attempt #${taskAttempt.id}`}
+                  taskAttempt={{
+                    ...taskAttempt,
+                    task: {
+                      ...task,
+                      problem_id: problemId,
+                      autograde: task.autograde ?? false,
+                      other_fields: { ...task },
+                    },
+                  }}
+                />
+              ),
+          )}
+      </div>
     </div>
   );
 }
