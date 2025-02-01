@@ -10,7 +10,7 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useDebouncedCallback } from "use-debounce";
 import { z } from "zod";
 
-import { File as FileType, InputStep, Testcase } from "@/api";
+import { File as FileType, InputStep, Testcase as TestcaseApi } from "@/api";
 import CheckboxField from "@/components/form/fields/checkbox-field";
 import NumberField from "@/components/form/fields/number-field";
 import SelectField from "@/components/form/fields/select-field";
@@ -24,7 +24,7 @@ import {
   GraphAction,
   graphReducer,
 } from "@/features/problems/components/tasks/graph-context";
-import NodeGraph from "@/features/problems/components/tasks/node-graph";
+import Testcase from "@/features/problems/components/tasks/testcase";
 
 const fileSchema = z.object({
   name: z.string(),
@@ -55,7 +55,7 @@ const programmingFormSchema = z.object({
   }),
   required_inputs: z.array(requiredInputSchema),
   // TODO: no validation here
-  testcases: z.array(z.custom<Testcase>(() => true)),
+  testcases: z.array(z.custom<TestcaseApi>(() => true)),
 });
 
 export type ProgrammingFormType = z.infer<typeof programmingFormSchema>;
@@ -150,7 +150,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
         edges: testcase.edges,
         selectedStepId: null,
         selectedSocketId: null,
-        isEditing: true,
+        edit: true,
       },
       (draft) => {
         graphReducer(draft, action);
@@ -271,38 +271,18 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
             <div className="flex w-full flex-col gap-4">
               {form.watch("testcases").map((testcase, index) => (
                 <div className="mt-2" key={testcase.id}>
-                  <Collapsible defaultOpen>
-                    <div className="flex justify-between">
-                      <CollapsibleTrigger asChild>
-                        <Button className="hover:text-purple-500">
-                          Testcase #{testcase.id + 1}
-                        </Button>
-                      </CollapsibleTrigger>
-                      <Button
-                        variant="destructive"
-                        type="button"
-                        onClick={() => testcases.remove(index)}
-                      >
-                        <Trash />
-                      </Button>
-                    </div>
-                    <CollapsibleContent className="mt-4">
-                      <NodeGraph
-                        id={`${testcase.id}`}
-                        key={testcase.id}
-                        input={userInputNode}
-                        steps={testcase.nodes}
-                        edges={testcase.edges}
-                        isEditing
-                        onChange={updateTestcase(index)}
-                      />
-                    </CollapsibleContent>
-                  </Collapsible>
+                  <Testcase
+                    index={index}
+                    testcase={testcase}
+                    userInput={userInputNode}
+                    edit={true}
+                    nodeGraphOnChange={updateTestcase(index)}
+                    onDelete={testcases.remove}
+                  />
                 </div>
               ))}
             </div>
           </div>
-
           <div className="mt-12">
             <Button className="bg-purple-600 text-white hover:bg-purple-600 hover:bg-opacity-80">
               Submit

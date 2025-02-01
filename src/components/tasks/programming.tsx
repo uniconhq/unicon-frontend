@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { File, ProgrammingTask, submitProblemTaskAttempt } from "@/api";
+import {
+  File,
+  InputStep,
+  ProgrammingTask,
+  submitProblemTaskAttempt,
+} from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,10 +19,6 @@ export function Programming({
   problemId: number;
   task: ProgrammingTask;
 }) {
-  const [selectedTestcaseIdx, setSelectedTestcaseIdx] = useState<number | null>(
-    null,
-  );
-
   const { register, handleSubmit } = useForm();
 
   // NOTE: Assume that all required inputs are files
@@ -45,6 +46,17 @@ export function Programming({
     });
   };
 
+  const userInput: InputStep = {
+    id: 0,
+    type: "INPUT_STEP",
+    inputs: [],
+    outputs: task.required_inputs,
+  };
+
+  const [selectedTestcaseIdx, setSelectedTestcaseIdx] = useState<number | null>(
+    task.testcases.length ? 0 : null,
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <span className="text-xs font-medium text-gray-300">QUESTION</span>
@@ -65,12 +77,13 @@ export function Programming({
       <div className="flex gap-2 font-mono">
         {task.testcases.map((testcase, index) => (
           <Testcase
+            edit={false}
+            key={testcase.id}
+            index={index}
+            testcase={testcase}
+            userInput={userInput}
             isSelected={selectedTestcaseIdx === index}
             onSelected={setSelectedTestcaseIdx}
-            testcase={testcase}
-            index={index}
-            key={testcase.id}
-            task={task}
           />
         ))}
       </div>
