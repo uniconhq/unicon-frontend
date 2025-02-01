@@ -14,13 +14,13 @@ type OwnProps = {
 };
 
 const ObjectAccessMetadata: React.FC<OwnProps> = ({ step }) => {
-  const { isEditing } = useContext(GraphContext)!;
+  const { edit } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
   return (
     <div>
       key: "
-      {isEditing ? (
+      {edit ? (
         <NodeInput
           value={step.key}
           onChange={(newKey) =>

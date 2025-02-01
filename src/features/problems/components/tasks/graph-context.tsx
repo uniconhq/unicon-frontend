@@ -12,7 +12,7 @@ export type GraphState = {
   edges: GraphEdge[];
   selectedStepId: number | null;
   selectedSocketId: string | null;
-  isEditing: boolean;
+  edit: boolean;
 };
 
 export enum GraphActionType {

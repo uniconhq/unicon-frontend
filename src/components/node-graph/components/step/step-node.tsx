@@ -18,11 +18,11 @@ import { NodeSlot, NodeSlotGroup } from "../node-slot";
 import StepMetadata from "./metadata/step-metadata";
 
 export function StepNode({ data }: { data: Step }) {
-  const { isEditing } = useContext(GraphContext)!;
+  const { edit } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
   const isStepEditable = data.id !== 0;
-  const showEditElements = isEditing && isStepEditable;
+  const showEditElements = edit && isStepEditable;
 
   const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
     dispatch({
@@ -99,7 +99,7 @@ export function StepNode({ data }: { data: Step }) {
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="target"
-                  isEditable={isEditing}
+                  edit={edit}
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
                   onDeleteSocket={deleteSocket(stepSocket.id)}
                 />
@@ -123,7 +123,7 @@ export function StepNode({ data }: { data: Step }) {
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="source"
-                  isEditable={isEditing}
+                  edit={edit}
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
                   onDeleteSocket={deleteSocket(stepSocket.id)}
                 />
