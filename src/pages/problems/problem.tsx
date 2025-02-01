@@ -55,7 +55,8 @@ const Problem = () => {
                 </div>
               </CardTitle>
               <CardContent className="p-0 py-2">
-                <Task problemId={id} task={task} />
+                {/* TODO: Access control */}
+                <Task submit={true} problemId={id} task={task} />
               </CardContent>
             </CardHeader>
           </Card>

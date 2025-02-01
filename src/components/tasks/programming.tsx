@@ -16,6 +16,7 @@ export function Programming({
   problemId,
   task,
 }: {
+  submit: boolean;
   problemId: number;
   task: ProgrammingTask;
 }) {
