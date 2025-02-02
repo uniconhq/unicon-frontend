@@ -40,7 +40,7 @@ const MultipleResponseResult: React.FC<OwnProps> = ({ taskAttempt }) => {
             disabled
             checked={selectedChoices.includes(index)}
           />
-          <span>{choice}</span>
+          <span>{choice.text}</span>
         </div>
       ))}
     </div>

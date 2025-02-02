@@ -55,6 +55,26 @@ export const Body_login_auth_token_postSchema = {
     title: 'Body_login_auth_token_post'
 } as const;
 
+export const ChoiceSchema = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        order_index: {
+            type: 'integer',
+            title: 'Order Index'
+        },
+        text: {
+            type: 'string',
+            title: 'Text'
+        }
+    },
+    type: 'object',
+    required: ['id', 'order_index', 'text'],
+    title: 'Choice'
+} as const;
+
 export const ComparisonSchema = {
     properties: {
         operator: {
@@ -302,13 +322,17 @@ export const MultipleChoiceTaskSchema = {
             title: 'Autograde',
             default: true
         },
+        order_index: {
+            type: 'integer',
+            title: 'Order Index'
+        },
         question: {
             type: 'string',
             title: 'Question'
         },
         choices: {
             items: {
-                type: 'string'
+                '$ref': '#/components/schemas/Choice'
             },
             type: 'array',
             title: 'Choices'
@@ -319,7 +343,7 @@ export const MultipleChoiceTaskSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'type', 'question', 'choices', 'expected_answer'],
+    required: ['id', 'type', 'order_index', 'question', 'choices', 'expected_answer'],
     title: 'MultipleChoiceTask'
 } as const;
 
@@ -404,13 +428,17 @@ export const MultipleResponseTaskSchema = {
             title: 'Autograde',
             default: true
         },
+        order_index: {
+            type: 'integer',
+            title: 'Order Index'
+        },
         question: {
             type: 'string',
             title: 'Question'
         },
         choices: {
             items: {
-                type: 'string'
+                '$ref': '#/components/schemas/Choice'
             },
             type: 'array',
             title: 'Choices'
@@ -424,7 +452,7 @@ export const MultipleResponseTaskSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'type', 'question', 'choices', 'expected_answer'],
+    required: ['id', 'type', 'order_index', 'question', 'choices', 'expected_answer'],
     title: 'MultipleResponseTask'
 } as const;
 
@@ -841,10 +869,14 @@ export const ProblemBaseSchema = {
         project_id: {
             type: 'integer',
             title: 'Project Id'
+        },
+        restricted: {
+            type: 'boolean',
+            title: 'Restricted'
         }
     },
     type: 'object',
-    required: ['id', 'name', 'description', 'project_id'],
+    required: ['id', 'name', 'description', 'project_id', 'restricted'],
     title: 'ProblemBase'
 } as const;
 
@@ -950,6 +982,10 @@ export const ProgrammingTaskSchema = {
             title: 'Autograde',
             default: true
         },
+        order_index: {
+            type: 'integer',
+            title: 'Order Index'
+        },
         question: {
             type: 'string',
             title: 'Question'
@@ -973,7 +1009,7 @@ export const ProgrammingTaskSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'type', 'question', 'environment', 'required_inputs', 'testcases'],
+    required: ['id', 'type', 'order_index', 'question', 'environment', 'required_inputs', 'testcases'],
     title: 'ProgrammingTask'
 } as const;
 
@@ -1462,6 +1498,10 @@ export const ShortAnswerTaskSchema = {
             title: 'Autograde',
             default: false
         },
+        order_index: {
+            type: 'integer',
+            title: 'Order Index'
+        },
         question: {
             type: 'string',
             title: 'Question'
@@ -1479,7 +1519,7 @@ export const ShortAnswerTaskSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'type', 'question'],
+    required: ['id', 'type', 'order_index', 'question'],
     title: 'ShortAnswerTask'
 } as const;
 
@@ -1767,13 +1807,28 @@ export const TaskORMSchema = {
             type: 'object',
             title: 'Other Fields'
         },
+        updated_version_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Updated Version Id'
+        },
+        order_index: {
+            type: 'integer',
+            title: 'Order Index'
+        },
         problem_id: {
             type: 'integer',
             title: 'Problem Id'
         }
     },
     type: 'object',
-    required: ['id', 'type', 'autograde', 'problem_id'],
+    required: ['id', 'type', 'autograde', 'updated_version_id', 'order_index', 'problem_id'],
     title: 'TaskORM'
 } as const;
 

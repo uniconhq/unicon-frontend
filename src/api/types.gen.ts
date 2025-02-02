@@ -9,6 +9,12 @@ export type Body_login_auth_token_post = {
     client_secret?: (string | null);
 };
 
+export type Choice = {
+    id: number;
+    order_index: number;
+    text: string;
+};
+
 export type Comparison = {
     operator: Operator;
     value: unknown;
@@ -74,8 +80,9 @@ export type MultipleChoiceTask = {
     id: number;
     type: "MULTIPLE_CHOICE_TASK";
     autograde?: boolean;
+    order_index: number;
     question: string;
-    choices: Array<(string)>;
+    choices: Array<Choice>;
     expected_answer: number;
 };
 
@@ -95,8 +102,9 @@ export type MultipleResponseTask = {
     id: number;
     type: "MULTIPLE_RESPONSE_TASK";
     autograde?: boolean;
+    order_index: number;
     question: string;
-    choices: Array<(string)>;
+    choices: Array<Choice>;
     expected_answer: Array<(number)>;
 };
 
@@ -189,6 +197,7 @@ export type ProblemBase = {
     name: string;
     description: string;
     project_id: number;
+    restricted: boolean;
 };
 
 export type ProblemORM = {
@@ -212,6 +221,7 @@ export type ProgrammingTask = {
     id: number;
     type: "PROGRAMMING_TASK";
     autograde?: boolean;
+    order_index: number;
     question: string;
     environment: ComputeContext;
     required_inputs: Array<RequiredInput>;
@@ -341,6 +351,7 @@ export type ShortAnswerTask = {
     id: number;
     type: "SHORT_ANSWER_TASK";
     autograde?: boolean;
+    order_index: number;
     question: string;
     expected_answer?: (string | null);
 };
@@ -427,6 +438,8 @@ export type TaskORM = {
     other_fields?: {
         [key: string]: unknown;
     };
+    updated_version_id: (number | null);
+    order_index: number;
     problem_id: number;
 };
 

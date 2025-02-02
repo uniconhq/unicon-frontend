@@ -45,8 +45,14 @@ export type TaskType =
 
 export const useCreateTask = (problemId: number) => {
   return useMutation({
-    mutationFn: (data: TaskType) =>
-      addTaskToProblem({ body: data, path: { id: problemId } }),
+    mutationFn: (data: Omit<TaskType, "order_index">) => {
+      // order_index is recalculated in the backend, this is just a dummy value
+      const payload = { ...data, order_index: 0 } as unknown as TaskType;
+      return addTaskToProblem({
+        body: payload,
+        path: { id: problemId },
+      });
+    },
   });
 };
 

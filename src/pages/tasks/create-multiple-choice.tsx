@@ -26,6 +26,11 @@ const CreateMultipleChoice = () => {
     createTaskMutation.mutate(
       {
         ...data,
+        choices: data.choices.map((choice, index) => ({
+          id: index,
+          order_index: index,
+          text: choice,
+        })),
         type: "MULTIPLE_CHOICE_TASK",
         id: -1,
       },
