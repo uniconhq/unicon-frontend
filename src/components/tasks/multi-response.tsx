@@ -7,8 +7,8 @@ export function MultipleResponse({ task }: { task: MultipleResponseTask }) {
       {task.question}
       <span className="text-xs font-medium text-gray-300">OPTIONS</span>
       <ul className="list-inside list-decimal space-y-2">
-        {task.choices.map((option, index) => (
-          <li key={index}>{option}</li>
+        {task.choices.map((option) => (
+          <li key={option.id}>{option.text}</li>
         ))}
       </ul>
     </div>

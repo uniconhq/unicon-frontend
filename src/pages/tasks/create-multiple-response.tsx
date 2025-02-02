@@ -26,6 +26,11 @@ const CreateMultipleResponse = () => {
     createTaskMutation.mutate(
       {
         ...data,
+        choices: data.choices.map((choice, index) => ({
+          id: index,
+          order_index: index,
+          text: choice,
+        })),
         type: "MULTIPLE_RESPONSE_TASK",
         id: -1,
       },
