@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
+import { MultipleChoiceTask } from "@/api";
 import { getProblemById, useCreateTask } from "@/features/problems/queries";
 import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
 
@@ -33,7 +34,7 @@ const CreateMultipleChoice = () => {
         })),
         type: "MULTIPLE_CHOICE_TASK",
         id: -1,
-      },
+      } as Omit<MultipleChoiceTask, "order_index">,
       {
         onSuccess: () => {
           navigate(`/projects/${projectId}/problems/${problemId}/edit`);
