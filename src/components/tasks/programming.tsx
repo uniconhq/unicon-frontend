@@ -14,6 +14,8 @@ import {
 
 import TaskResultCard from "./submission-results/task-result";
 
+const DEFAULT_REFETCH_INTERVAL: number = 5000;
+
 export function Programming({
   problemId,
   task,
@@ -23,10 +25,17 @@ export function Programming({
   task: ProgrammingTask;
 }) {
   const { register, handleSubmit } = useForm();
+
   const createTaskAttemptMutation = useCreateTaskAttempt(problemId, task.id);
   const { data: taskAttemptResults } = useQuery({
     ...getTaskAttemptResults(problemId, task.id),
-    refetchInterval: 5000,
+    refetchInterval: ({ state: { data } }) =>
+      // Only refetch if there is a pending task result
+      data?.some((taskAttempt) =>
+        taskAttempt.task_results.some((result) => result.status == "PENDING"),
+      )
+        ? DEFAULT_REFETCH_INTERVAL
+        : false,
   });
 
   // NOTE: Assume that all required inputs are files
