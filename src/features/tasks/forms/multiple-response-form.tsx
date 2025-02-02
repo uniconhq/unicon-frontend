@@ -1,7 +1,12 @@
 import { OnDragEndResponder } from "@hello-pangea/dnd";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import {
+  SubmitHandler,
+  useFieldArray,
+  UseFieldArrayReturn,
+  useForm,
+} from "react-hook-form";
 import { z } from "zod";
 
 import CheckboxField from "@/components/form/fields/checkbox-field";
@@ -11,24 +16,20 @@ import FormSection from "@/components/form/form-section";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 
-import Choices from "./choices";
+import Choices, { formWithChoicesSchema, FormWithChoicesType } from "./choices";
 
-const multipleResponseFormSchema = z
-  .object({
+const multipleResponseFormSchema = formWithChoicesSchema
+  .extend({
     question: z.string().min(1, "Question cannot be empty"),
-    choices: z.array(z.string()).nonempty("Choices cannot be empty"),
     expected_answer: z
       .array(z.number())
       .nonempty("Correct choices cannot be empty"),
     autograde: z.boolean(),
   })
-  .refine(
-    (data) =>
-      data.expected_answer.every(
-        (answer) => 0 <= answer && answer < data.choices.length,
-      ),
-    {},
-  );
+  .refine((data) => {
+    const ids = data.choices.map((choice) => choice.id);
+    return data.expected_answer.every((answer) => ids.includes(answer));
+  }, {});
 
 export type MultipleResponseFormType = z.infer<
   typeof multipleResponseFormSchema
@@ -55,6 +56,12 @@ const MultipleResponseForm: React.FC<OwnProps> = ({
     defaultValues: initialValue ?? multipleChoiceFormDefault,
   });
 
+  const choices = useFieldArray({
+    control: form.control,
+    name: "choices",
+    keyName: "genId",
+  });
+
   const { formState, setValue, getValues, trigger } = form;
 
   const onDragEnd: OnDragEndResponder<string> = ({ source, destination }) => {
@@ -64,38 +71,20 @@ const MultipleResponseForm: React.FC<OwnProps> = ({
     if (source.index === destination.index) {
       return;
     }
-
-    // swap the choice
-    const choice = getValues().choices[source.index];
-    const newChoices = [...getValues().choices];
-    newChoices.splice(source.index, 1);
-    newChoices.splice(destination.index, 0, choice);
-
-    form.setValue("choices", [...newChoices] as [string, ...string[]]);
-    trigger("choices");
-
-    form.setValue(
-      "expected_answer",
-      getValues().expected_answer.map((answer) => {
-        if (answer == source.index) {
-          return destination.index;
-        } else if (source.index < answer && destination.index >= answer) {
-          return answer - 1;
-        } else if (source.index > answer && destination.index <= answer) {
-          return answer + 1;
-        }
-        return answer;
-      }) as [number, ...number[]],
-    );
+    choices.move(source.index, destination.index);
   };
 
-  const isChecked = (index: number) =>
-    form.getValues().expected_answer.includes(index);
+  const isChecked = (index: number) => {
+    const choice = choices.fields[index];
+    return form.getValues().expected_answer.includes(choice.id);
+  };
+
   const onCheck = (index: number) => {
+    const choice = choices.fields[index];
     if (isChecked(index)) {
       form.setValue(
         "expected_answer",
-        getValues().expected_answer.filter((i) => i !== index) as [
+        getValues().expected_answer.filter((i) => i !== choice.id) as [
           number,
           ...number[],
         ],
@@ -107,11 +96,7 @@ const MultipleResponseForm: React.FC<OwnProps> = ({
     form.trigger("expected_answer");
   };
   const onDelete = (index: number) => {
-    setValue(
-      "choices",
-      // @ts-expect-error - delete all choices - validation fails but its okay as long as user cant submit
-      getValues().choices.filter((_, i) => i !== index),
-    );
+    choices.remove(index);
 
     setValue(
       "expected_answer",
@@ -120,7 +105,6 @@ const MultipleResponseForm: React.FC<OwnProps> = ({
         .map((i) => (i < index ? index : index - 1)) as [number, ...number[]],
     );
 
-    trigger("choices");
     trigger("expected_answer");
   };
 
@@ -148,8 +132,10 @@ const MultipleResponseForm: React.FC<OwnProps> = ({
                 variant={"outline"}
                 type="button"
                 onClick={() => {
-                  setValue("choices", [...getValues().choices, ""]);
-                  trigger("choices");
+                  const id = choices.fields.length
+                    ? Math.max(...choices.fields.map((choice) => choice.id)) + 1
+                    : 0;
+                  choices.append({ id, text: "" });
                 }}
               >
                 <PlusIcon />
@@ -159,7 +145,13 @@ const MultipleResponseForm: React.FC<OwnProps> = ({
                 <ErrorAlert message="Select the correct option." />
               )}
               <Choices
-                choices={form.getValues().choices}
+                choices={
+                  choices as unknown as UseFieldArrayReturn<
+                    FormWithChoicesType,
+                    "choices",
+                    "genId"
+                  >
+                }
                 onDragEnd={onDragEnd}
                 onCheck={onCheck}
                 isChecked={isChecked}

@@ -25,20 +25,22 @@ const MultipleResponseResult: React.FC<OwnProps> = ({ taskAttempt }) => {
     <div className="flex flex-col gap-1">
       {(
         taskAttempt.task.other_fields as unknown as MultipleResponseTask
-      ).choices?.map((choice, index) => (
+      ).choices?.map((choice) => (
         <div
           className={cn("flex gap-2 px-1", {
-            "bg-green-800/50":
-              taskResult.result?.correct_choices.includes(index),
-            "bg-red-800/50":
-              taskResult.result?.incorrect_choices.includes(index),
+            "bg-green-800/50": taskResult.result?.correct_choices.includes(
+              choice.id,
+            ),
+            "bg-red-800/50": taskResult.result?.incorrect_choices.includes(
+              choice.id,
+            ),
           })}
-          key={index}
+          key={choice.id}
         >
           <input
             type="radio"
             disabled
-            checked={selectedChoices.includes(index)}
+            checked={selectedChoices.includes(choice.id)}
           />
           <span>{choice.text}</span>
         </div>

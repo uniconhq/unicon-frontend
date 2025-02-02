@@ -28,9 +28,8 @@ const CreateMultipleChoice = () => {
       {
         ...data,
         choices: data.choices.map((choice, index) => ({
-          id: index,
+          ...choice,
           order_index: index,
-          text: choice,
         })),
         type: "MULTIPLE_CHOICE_TASK",
         id: -1,
