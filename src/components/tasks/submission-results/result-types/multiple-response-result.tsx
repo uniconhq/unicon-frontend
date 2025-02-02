@@ -1,9 +1,6 @@
-import {
-  MultipleResponseTask,
-  MultipleResponseTaskResult,
-  TaskAttemptPublic,
-} from "@/api";
-import { cn } from "@/lib/utils";
+import { Choice, MultipleResponseTaskResult, TaskAttemptPublic } from "@/api";
+
+import SubmittedChoices from "./submitted-choices";
 
 type OwnProps = {
   taskAttempt: TaskAttemptPublic;
@@ -22,30 +19,16 @@ const MultipleResponseResult: React.FC<OwnProps> = ({ taskAttempt }) => {
   );
 
   return (
-    <div className="flex flex-col gap-1">
-      {(
-        taskAttempt.task.other_fields as unknown as MultipleResponseTask
-      ).choices?.map((choice) => (
-        <div
-          className={cn("flex gap-2 px-1", {
-            "bg-green-800/50": taskResult.result?.correct_choices.includes(
-              choice.id,
-            ),
-            "bg-red-800/50": taskResult.result?.incorrect_choices.includes(
-              choice.id,
-            ),
-          })}
-          key={choice.id}
-        >
-          <input
-            type="radio"
-            disabled
-            checked={selectedChoices.includes(choice.id)}
-          />
-          <span>{choice.text}</span>
-        </div>
-      ))}
-    </div>
+    <SubmittedChoices
+      choices={(
+        taskAttempt.task.other_fields?.choices as unknown as Choice[]
+      ).map((choice) => ({
+        text: choice.text,
+        wasChosen: selectedChoices.includes(choice.id),
+        isCorrect:
+          taskResult.result?.correct_choices.includes(choice.id) ?? false,
+      }))}
+    />
   );
 };
 
