@@ -1,22 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
 
-import { File, InputStep, ProgrammingTask } from "@/api";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { InputStep, ProgrammingTask } from "@/api";
 import Testcase from "@/features/problems/components/tasks/testcase";
-import {
-  getTaskAttemptResults,
-  useCreateTaskAttempt,
-} from "@/features/problems/queries";
 
-import TaskResultCard from "./submission-results/task-result";
-
-const DEFAULT_REFETCH_INTERVAL: number = 5000;
+import ProgrammingSubmitForm from "./programming-submit";
 
 export function Programming({
+  submit,
   problemId,
   task,
 }: {
@@ -24,42 +14,6 @@ export function Programming({
   problemId: number;
   task: ProgrammingTask;
 }) {
-  const { register, handleSubmit } = useForm();
-
-  const createTaskAttemptMutation = useCreateTaskAttempt(problemId, task.id);
-  const { data: taskAttemptResults } = useQuery({
-    ...getTaskAttemptResults(problemId, task.id),
-    refetchInterval: ({ state: { data } }) =>
-      // Only refetch if there is a pending task result
-      data?.some((taskAttempt) =>
-        taskAttempt.task_results.some((result) => result.status == "PENDING"),
-      )
-        ? DEFAULT_REFETCH_INTERVAL
-        : false,
-  });
-
-  // NOTE: Assume that all required inputs are files
-  const requiredInputs: { id: string; name: string }[] =
-    task.required_inputs.map((input) => ({
-      id: input.id,
-      name: (input.data as File).name,
-    }));
-
-  const submitForm: SubmitHandler<Record<string, FileList>> = (formData) => {
-    Promise.all(
-      requiredInputs.map(async ({ id, name }) => {
-        const file = formData[id.replace(/\./g, "_")];
-        const content = await file[0].text();
-        return { id, data: { name, content } };
-      }),
-    ).then((files) => {
-      createTaskAttemptMutation.mutate({
-        task_id: task.id,
-        value: files,
-      });
-    });
-  };
-
   const userInput: InputStep = {
     id: 0,
     type: "INPUT_STEP",
@@ -101,48 +55,7 @@ export function Programming({
           />
         ))}
       </div>
-      <span className="text-xs font-medium text-gray-300">SUBMISSION</span>
-      <form onSubmit={handleSubmit(submitForm)}>
-        {requiredInputs.map(({ id, name }) => (
-          <div
-            key={id}
-            className="mt-2 grid w-full max-w-sm items-center gap-2"
-          >
-            <Label className="text-md font-mono">{name}</Label>
-            <Input
-              {...register(id.replace(/\./g, "_"), { required: true })}
-              id={id}
-              type="file"
-            />
-          </div>
-        ))}
-        <Button className="mt-6" type="submit">
-          Submit
-        </Button>
-      </form>
-      <span className="text-xs font-medium text-gray-300">RESULTS</span>
-      <div className="flex flex-col gap-2">
-        {taskAttemptResults
-          ?.sort((r1, r2) => r2.id - r1.id) // Descending order of task attempts
-          .map(
-            (taskAttempt, index) =>
-              taskAttempt.task_results.length > 0 && (
-                <TaskResultCard
-                  key={taskAttempt.id}
-                  title={`Attempt #${taskAttemptResults.length - index}`}
-                  taskAttempt={{
-                    ...taskAttempt,
-                    task: {
-                      ...task,
-                      problem_id: problemId,
-                      autograde: task.autograde ?? false,
-                      other_fields: { ...task },
-                    },
-                  }}
-                />
-              ),
-          )}
-      </div>
+      {submit && <ProgrammingSubmitForm problemId={problemId} task={task} />}
     </div>
   );
 }
