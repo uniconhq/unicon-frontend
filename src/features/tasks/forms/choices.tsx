@@ -5,14 +5,35 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import { TrashIcon } from "lucide-react";
+import { UseFieldArrayReturn } from "react-hook-form";
+import { z } from "zod";
 
 import TextField from "@/components/form/fields/text-field";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 
+export type Choice = {
+  id: number;
+  genId: string;
+  text: string;
+};
+
+export const formWithChoicesSchema = z.object({
+  choices: z
+    .array(
+      z.object({
+        id: z.number(),
+        text: z.string().min(1, "Choice text cannot be empty"),
+      }),
+    )
+    .nonempty("Choices cannot be empty"),
+});
+
+export type FormWithChoicesType = z.infer<typeof formWithChoicesSchema>;
+
 type OwnProps = {
-  choices: string[];
+  choices: UseFieldArrayReturn<FormWithChoicesType, "choices", "genId">;
   onDragEnd: OnDragEndResponder<string>;
   onCheck: (index: number) => void;
   isChecked: (index: number) => boolean;
@@ -35,16 +56,16 @@ const Choices: React.FC<OwnProps> = ({
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {choices.map((choice, index) => (
+            {choices.fields.map((choice, index) => (
               <Draggable
-                draggableId={index.toString()}
+                draggableId={choice.genId}
                 index={index}
-                key={choice + index}
+                key={choice.genId}
               >
                 {(provided) => (
                   <Card
                     className="flex w-full items-start gap-2 p-2"
-                    key={choice + index}
+                    key={choice.genId}
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
@@ -53,10 +74,10 @@ const Choices: React.FC<OwnProps> = ({
                       className="mt-[2px] h-8 w-8"
                       iconClassName="h-6 w-6"
                       checked={isChecked(index)}
-                      onClick={() => onCheck(index)}
+                      onClick={() => onCheck(choice.id)}
                     />
                     <div className="flex-grow">
-                      <TextField name={`choices[${index}]`} />
+                      <TextField name={`choices[${index}].text`} />
                     </div>
                     <Button
                       type="button"
