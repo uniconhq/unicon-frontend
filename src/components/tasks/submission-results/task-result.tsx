@@ -1,4 +1,4 @@
-import { MultipleChoiceTaskResult, TaskAttemptPublic, TaskResult } from "@/api";
+import { TaskAttemptPublic, TaskResult } from "@/api";
 import {
   Card,
   CardContent,
@@ -72,9 +72,7 @@ const TaskResultCard: React.FC<OwnProps> = ({ title, taskAttempt }) => {
               <ProgrammingResult taskAttempt={taskAttempt} />
             )}
             {taskAttempt.task.type === "MULTIPLE_CHOICE_TASK" && (
-              <MultipleChoiceResult
-                taskResult={taskResult as MultipleChoiceTaskResult}
-              />
+              <MultipleChoiceResult taskAttempt={taskAttempt} />
             )}
             {taskAttempt.task.type === "SHORT_ANSWER_TASK" && (
               <pre className="whitespace-pre-wrap rounded-md bg-gray-900 p-4 text-gray-100">
