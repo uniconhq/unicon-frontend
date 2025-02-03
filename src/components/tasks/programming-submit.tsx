@@ -104,6 +104,7 @@ export function ProgrammingSubmitForm({
       <span className="text-xs font-medium text-gray-300">RESULTS</span>
       <div className="relative flex flex-col gap-4">
         <Select
+          value={selectedAttemptIdx?.toString() ?? ""}
           onValueChange={(value) => setSelectedAttemptIdx(+value)}
           disabled={!taskAttemptResults?.length}
         >
