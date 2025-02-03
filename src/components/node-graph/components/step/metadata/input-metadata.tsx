@@ -26,11 +26,11 @@ type OwnProps = {
 };
 
 const InputMetadata: React.FC<OwnProps> = ({ step }) => {
-  const { isEditing } = useContext(GraphContext)!;
+  const { edit } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
   const isStepEditable = step.id !== 0;
-  const showEditElements = isEditing && isStepEditable;
+  const showEditElements = edit && isStepEditable;
 
   const deleteSocket = useCallback(
     (socketId: string) => () => {

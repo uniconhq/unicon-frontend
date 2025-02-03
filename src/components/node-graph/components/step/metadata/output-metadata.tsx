@@ -26,7 +26,7 @@ type OwnProps = {
 };
 
 const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
-  const { isEditing } = useContext(GraphContext)!;
+  const { edit } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
   // Does not handle updating socket ids. See handleEditSocketId for that
@@ -67,7 +67,7 @@ const OutputMetadata: React.FC<OwnProps> = ({ step }) => {
     [dispatch, step],
   );
 
-  if (!isEditing) {
+  if (!edit) {
     return <OutputTable data={step.inputs} />;
   }
 

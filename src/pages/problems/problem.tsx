@@ -43,7 +43,7 @@ const Problem = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-4 font-mono">
                 <span className="text-lg font-medium">Task #{task.id + 1}</span>
-                <div className="flex items-center gap-2 text-sm text-gray-300">
+                <div className="flex items-center gap-2 text-xs text-gray-300">
                   <span className="rounded-md border border-blue-700 p-2">
                     {task.type}
                   </span>
@@ -55,7 +55,8 @@ const Problem = () => {
                 </div>
               </CardTitle>
               <CardContent className="p-0 py-2">
-                <Task task={task} />
+                {/* TODO: Access control */}
+                <Task submit={true} problemId={id} task={task} />
               </CardContent>
             </CardHeader>
           </Card>

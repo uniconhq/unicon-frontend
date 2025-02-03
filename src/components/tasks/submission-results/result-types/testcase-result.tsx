@@ -59,7 +59,11 @@ const TestcaseResult: React.FC<OwnProps> = ({ result, index, testcase }) => {
         <span>Testcase {index + 1}</span>
         {getTestcaseResultBadge(result.status)}
       </div>
-      <Accordion type="multiple" className="mt-2">
+      <Accordion
+        type="multiple"
+        className="mt-2"
+        defaultValue={[`result-${index}`]}
+      >
         {/* TODO: hide stdout/stderr for unpriviledged users */}
         <AccordionItem value={`stderr-${index}`}>
           <AccordionTrigger>stderr</AccordionTrigger>

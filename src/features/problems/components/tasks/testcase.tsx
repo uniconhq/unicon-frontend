@@ -1,8 +1,9 @@
 "use client";
 
+import { Trash } from "lucide-react";
 import * as React from "react";
 
-import { InputStep, ProgrammingTask, Testcase } from "@/api";
+import { InputStep, Testcase as TestcaseApi } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -10,46 +11,71 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import NodeGraph from "@/features/problems/components/tasks/node-graph";
+import { cn } from "@/lib/utils";
 
-type OwnProps = {
-  testcase: Testcase;
-  index: number;
-  task: ProgrammingTask;
+import { GraphAction } from "./graph-context";
+
+type TestcaseProps = {
+  index: number; // TODO: Reconcile with `Testcase::id`
+  testcase: TestcaseApi;
+  userInput: InputStep;
+  // Node graph editor props
+  edit: boolean;
+  nodeGraphOnChange?: (action: GraphAction) => void;
+  // UI state
+  isSelected?: boolean;
+  onSelected?: (index: number | null) => void;
+  onDelete?: (index: number) => void;
 };
 
-const TestcaseDisplay: React.FC<OwnProps> = ({ testcase, index, task }) => {
-  const [isOpen, setIsOpen] = React.useState(true);
-
-  const userInputNode: InputStep = {
-    id: 0,
-    type: "INPUT_STEP",
-    inputs: [],
-    outputs: task.required_inputs,
-  };
-
+const Testcase: React.FC<TestcaseProps> = ({
+  index,
+  testcase,
+  userInput,
+  edit,
+  nodeGraphOnChange,
+  isSelected,
+  onSelected,
+  onDelete,
+}) => {
   return (
     <Collapsible
-      open={isOpen}
-      onOpenChange={setIsOpen}
+      defaultOpen
+      open={isSelected}
+      onOpenChange={(isOpen: boolean) => onSelected?.(isOpen ? index : null)}
       className="w-full space-y-2"
     >
       <div className="flex items-center justify-between">
         <CollapsibleTrigger asChild>
-          <Button key={index} className="hover:text-purple-500">
-            Testcase #{index + 1}
+          <Button
+            variant="outline"
+            key={index}
+            className={cn({
+              "border-2 border-purple-400 text-purple-400": isSelected,
+            })}
+          >
+            #{index + 1}
           </Button>
         </CollapsibleTrigger>
+        {onDelete && (
+          <Button variant="destructive" onClick={() => onDelete(index)}>
+            <Trash />
+          </Button>
+        )}
       </div>
       <CollapsibleContent className="space-y-4">
         <NodeGraph
+          edit={edit}
           id={`${testcase.id}`}
-          steps={testcase.nodes.concat([userInputNode])}
+          key={testcase.id}
+          input={userInput}
+          steps={testcase.nodes}
           edges={testcase.edges}
-          isEditing={false}
+          onChange={nodeGraphOnChange}
         />
       </CollapsibleContent>
     </Collapsible>
   );
 };
 
-export default TestcaseDisplay;
+export default Testcase;

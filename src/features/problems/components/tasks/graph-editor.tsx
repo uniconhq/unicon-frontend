@@ -70,8 +70,7 @@ type GraphEditorProps = {
 };
 
 const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
-  const { steps, edges, isEditing, selectedSocketId } =
-    useContext(GraphContext)!;
+  const { steps, edges, edit, selectedSocketId } = useContext(GraphContext)!;
 
   const nodeData = useMemo(() => steps.map(stepNodeToRfNode), [steps]);
   const edgeData = useMemo(() => edges.map(stepEdgeToRfEdge), [edges]);
@@ -119,7 +118,7 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
 
   const onConnect = useCallback(
     (connection: Connection) => {
-      if (!isEditing) return;
+      if (!edit) return;
 
       dispatch({
         type: GraphActionType.AddEdge,
@@ -131,19 +130,19 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
         },
       });
     },
-    [dispatch, isEditing],
+    [dispatch, edit],
   );
 
   const edgeReconnectSuccessful = useRef(true);
 
   const onReconnectStart = useCallback(() => {
-    if (!isEditing) return;
+    if (!edit) return;
     edgeReconnectSuccessful.current = false;
-  }, [isEditing]);
+  }, [edit]);
 
   const onReconnect = useCallback(
     (oldEdge: Edge, newConnection: Connection) => {
-      if (!isEditing) return;
+      if (!edit) return;
 
       dispatch({
         type: GraphActionType.DeleteEdge,
@@ -160,12 +159,12 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
       });
       edgeReconnectSuccessful.current = true;
     },
-    [dispatch, isEditing],
+    [dispatch, edit],
   );
 
   const onReconnectEnd = useCallback(
     (_: unknown, edge: Edge) => {
-      if (!isEditing) return;
+      if (!edit) return;
 
       if (!edgeReconnectSuccessful.current) {
         dispatch({
@@ -177,7 +176,7 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
 
       edgeReconnectSuccessful.current = true;
     },
-    [dispatch, setFlowEdges, isEditing],
+    [dispatch, setFlowEdges, edit],
   );
 
   return (
@@ -206,7 +205,7 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
           onReconnectStart={onReconnectStart}
           onReconnectEnd={onReconnectEnd}
           onReconnect={onReconnect}
-          nodesConnectable={isEditing}
+          nodesConnectable={edit}
           colorMode="dark"
           proOptions={{ hideAttribution: true }}
         >
@@ -217,7 +216,7 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
               { "z-30": expanded },
             )}
           >
-            {isEditing && <AddNodeButton />}
+            {edit && <AddNodeButton />}
             <Button
               onClick={() => setExpanded((prev) => !prev)}
               type="button"
@@ -227,7 +226,7 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
             </Button>
           </div>
           <Background variant={BackgroundVariant.Dots} />
-          <Controls showInteractive={isEditing} />
+          <Controls showInteractive={edit} />
           <MiniMap />
         </ReactFlow>
       </div>

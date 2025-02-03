@@ -80,7 +80,7 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
               <TextareaField label="Description" name="description" rows={5} />
             </div>
           </div>
-          <EditTasksDisplay tasks={problem.tasks} />
+          <EditTasksDisplay problemId={id} tasks={problem.tasks} />
         </div>
       </form>
     </Form>

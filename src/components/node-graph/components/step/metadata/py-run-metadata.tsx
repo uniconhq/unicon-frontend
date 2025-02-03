@@ -15,7 +15,7 @@ type OwnProps = {
 };
 
 const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
-  const { isEditing } = useContext(GraphContext)!;
+  const { edit } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
   const [functionIdentifier, setFunctionIdentifier] = useState(
@@ -37,7 +37,7 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
     });
   };
 
-  return isEditing ? (
+  return edit ? (
     <>
       <div>
         function_identifier: "

@@ -11,7 +11,7 @@ import {
 } from "./graph-context";
 
 const GraphFileEditor = () => {
-  const { selectedStepId, selectedSocketId, isEditing, steps } =
+  const { selectedStepId, selectedSocketId, edit, steps } =
     useContext(GraphContext)!;
 
   const dispatch = useContext(GraphDispatchContext)!;
@@ -50,7 +50,8 @@ const GraphFileEditor = () => {
       onUpdateFileName={updateFileName}
       onUpdateFileContent={updateFileContent}
       onDeselectFile={() => dispatch({ type: GraphActionType.DeselectSocket })}
-      isEditing={isEditing && selectedStepId !== 0}
+      editableName={edit && selectedStepId !== 0}
+      editableContent={edit && selectedStepId !== 0}
     />
   );
 };

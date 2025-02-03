@@ -21,7 +21,7 @@ type NodeGraphProps = {
   input?: Step;
   steps: Step[];
   edges: GraphEdge[];
-  isEditing: boolean;
+  edit: boolean;
   onChange?: (action: GraphAction) => void;
 };
 
@@ -30,7 +30,7 @@ const NodeGraph: React.FC<NodeGraphProps> = ({
   input,
   steps: initialSteps,
   edges: initialEdges,
-  isEditing,
+  edit,
   onChange,
 }) => {
   const [graph, dispatch] = useImmerReducer(graphReducer, {
@@ -39,7 +39,7 @@ const NodeGraph: React.FC<NodeGraphProps> = ({
     edges: initialEdges,
     selectedSocketId: null,
     selectedStepId: null,
-    isEditing,
+    edit,
   });
 
   useEffect(() => {
