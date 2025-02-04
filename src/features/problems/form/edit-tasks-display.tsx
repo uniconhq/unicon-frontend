@@ -75,26 +75,29 @@ const EditTasksDisplay: React.FC<OwnProps> = ({
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  {tasks.map((task, index) => (
-                    <Draggable
-                      draggableId={task.id.toString()}
-                      index={index}
-                      key={task.id}
-                    >
-                      {(provided) => (
-                        <TaskCard
+                  {tasks.map(
+                    (task, index) =>
+                      task && (
+                        <Draggable
+                          draggableId={task.id.toString()}
                           index={index}
                           key={task.id}
-                          task={task}
-                          problemId={problemId}
-                          projectId={projectId}
-                          edit={true}
-                          submit={false}
-                          provided={provided}
-                        />
-                      )}
-                    </Draggable>
-                  ))}
+                        >
+                          {(provided) => (
+                            <TaskCard
+                              index={index}
+                              key={task.id}
+                              task={task}
+                              problemId={problemId}
+                              projectId={projectId}
+                              edit={true}
+                              submit={false}
+                              provided={provided}
+                            />
+                          )}
+                        </Draggable>
+                      ),
+                  )}
                   {provided.placeholder}
                 </div>
               )}
