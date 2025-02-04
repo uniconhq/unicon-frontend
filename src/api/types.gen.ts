@@ -233,6 +233,13 @@ export type ProblemPublic = {
     make_submission: boolean;
 };
 
+export type ProblemUpdate = {
+    name: string;
+    restricted: boolean;
+    description: string;
+    task_order: Array<TaskOrder>;
+};
+
 export type ProgrammingTask = {
     id: number;
     type: 'PROGRAMMING_TASK';
@@ -470,6 +477,11 @@ export type TaskOrm = {
     problem_id: number;
 };
 
+export type TaskOrder = {
+    id: number;
+    order_index: number;
+};
+
 export type TaskResult = MultipleChoiceTaskResult | MultipleResponseTaskResult | ProgrammingTaskResult | ShortAnswerTaskResult;
 
 export type TaskType = 'MULTIPLE_CHOICE_TASK' | 'MULTIPLE_RESPONSE_TASK' | 'SHORT_ANSWER_TASK' | 'PROGRAMMING_TASK';
@@ -644,7 +656,7 @@ export type GetProblemResponses = {
 export type GetProblemResponse = GetProblemResponses[keyof GetProblemResponses];
 
 export type UpdateProblemData = {
-    body: Problem;
+    body: ProblemUpdate;
     path: {
         id: number;
     };

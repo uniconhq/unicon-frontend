@@ -41,7 +41,14 @@ const EditMultipleResponse: React.FC<OwnProps> = ({ task, problemId }) => {
     );
   };
 
-  return <MultipleResponseForm onSubmit={onSubmit} />;
+  return (
+    <MultipleResponseForm
+      title="Edit multiple response task"
+      // @ts-expect-error edited tasks would come with choices
+      initialValue={task}
+      onSubmit={onSubmit}
+    />
+  );
 };
 
 export default EditMultipleResponse;

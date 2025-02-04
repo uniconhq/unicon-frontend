@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -42,9 +42,35 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
   const toast = useToast();
   const projectId = useProjectId();
 
+  const [taskOrder, setTaskOrder] = useState(
+    problem.tasks.map((task, index) => ({
+      id: task.id,
+      orderIndex: index,
+    })),
+  );
+
+  useEffect(() => {
+    setTaskOrder(
+      problem.tasks.map((task, index) => ({
+        id: task.id,
+        orderIndex: index,
+      })),
+    );
+  }, [problem.tasks]);
+
+  const sortedTasks = taskOrder.map(
+    (order) => problem.tasks.find((task) => task.id === order.id)!,
+  );
+
   const onSubmit: SubmitHandler<ProblemFormType> = async (data) => {
     updateProblemMutation.mutate(
-      { ...data, tasks: problem.tasks },
+      {
+        ...data,
+        task_order: taskOrder.map((order) => ({
+          id: order.id,
+          order_index: order.orderIndex,
+        })),
+      },
       {
         onSettled: (response) => {
           if (!response) {
@@ -86,9 +112,10 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
             </div>
           </div>
           <EditTasksDisplay
-            tasks={problem.tasks}
+            tasks={sortedTasks}
             problemId={id}
             projectId={projectId}
+            handleUpdateOrder={setTaskOrder}
           />
         </div>
       </form>

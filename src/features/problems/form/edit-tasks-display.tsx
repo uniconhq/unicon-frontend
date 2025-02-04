@@ -1,3 +1,9 @@
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  OnDragEndResponder,
+} from "@hello-pangea/dnd";
 import { PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -6,17 +12,40 @@ import TaskCard from "@/features/tasks/components/task-card";
 
 import CreateTaskPopover from "./create-task-popover";
 
+export type Order = {
+  id: number;
+  orderIndex: number;
+};
+
 type OwnProps = {
   tasks: TaskType[];
   problemId: number;
   projectId: number;
+  handleUpdateOrder: (newOrder: Order[]) => void;
 };
 
 const EditTasksDisplay: React.FC<OwnProps> = ({
   tasks,
   problemId,
   projectId,
+  handleUpdateOrder,
 }) => {
+  const onDragEnd: OnDragEndResponder<string> = ({ source, destination }) => {
+    if (!destination) {
+      return;
+    }
+    if (source.index === destination.index) {
+      return;
+    }
+
+    const tasksCopy = [...tasks];
+    const [removed] = tasksCopy.splice(source.index, 1);
+    tasksCopy.splice(destination.index, 0, removed);
+    handleUpdateOrder(
+      tasksCopy.map((task, index) => ({ id: task.id, orderIndex: index })),
+    );
+  };
+
   return (
     <div>
       <h2 className="min-w-[200px] text-lg font-medium">Tasks</h2>
@@ -38,18 +67,39 @@ const EditTasksDisplay: React.FC<OwnProps> = ({
               Add task
             </Button>
           </CreateTaskPopover>
-          <div className="mt-4 flex flex-col gap-2">
-            {tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                problemId={problemId}
-                projectId={projectId}
-                edit={true}
-                submit={false}
-              />
-            ))}
-          </div>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="tasks">
+              {(provided) => (
+                <div
+                  className="mt-4 flex flex-col gap-6"
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  {tasks.map((task, index) => (
+                    <Draggable
+                      draggableId={task.id.toString()}
+                      index={index}
+                      key={task.id}
+                    >
+                      {(provided) => (
+                        <TaskCard
+                          index={index}
+                          key={task.id}
+                          task={task}
+                          problemId={problemId}
+                          projectId={projectId}
+                          edit={true}
+                          submit={false}
+                          provided={provided}
+                        />
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </>
       )}
     </div>
