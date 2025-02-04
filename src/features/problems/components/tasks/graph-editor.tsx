@@ -15,6 +15,7 @@ import {
   useNodesInitialized,
   useNodesState,
 } from "@xyflow/react";
+import { ExpandIcon, ShrinkIcon } from "lucide-react";
 import {
   useCallback,
   useContext,
@@ -26,10 +27,17 @@ import {
 
 import { GraphEdge } from "@/api";
 import { StepNode } from "@/components/node-graph/components/step/step-node";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import getLayoutedElements from "@/utils/graph";
 
 import AddNodeButton from "./add-node-button";
-import { GraphContext, GraphDispatchContext } from "./graph-context";
+import {
+  GraphActionType,
+  GraphContext,
+  GraphDispatchContext,
+} from "./graph-context";
+import GraphFileEditor from "./graph-file-editor";
 import { Step } from "./types";
 
 const nodeTypes = { step: StepNode };
@@ -56,8 +64,13 @@ const stepEdgeToRfEdge = (edge: GraphEdge): Edge => ({
 
 type RfInstance = ReactFlowInstance<Node<Step>, Edge>;
 
-const GraphView: React.FC = () => {
-  const { steps, edges, isEditing } = useContext(GraphContext)!;
+type GraphEditorProps = {
+  graphId: string;
+  className?: string;
+};
+
+const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
+  const { steps, edges, edit, selectedSocketId } = useContext(GraphContext)!;
 
   const nodeData = useMemo(() => steps.map(stepNodeToRfNode), [steps]);
   const edgeData = useMemo(() => edges.map(stepEdgeToRfEdge), [edges]);
@@ -67,6 +80,8 @@ const GraphView: React.FC = () => {
   const [rfInstance, setRfInstance] = useState<RfInstance | null>(null);
   const [flowNodes, setFlowNodes, onFlowNodesChange] = useNodesState(nodeData);
   const [flowEdges, setFlowEdges, onFlowEdgesChange] = useEdgesState(edgeData);
+
+  const [expanded, setExpanded] = useState(false);
 
   const onInit = (rf: RfInstance) => setRfInstance(rf);
 
@@ -81,14 +96,7 @@ const GraphView: React.FC = () => {
     setFlowEdges([...layoutedEdges]);
 
     setLayoutApplied(true);
-  }, [
-    flowNodesInitialized,
-    layoutApplied,
-    flowNodes,
-    flowEdges,
-    setFlowNodes,
-    setFlowEdges,
-  ]);
+  }, [flowNodesInitialized, layoutApplied]);
 
   useEffect(() => {
     if (!layoutApplied || !rfInstance) return;
@@ -96,10 +104,12 @@ const GraphView: React.FC = () => {
   }, [layoutApplied, rfInstance]);
 
   useEffect(() => {
-    const newNodes = nodeData.filter(
-      (node) => !flowNodes.some((n) => n.id === node.id),
+    setFlowNodes(
+      nodeData.map((node) => {
+        const existingRfNode = flowNodes.find((n) => n.id === node.id);
+        return existingRfNode ? { ...existingRfNode, data: node.data } : node;
+      }),
     );
-    setFlowNodes((nodes) => [...nodes, ...newNodes]);
   }, [nodeData, flowNodes, setFlowNodes]);
 
   useEffect(() => setFlowEdges(edgeData), [edgeData, setFlowEdges]);
@@ -108,12 +118,11 @@ const GraphView: React.FC = () => {
 
   const onConnect = useCallback(
     (connection: Connection) => {
-      if (!isEditing) return;
+      if (!edit) return;
 
       dispatch({
-        type: "ADD_EDGE",
-        edge: {
-          id: Math.max(...edges.map((edge) => edge.id), -1) + 1,
+        type: GraphActionType.AddEdge,
+        payload: {
           from_node_id: parseInt(connection.source),
           from_socket_id: connection.sourceHandle!,
           to_node_id: parseInt(connection.target),
@@ -121,28 +130,27 @@ const GraphView: React.FC = () => {
         },
       });
     },
-    [dispatch, edges, isEditing],
+    [dispatch, edit],
   );
 
   const edgeReconnectSuccessful = useRef(true);
 
   const onReconnectStart = useCallback(() => {
-    if (!isEditing) return;
+    if (!edit) return;
     edgeReconnectSuccessful.current = false;
-  }, [isEditing]);
+  }, [edit]);
 
   const onReconnect = useCallback(
     (oldEdge: Edge, newConnection: Connection) => {
-      if (!isEditing) return;
+      if (!edit) return;
 
       dispatch({
-        type: "DELETE_EDGE",
-        edgeId: parseInt(oldEdge.id),
+        type: GraphActionType.DeleteEdge,
+        payload: { id: parseInt(oldEdge.id) },
       });
       dispatch({
-        type: "ADD_EDGE",
-        edge: {
-          id: Math.max(...edges.map((edge) => edge.id), -1) + 1,
+        type: GraphActionType.AddEdge,
+        payload: {
           from_node_id: parseInt(newConnection.source),
           from_socket_id: newConnection.sourceHandle!,
           to_node_id: parseInt(newConnection.target),
@@ -151,50 +159,79 @@ const GraphView: React.FC = () => {
       });
       edgeReconnectSuccessful.current = true;
     },
-    [dispatch, edges, isEditing],
+    [dispatch, edit],
   );
 
   const onReconnectEnd = useCallback(
     (_: unknown, edge: Edge) => {
-      if (!isEditing) return;
+      if (!edit) return;
 
       if (!edgeReconnectSuccessful.current) {
         dispatch({
-          type: "DELETE_EDGE",
-          edgeId: parseInt(edge.id),
+          type: GraphActionType.DeleteEdge,
+          payload: { id: parseInt(edge.id) },
         });
         setFlowEdges((eds) => eds.filter((e) => e.id !== edge.id));
       }
 
       edgeReconnectSuccessful.current = true;
     },
-    [dispatch, setFlowEdges, isEditing],
+    [dispatch, setFlowEdges, edit],
   );
 
   return (
-    <div className="relative h-[60vh] w-full">
-      {isEditing && <AddNodeButton />}
-      <ReactFlow
-        onInit={onInit}
-        nodeTypes={nodeTypes}
-        nodes={flowNodes}
-        edges={flowEdges}
-        onNodesChange={onFlowNodesChange}
-        onEdgesChange={onFlowEdgesChange}
-        onConnect={onConnect}
-        onReconnectStart={onReconnectStart}
-        onReconnectEnd={onReconnectEnd}
-        onReconnect={onReconnect}
-        nodesConnectable={isEditing}
-        colorMode="dark"
-        proOptions={{ hideAttribution: true }}
-      >
-        <Background variant={BackgroundVariant.Dots} />
-        <Controls showInteractive={isEditing} />
-        <MiniMap />
-      </ReactFlow>
+    <div
+      className={cn("grid gap-1", className, {
+        "grid-cols-5": selectedSocketId,
+        "fixed inset-0 z-30 h-full bg-black/100 animate-in fade-in": expanded,
+      })}
+      data-state={expanded ? "open" : "closed"}
+    >
+      {selectedSocketId && (
+        <div className="col-span-2">
+          <GraphFileEditor />
+        </div>
+      )}
+      <div className={selectedSocketId ? "col-span-3" : ""}>
+        <ReactFlow
+          id={graphId}
+          onInit={onInit}
+          nodeTypes={nodeTypes}
+          nodes={flowNodes}
+          edges={flowEdges}
+          onNodesChange={onFlowNodesChange}
+          onEdgesChange={onFlowEdgesChange}
+          onConnect={onConnect}
+          onReconnectStart={onReconnectStart}
+          onReconnectEnd={onReconnectEnd}
+          onReconnect={onReconnect}
+          nodesConnectable={edit}
+          colorMode="dark"
+          proOptions={{ hideAttribution: true }}
+        >
+          {/* Custom controls */}
+          <div
+            className={cn(
+              "absolute right-1 top-1 z-10 mt-4 flex space-x-1 px-2",
+              { "z-30": expanded },
+            )}
+          >
+            {edit && <AddNodeButton />}
+            <Button
+              onClick={() => setExpanded((prev) => !prev)}
+              type="button"
+              variant="outline"
+            >
+              {expanded ? <ShrinkIcon /> : <ExpandIcon />}
+            </Button>
+          </div>
+          <Background variant={BackgroundVariant.Dots} />
+          <Controls showInteractive={edit} />
+          <MiniMap />
+        </ReactFlow>
+      </div>
     </div>
   );
 };
 
-export default GraphView;
+export default GraphEditor;

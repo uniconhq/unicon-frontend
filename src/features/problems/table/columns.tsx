@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
 
-import { ProblemORM } from "@/api";
+import { ProblemOrm } from "@/api";
 
-export const columns: ColumnDef<ProblemORM>[] = [
+export const columns: ColumnDef<ProblemOrm>[] = [
   {
     accessorKey: "id",
     header: "Problem ID",

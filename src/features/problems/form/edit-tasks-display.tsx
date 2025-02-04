@@ -74,7 +74,7 @@ const EditTasksDisplay: React.FC<OwnProps> = ({
                     </Button>
                   </CardTitle>
                   <CardContent className="p-0 py-2">
-                    <Task task={task} />
+                    <Task submit={false} problemId={problemId} task={task} />
                   </CardContent>
                 </CardHeader>
               </Card>

@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { GraphDispatchContext } from "./graph-context";
+import { GraphActionType, GraphDispatchContext } from "./graph-context";
 
 const stepTypesToLabel: Record<StepType, string> = {
   PY_RUN_FUNCTION_STEP: "PyRunFunctionStep",
@@ -27,14 +27,7 @@ const AddNodeButton: React.FC = () => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className="absolute right-1 top-1 z-50"
-          type="button"
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
+        <Button variant={"outline"} type="button" onClick={() => setOpen(true)}>
           <PlusIcon />
           Add node
         </Button>
@@ -48,8 +41,8 @@ const AddNodeButton: React.FC = () => {
               className="w-full justify-start"
               onClick={() => {
                 dispatch({
-                  type: "ADD_STEP",
-                  stepType: stepType as StepType,
+                  type: GraphActionType.AddStep,
+                  payload: { type: stepType as StepType },
                 });
                 setOpen(false);
               }}

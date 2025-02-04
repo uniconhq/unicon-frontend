@@ -13,6 +13,7 @@ import MultipleResponseResult from "./result-types/multiple-response-result";
 import ProgrammingResult from "./result-types/programming-result";
 
 type OwnProps = {
+  title: string;
   taskAttempt: TaskAttemptPublic;
 };
 
@@ -27,12 +28,10 @@ const taskStatusToColor = (status: string) => {
   }
 };
 
-const parseDateTime = (dateTimeString: string) => {
-  const date = new Date(dateTimeString);
-  return date.toLocaleString();
-};
+const parseDateTime = (dateTimeString: string) =>
+  new Date(dateTimeString).toLocaleString();
 
-const TaskResultCard: React.FC<OwnProps> = ({ taskAttempt }) => {
+const TaskResultCard: React.FC<OwnProps> = ({ title, taskAttempt }) => {
   const taskResult = taskAttempt.task_results[0] as TaskResult;
   return (
     <Card>
@@ -53,9 +52,7 @@ const TaskResultCard: React.FC<OwnProps> = ({ taskAttempt }) => {
               )}
             ></span>
           </span>
-          <span className="text-lg font-medium">
-            Task #{taskAttempt.task_id + 1}
-          </span>
+          <span className="text-lg font-medium">{title}</span>
         </CardTitle>
         {taskResult.status != "SKIPPED" && (
           <CardDescription className="flex flex-col gap-1 py-2 font-mono text-sm">

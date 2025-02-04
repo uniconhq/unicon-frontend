@@ -55,7 +55,11 @@ const SubmissionResults = () => {
         {task_attempts?.map(
           (task_attempt) =>
             task_attempt.task_results.length > 0 && (
-              <TaskResult key={task_attempt.id} taskAttempt={task_attempt} />
+              <TaskResult
+                key={task_attempt.id}
+                title={`Task #${task_attempt.task_id + 1}`}
+                taskAttempt={task_attempt}
+              />
             ),
         )}
       </div>

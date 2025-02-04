@@ -11,8 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  GraphActionType,
   GraphContext,
   GraphDispatchContext,
+  SocketType,
 } from "@/features/problems/components/tasks/graph-context";
 import { isControlSocket } from "@/utils/socket";
 
@@ -24,19 +26,17 @@ type OwnProps = {
 };
 
 const InputMetadata: React.FC<OwnProps> = ({ step }) => {
-  const { isEditing } = useContext(GraphContext)!;
+  const { edit } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
   const isStepEditable = step.id !== 0;
-  const showEditElements = isEditing && isStepEditable;
+  const showEditElements = edit && isStepEditable;
 
   const deleteSocket = useCallback(
     (socketId: string) => () => {
       dispatch({
-        type: "DELETE_STEP_SOCKET",
-        stepId: step.id,
-        socketId,
-        isInput: false,
+        type: GraphActionType.DeleteSocket,
+        payload: { stepId: step.id, socketId },
       });
     },
     [dispatch, step.id],
@@ -44,33 +44,32 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
 
   const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
     dispatch({
-      type: "UPDATE_STEP_SOCKET",
-      stepId: step.id,
-      oldSocketId,
-      newSocketId,
-      // input steps only have outputs
-      isInput: false,
+      type: GraphActionType.UpdateSocketId,
+      payload: { stepId: step.id, oldSocketId, newSocketId },
     });
   };
 
   const handleSocketChangeToFile = (socket: StepSocket) => () => {
     dispatch({
-      type: "UPDATE_STEP_SOCKET",
-      stepId: step.id,
-      oldSocketId: socket.id,
-      newSocketId: socket.id,
-      socketFields: {
-        data: {
-          name: "file.py",
-          content: "print('Hello World')",
+      type: GraphActionType.UpdateSocketMetadata,
+      payload: {
+        stepId: step.id,
+        socketId: socket.id,
+        socketMetadata: {
+          data: {
+            name: "file.py",
+            content: "print('Hello World')",
+          },
         },
       },
-      isInput: false,
     });
   };
 
   const addOutputSocket = useCallback(() => {
-    dispatch({ type: "ADD_STEP_SOCKET", stepId: step.id, isInput: false });
+    dispatch({
+      type: GraphActionType.AddSocket,
+      payload: { stepId: step.id, socketType: SocketType.Output },
+    });
   }, [dispatch, step.id]);
 
   if (!showEditElements) {
@@ -79,23 +78,23 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
 
   const onChangeValue = (socket: StepSocket) => (newValue: string) => {
     dispatch({
-      type: "UPDATE_STEP_SOCKET",
-      stepId: step.id,
-      oldSocketId: socket.id,
-      newSocketId: socket.id,
-      socketFields: { data: JSON.parse(newValue) },
-      isInput: false,
+      type: GraphActionType.UpdateSocketMetadata,
+      payload: {
+        stepId: step.id,
+        socketId: socket.id,
+        socketMetadata: { data: JSON.parse(newValue) },
+      },
     });
   };
 
   const onChangeToValue = (socket: StepSocket) => () => {
     dispatch({
-      type: "UPDATE_STEP_SOCKET",
-      stepId: step.id,
-      oldSocketId: socket.id,
-      newSocketId: socket.id,
-      socketFields: { data: "" },
-      isInput: false,
+      type: GraphActionType.UpdateSocketMetadata,
+      payload: {
+        stepId: step.id,
+        socketId: socket.id,
+        socketMetadata: { data: "" },
+      },
     });
   };
 
@@ -112,9 +111,9 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {step.outputs.map((socket) => (
+            {step.outputs.map((socket, index) => (
               <InputMetadataRow
-                key={socket.id}
+                key={index}
                 socket={socket}
                 onDelete={deleteSocket(socket.id)}
                 onEditSocketId={handleEditSocketId(socket.id)}
