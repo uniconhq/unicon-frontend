@@ -14,32 +14,51 @@ type OwnProps = {
   onClose: () => void;
   onSaveWithRerun: () => void;
   onSaveWithoutRerun: () => void;
+  isSafe: boolean;
 };
 const RerunDialog: React.FC<OwnProps> = ({
+  isSafe,
   onClose,
   onSaveWithRerun,
   onSaveWithoutRerun,
 }) => {
+  const title = isSafe
+    ? "Rerun past attempts?"
+    : "Changes may break previous attempts.";
+  const description = isSafe
+    ? "If you do not rerun, users will need to manually rerun their own submissions."
+    : "Rerunning could cause inconsistencies in previous attempts' result displays.";
+
   return (
     <AlertDialog open onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            Changes may break previous attempts.
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Rerun them with the saved changes?
-          </AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="sm:justify-between">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <div className="flex space-x-2">
-            <AlertDialogAction onClick={onSaveWithoutRerun}>
-              Save only
-            </AlertDialogAction>
-            <Button variant={"destructive"} onClick={onSaveWithRerun}>
-              Save and rerun
-            </Button>
+            {isSafe && (
+              <>
+                <Button variant={"destructive"} onClick={onSaveWithoutRerun}>
+                  Save only
+                </Button>
+                <AlertDialogAction onClick={onSaveWithRerun}>
+                  Save and rerun
+                </AlertDialogAction>
+              </>
+            )}
+            {!isSafe && (
+              <>
+                <Button variant={"destructive"} onClick={onSaveWithRerun}>
+                  Save and rerun
+                </Button>
+                <AlertDialogAction onClick={onSaveWithoutRerun}>
+                  Save only
+                </AlertDialogAction>
+              </>
+            )}
           </div>
         </AlertDialogFooter>
       </AlertDialogContent>

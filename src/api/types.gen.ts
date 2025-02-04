@@ -695,6 +695,32 @@ export type AddTaskToProblemResponses = {
     200: unknown;
 };
 
+export type DeleteTaskData = {
+    body?: never;
+    path: {
+        task_id: number;
+        id: number;
+    };
+    query?: never;
+    url: '/problems/{id}/tasks/{task_id}';
+};
+
+export type DeleteTaskErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteTaskError = DeleteTaskErrors[keyof DeleteTaskErrors];
+
+export type DeleteTaskResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type SubmitProblemTaskAttemptData = {
     body: UserInput;
     path: {

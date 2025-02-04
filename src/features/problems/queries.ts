@@ -7,6 +7,7 @@ import {
 import {
   addTaskToProblem,
   createProblem,
+  deleteTask,
   getProblem,
   getProblemTaskAttemptResults,
   getProjectSubmissions,
@@ -69,6 +70,21 @@ export const useUpdateTask = (problemId: number, taskId: number) => {
     mutationFn: (payload: { task: TaskType; rerun: boolean }) =>
       updateTask({
         body: payload,
+        path: { id: problemId, task_id: taskId },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ContestQueryKeys.Problem, problemId],
+      });
+    },
+  });
+};
+
+export const useDeleteTask = (problemId: number, taskId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      deleteTask({
         path: { id: problemId, task_id: taskId },
       }),
     onSuccess: () => {
