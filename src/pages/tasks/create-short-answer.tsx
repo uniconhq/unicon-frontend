@@ -37,7 +37,7 @@ const CreateShortAnswer = () => {
     );
   };
 
-  return <ShortAnswerForm onSubmit={onSubmit} />;
+  return <ShortAnswerForm onSubmit={onSubmit} title="New short answer task" />;
 };
 
 export default CreateShortAnswer;

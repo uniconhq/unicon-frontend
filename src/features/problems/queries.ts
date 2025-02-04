@@ -15,6 +15,7 @@ import {
   ShortAnswerTask,
   submitProblemTaskAttempt,
   updateProblem,
+  updateTask,
   UserInput,
 } from "@/api";
 
@@ -55,6 +56,16 @@ export const useCreateTask = (problemId: number) => {
         path: { id: problemId },
       });
     },
+  });
+};
+
+export const useUpdateTask = (problemId: number, taskId: number) => {
+  return useMutation({
+    mutationFn: (payload: { task: TaskType; rerun: boolean }) =>
+      updateTask({
+        body: payload,
+        path: { id: problemId, task_id: taskId },
+      }),
   });
 };
 

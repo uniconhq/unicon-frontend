@@ -2,29 +2,35 @@ import { AxiosError } from "axios";
 import { isRouteErrorResponse, Link, useRouteError } from "react-router-dom";
 
 export const Unauthorized = new Error("Unauthorized");
+export const NotFound = new Error("Not Found");
 
 const ERROR_404 =
   "Oops, it looks like the page you're looking for doesn't exist.";
 const ERROR_403 = "You are not authorized to view this page.";
-const ErrorPage = () => {
-  const error = useRouteError();
+
+type OwnProps = {
+  error?: AxiosError | typeof Unauthorized | typeof NotFound;
+};
+
+const ErrorPage: React.FC<OwnProps> = () => {
+  const routeError = useRouteError();
 
   let errorMessage = "An unexpected error has occurred.";
   let errorStatus = "Something went wrong :(";
 
-  if (isRouteErrorResponse(error)) {
-    errorStatus = `[${error.status}] ${error.statusText}`;
-    switch (error.status) {
+  if (isRouteErrorResponse(routeError)) {
+    errorStatus = `[${routeError.status}] ${routeError.statusText}`;
+    switch (routeError.status) {
       case 404:
         errorMessage = ERROR_404;
         break;
     }
   }
 
-  if (error instanceof AxiosError) {
-    if (error.response) {
-      errorStatus = `[${error.response.status}] ${error.response.statusText}`;
-      switch (error.response.status) {
+  if (routeError instanceof AxiosError) {
+    if (routeError.response) {
+      errorStatus = `[${routeError.response.status}] ${routeError.response.statusText}`;
+      switch (routeError.response.status) {
         case 404:
           errorMessage = ERROR_404;
           break;
@@ -35,9 +41,12 @@ const ErrorPage = () => {
     }
   }
 
-  if (error === Unauthorized) {
+  if (routeError === Unauthorized) {
     errorStatus = `[403] Forbidden`;
     errorMessage = ERROR_403;
+  } else if (routeError === NotFound) {
+    errorStatus = `[404] Not Found`;
+    errorMessage = ERROR_404;
   }
 
   return (

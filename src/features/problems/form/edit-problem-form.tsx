@@ -10,6 +10,7 @@ import TextField from "@/components/form/fields/text-field";
 import TextareaField from "@/components/form/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useProjectId } from "@/features/projects/hooks/use-id";
 import { useToast } from "@/hooks/use-toast";
 
 import { useUpdateProblem } from "../queries";
@@ -39,6 +40,7 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
   });
 
   const toast = useToast();
+  const projectId = useProjectId();
 
   const onSubmit: SubmitHandler<ProblemFormType> = async (data) => {
     updateProblemMutation.mutate(
@@ -83,7 +85,11 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
               <CheckboxField label="Restricted" name="restricted" />
             </div>
           </div>
-          <EditTasksDisplay problemId={id} tasks={problem.tasks} />
+          <EditTasksDisplay
+            tasks={problem.tasks}
+            problemId={id}
+            projectId={projectId}
+          />
         </div>
       </form>
     </Form>

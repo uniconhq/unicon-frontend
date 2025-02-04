@@ -42,7 +42,9 @@ const CreateMultipleChoice = () => {
     );
   };
 
-  return <MultipleChoiceForm onSubmit={onSubmit} />;
+  return (
+    <MultipleChoiceForm onSubmit={onSubmit} title="New multiple choice task" />
+  );
 };
 
 export default CreateMultipleChoice;

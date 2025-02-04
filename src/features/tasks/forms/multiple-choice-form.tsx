@@ -41,11 +41,16 @@ const multipleChoiceFormDefault = {
 };
 
 type OwnProps = {
+  title: string;
   initialValue?: MultipleChoiceFormType;
   onSubmit: SubmitHandler<MultipleChoiceFormType>;
 };
 
-const MultipleChoiceForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
+const MultipleChoiceForm: React.FC<OwnProps> = ({
+  title,
+  initialValue,
+  onSubmit,
+}) => {
   const form = useForm<MultipleChoiceFormType>({
     resolver: zodResolver(multipleChoiceFormSchema),
     defaultValues: initialValue ?? multipleChoiceFormDefault,
@@ -88,7 +93,7 @@ const MultipleChoiceForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
   return (
     <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">New multiple choice task</h1>
+        <h1 className="text-2xl font-semibold">{title}</h1>
       </div>
       <Form {...form}>
         <form
