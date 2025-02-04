@@ -133,6 +133,7 @@ export function ProgrammingSubmitForm({
                 problem_id: problemId,
                 autograde: task.autograde ?? false,
                 other_fields: { ...task },
+                updated_version_id: null,
               },
             }}
           />
