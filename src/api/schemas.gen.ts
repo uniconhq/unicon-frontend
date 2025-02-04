@@ -1855,6 +1855,35 @@ export const TaskTypeSchema = {
     title: 'TaskType'
 } as const;
 
+export const TaskUpdateSchema = {
+    properties: {
+        task: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/ProgrammingTask'
+                },
+                {
+                    '$ref': '#/components/schemas/MultipleChoiceTask'
+                },
+                {
+                    '$ref': '#/components/schemas/MultipleResponseTask'
+                },
+                {
+                    '$ref': '#/components/schemas/ShortAnswerTask'
+                }
+            ],
+            title: 'Task'
+        },
+        rerun: {
+            type: 'boolean',
+            title: 'Rerun'
+        }
+    },
+    type: 'object',
+    required: ['task', 'rerun'],
+    title: 'TaskUpdate'
+} as const;
+
 export const TestcaseSchema = {
     properties: {
         nodes: {

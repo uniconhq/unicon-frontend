@@ -1,4 +1,5 @@
-import { PlusIcon } from "lucide-react";
+import { Pencil, PlusIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Task } from "@/components/tasks/task";
 import { Button } from "@/components/ui/button";
@@ -9,9 +10,15 @@ import CreateTaskPopover from "./create-task-popover";
 
 type OwnProps = {
   tasks: TaskType[];
+  problemId: number;
+  projectId: number;
 };
 
-const EditTasksDisplay: React.FC<OwnProps> = ({ tasks }) => {
+const EditTasksDisplay: React.FC<OwnProps> = ({
+  tasks,
+  problemId,
+  projectId,
+}) => {
   return (
     <div>
       <h2 className="min-w-[200px] text-lg font-medium">Tasks</h2>
@@ -37,20 +44,34 @@ const EditTasksDisplay: React.FC<OwnProps> = ({ tasks }) => {
             {tasks.map((task, index) => (
               <Card key={index} className="bg-inherit">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-4 font-mono">
-                    <span className="text-lg font-medium">
-                      Task #{index + 1}
-                    </span>
-                    <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <span className="rounded-md border border-blue-700 p-2">
-                        {task.type}
+                  <CardTitle className="flex items-center justify-between font-mono">
+                    <div className="flex items-center gap-4">
+                      <span className="text-lg font-medium">
+                        Task #{index + 1}
                       </span>
-                      {task.autograde && (
-                        <span className="rounded-md border border-green-700 p-2">
-                          Autograded
+                      <div className="flex items-center gap-2 text-sm text-gray-300">
+                        <span className="rounded-md border border-blue-700 p-2">
+                          {task.type}
                         </span>
-                      )}
+                        {task.autograde && (
+                          <span className="rounded-md border border-green-700 p-2">
+                            Autograded
+                          </span>
+                        )}
+                      </div>
                     </div>
+                    <Button
+                      asChild
+                      variant="ghost"
+                      className="hover:text-purple-300"
+                    >
+                      <Link
+                        to={`/projects/${projectId}/problems/${problemId}/edit/tasks/${task.id}`}
+                      >
+                        <Pencil />
+                        Edit
+                      </Link>
+                    </Button>
                   </CardTitle>
                   <CardContent className="p-0 py-2">
                     <Task task={task} />

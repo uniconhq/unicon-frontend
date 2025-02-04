@@ -447,6 +447,11 @@ export type TaskResult = MultipleChoiceTaskResult | MultipleResponseTaskResult |
 
 export type TaskType = 'MULTIPLE_CHOICE_TASK' | 'MULTIPLE_RESPONSE_TASK' | 'SHORT_ANSWER_TASK' | 'PROGRAMMING_TASK';
 
+export type TaskUpdate = {
+    task: (ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask);
+    rerun: boolean;
+};
+
 export type Testcase = {
     nodes: Array<(OutputStep | InputStep | PyRunFunctionStep | LoopStep | IfElseStep | StringMatchStep | ObjectAccessStep)>;
     edges: Array<GraphEdge>;
@@ -552,6 +557,18 @@ export type AddTaskToProblemData = {
 export type AddTaskToProblemResponse = (unknown);
 
 export type AddTaskToProblemError = (HTTPValidationError);
+
+export type UpdateTaskData = {
+    body: TaskUpdate;
+    path: {
+        id: number;
+        task_id: number;
+    };
+};
+
+export type UpdateTaskResponse = (unknown);
+
+export type UpdateTaskError = (HTTPValidationError);
 
 export type SubmitProblemTaskAttemptData = {
     body: UserInput;
