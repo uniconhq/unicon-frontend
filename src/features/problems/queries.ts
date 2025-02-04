@@ -1,4 +1,8 @@
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import {
   addTaskToProblem,
@@ -60,12 +64,18 @@ export const useCreateTask = (problemId: number) => {
 };
 
 export const useUpdateTask = (problemId: number, taskId: number) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: { task: TaskType; rerun: boolean }) =>
       updateTask({
         body: payload,
         path: { id: problemId, task_id: taskId },
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ContestQueryKeys.Problem, problemId],
+      });
+    },
   });
 };
 
