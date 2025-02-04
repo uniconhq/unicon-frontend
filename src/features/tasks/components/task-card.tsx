@@ -1,4 +1,5 @@
-import { Pencil, Trash } from "lucide-react";
+import { DraggableProvided } from "@hello-pangea/dnd";
+import { GripVertical, Pencil, Trash } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -7,21 +8,26 @@ import { Task } from "@/components/tasks/task";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskType, useDeleteTask } from "@/features/problems/queries";
+import { cn } from "@/lib/utils";
 
 type OwnProps = {
+  index: number;
   task: TaskType;
   problemId: number;
   projectId: number;
   edit: boolean;
   submit: boolean;
+  provided?: DraggableProvided;
 };
 
 const TaskCard: React.FC<OwnProps> = ({
+  index,
   task,
   problemId,
   projectId,
   edit,
   submit,
+  provided,
 }) => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const deleteTaskMutation = useDeleteTask(problemId, task.id);
@@ -42,14 +48,22 @@ const TaskCard: React.FC<OwnProps> = ({
           onConfirm={handleDelete}
         />
       )}
-      <Card className="bg-inherit">
+      <Card
+        className="bg-inherit"
+        {...(provided?.draggableProps ?? {})}
+        ref={provided?.innerRef}
+      >
         <CardHeader>
-          <CardTitle className="flex items-center justify-between font-mono">
+          <CardTitle
+            className={cn("flex items-center justify-between font-mono", {
+              "-mx-6 -mt-6 bg-neutral-800 px-6 pb-4 pt-4": edit,
+            })}
+            {...(provided?.dragHandleProps ?? {})}
+          >
             <div className="flex items-center gap-4">
-              <span className="text-lg font-medium">
-                Task #{task.order_index + 1}
-              </span>
-              <div className="flex items-center gap-2 text-sm text-gray-300">
+              {edit && <GripVertical className="-mr-2" />}
+              <span className="text-lg font-medium">Task #{index + 1}</span>
+              <div className="flex items-center gap-2 text-sm text-stone-300">
                 <span className="rounded-md border border-blue-700 p-2">
                   {task.type}
                 </span>

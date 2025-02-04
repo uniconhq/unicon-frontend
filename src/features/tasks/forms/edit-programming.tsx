@@ -23,9 +23,8 @@ const EditProgramming: React.FC<OwnProps> = ({ task, problemId }) => {
   const updateTaskMutation = useUpdateTask(problemId, task.id);
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
-  // const [onSave, setOnSave] = useState<(rerun: boolean) => void>(() => {});
-
   const [data, setData] = useState<ProgrammingFormType | null>(null);
+  const [isSafe, setIsSafe] = useState<boolean>(false);
 
   const updateTask = (data: ProgrammingFormType) => (rerun: boolean) => {
     updateTaskMutation.mutate(
@@ -42,19 +41,16 @@ const EditProgramming: React.FC<OwnProps> = ({ task, problemId }) => {
   };
 
   const onSubmit: SubmitHandler<ProgrammingFormType> = async (data) => {
-    if (isSafeChangeForProgrammingTask(task, data)) {
-      updateTask(data)(true);
-      return;
-    } else {
-      setOpenDialog(true);
-      setData(data);
-    }
+    setOpenDialog(true);
+    setData(data);
+    setIsSafe(isSafeChangeForProgrammingTask(task, data));
   };
 
   return (
     <>
       {openDialog && data && (
         <RerunDialog
+          isSafe={isSafe}
           onClose={() => setOpenDialog(false)}
           onSaveWithoutRerun={() => updateTask(data)(false)}
           onSaveWithRerun={() => updateTask(data)(true)}

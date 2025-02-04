@@ -16,6 +16,7 @@ import {
   MultipleChoiceTask,
   MultipleResponseTask,
   Problem,
+  ProblemUpdate,
   ProgrammingTask,
   ShortAnswerTask,
   submitProblemTaskAttempt,
@@ -40,7 +41,7 @@ export const useCreateProblem = (project_id: number) => {
 
 export const useUpdateProblem = (problemId: number) => {
   return useMutation({
-    mutationFn: (data: Problem) =>
+    mutationFn: (data: ProblemUpdate) =>
       updateProblem({ body: data, path: { id: problemId } }),
   });
 };

@@ -52,8 +52,9 @@ const Problem = () => {
         </div>
       </div>
       <div className="flex flex-col gap-8">
-        {data?.tasks.map((task) => (
+        {data?.tasks.map((task, index) => (
           <TaskCard
+            index={index}
             key={task.id}
             task={task}
             problemId={id}

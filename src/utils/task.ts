@@ -36,17 +36,16 @@ export const isSafeChoiceChange = (
 };
 
 export const isSafeChangeForProgrammingTask = (
-  oldProgrammingTask: Pick<ProgrammingTask, "required_inputs">,
-  newProgrammingTask: Pick<ProgrammingTask, "required_inputs">,
+  oldProgrammingTask: Pick<ProgrammingTask, "required_inputs" | "testcases">,
+  newProgrammingTask: Pick<ProgrammingTask, "required_inputs" | "testcases">,
 ) => {
   /*
   For programming tasks, if the input format changed, we assume it is unsafe.
-
-  TODO: this can theoretically be enhanced (lower false positives) by only comparing functions that are used in 
-  the testcases. (But that's a bit overkill for now and can be considered in the future, when the node graph is fully validated)
   */
-  return (
-    JSON.stringify(oldProgrammingTask.required_inputs) ===
+  if (
+    JSON.stringify(oldProgrammingTask.required_inputs) !==
     JSON.stringify(newProgrammingTask.required_inputs)
-  );
+  )
+    return false;
+  return true;
 };

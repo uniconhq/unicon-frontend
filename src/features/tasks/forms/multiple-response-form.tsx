@@ -11,7 +11,7 @@ import { z } from "zod";
 
 import CheckboxField from "@/components/form/fields/checkbox-field";
 import ErrorAlert from "@/components/form/fields/error-alert";
-import TextField from "@/components/form/fields/text-field";
+import TextareaField from "@/components/form/fields/textarea-field";
 import FormSection from "@/components/form/form-section";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -119,7 +119,7 @@ const MultipleResponseForm: React.FC<OwnProps> = ({
           className="flex flex-col gap-4"
         >
           <FormSection title="Task details">
-            <TextField label="Question" name="question" />
+            <TextareaField label="Question" name="question" />
           </FormSection>
           <hr />
           <FormSection title="Autograde?">
