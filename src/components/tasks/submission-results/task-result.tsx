@@ -1,4 +1,4 @@
-import { TaskAttemptPublic, TaskResult } from "@/api";
+import { TaskAttemptPublic } from "@/api";
 import {
   Card,
   CardContent,
@@ -32,7 +32,11 @@ const parseDateTime = (dateTimeString: string) =>
   new Date(dateTimeString).toLocaleString();
 
 const TaskResultCard: React.FC<OwnProps> = ({ title, taskAttempt }) => {
-  const taskResult = taskAttempt.task_results[0] as TaskResult;
+  const taskResult = taskAttempt.task_results[0];
+  if (!taskResult) {
+    // TODO: Consider rendering something
+    return;
+  }
   return (
     <Card>
       <CardHeader>
