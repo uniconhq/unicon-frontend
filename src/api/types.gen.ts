@@ -10,7 +10,7 @@ export type BodyLoginAuthTokenPost = {
 };
 
 export type Choice = {
-    id: number;
+    id: string;
     order_index: number;
     text: string;
 };
@@ -83,7 +83,7 @@ export type MultipleChoiceTask = {
     order_index: number;
     question: string;
     choices: Array<Choice>;
-    expected_answer: number;
+    expected_answer: string;
 };
 
 export type MultipleChoiceTaskResult = {
@@ -105,7 +105,7 @@ export type MultipleResponseTask = {
     order_index: number;
     question: string;
     choices: Array<Choice>;
-    expected_answer: Array<number>;
+    expected_answer: Array<string>;
 };
 
 export type MultipleResponseTaskResult = {
