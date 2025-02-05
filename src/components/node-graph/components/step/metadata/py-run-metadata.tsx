@@ -30,7 +30,7 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
       payload: {
         stepId: step.id,
         stepMetadata: {
-          functionIdentifier: newFunctionIdentifier,
+          function_identifier: newFunctionIdentifier,
           allow_error,
         },
       },
