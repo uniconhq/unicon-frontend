@@ -8,6 +8,7 @@ import { useProjectId } from "@/features/projects/hooks/use-id";
 import MultipleResponseForm, {
   MultipleResponseFormType,
 } from "@/features/tasks/forms/multiple-response-form";
+import { ChoiceWithoutOrder, normaliseChoices } from "@/utils/task";
 
 type OwnProps = {
   task: MultipleResponseTask;
@@ -21,6 +22,11 @@ const EditMultipleResponse: React.FC<OwnProps> = ({ task, problemId }) => {
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<MultipleResponseFormType> = async (data) => {
+    data.choices = normaliseChoices(task.choices, data.choices) as [
+      ChoiceWithoutOrder,
+      ...ChoiceWithoutOrder[],
+    ];
+
     updateTaskMutation.mutate(
       {
         task: {
