@@ -264,7 +264,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({
           </FormSection>
           <hr />
           <div className="flex w-full flex-col items-start">
-            <div className="sticky top-0 z-20 w-full">
+            <div className="w-full">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-medium">Testcases</h2>
                 <Button variant="secondary" type="button" onClick={addTestcase}>

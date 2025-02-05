@@ -33,10 +33,12 @@ const parseDateTime = (dateTimeString: string) =>
 
 const TaskResultCard: React.FC<OwnProps> = ({ title, taskAttempt }) => {
   const taskResult = taskAttempt.task_results[0];
+
   if (!taskResult) {
     // TODO: Consider rendering something
     return;
   }
+
   return (
     <Card>
       <CardHeader>
