@@ -1,6 +1,6 @@
 import { Choice, ProgrammingTask } from "@/api";
 
-type ChoiceWithoutOrder = Omit<Choice, "order_index">;
+export type ChoiceWithoutOrder = Omit<Choice, "order_index">;
 
 export const normaliseChoices = (
   oldChoices: ChoiceWithoutOrder[],
