@@ -121,8 +121,8 @@ export type MultipleResponseTaskResult = {
 };
 
 export type MultipleResponseTaskResultType = {
-    correct_choices: Array<number>;
-    incorrect_choices: Array<number>;
+    correct_choices: Array<string>;
+    incorrect_choices: Array<string>;
     num_choices: number;
 };
 
