@@ -7,6 +7,7 @@ import {
   UseFieldArrayReturn,
   useForm,
 } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
 import CheckboxField from "@/components/form/fields/checkbox-field";
@@ -22,7 +23,7 @@ const multipleResponseFormSchema = formWithChoicesSchema
   .extend({
     question: z.string().min(1, "Question cannot be empty"),
     expected_answer: z
-      .array(z.number())
+      .array(z.string().uuid())
       .nonempty("Correct choices cannot be empty"),
     autograde: z.boolean(),
   })
@@ -85,24 +86,29 @@ const MultipleResponseForm: React.FC<OwnProps> = ({
       form.setValue(
         "expected_answer",
         getValues().expected_answer.filter((i) => i !== choice.id) as [
-          number,
-          ...number[],
+          string,
+          ...string[],
         ],
       );
     } else {
-      form.setValue("expected_answer", [...getValues().expected_answer, index]);
+      form.setValue("expected_answer", [
+        ...getValues().expected_answer,
+        choice.id,
+      ]);
     }
 
     form.trigger("expected_answer");
   };
   const onDelete = (index: number) => {
+    const choice = choices.fields[index];
     choices.remove(index);
 
     setValue(
       "expected_answer",
-      getValues()
-        .expected_answer.filter((i) => i !== index)
-        .map((i) => (i < index ? index : index - 1)) as [number, ...number[]],
+      getValues().expected_answer.filter((i) => i !== choice.id) as [
+        string,
+        ...string[],
+      ],
     );
 
     trigger("expected_answer");
@@ -132,9 +138,7 @@ const MultipleResponseForm: React.FC<OwnProps> = ({
                 variant={"outline"}
                 type="button"
                 onClick={() => {
-                  const id = choices.fields.length
-                    ? Math.max(...choices.fields.map((choice) => choice.id)) + 1
-                    : 0;
+                  const id = uuidv4();
                   choices.append({ id, text: "" });
                 }}
               >

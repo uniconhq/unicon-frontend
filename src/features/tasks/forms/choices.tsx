@@ -14,7 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export type Choice = {
-  id: number;
+  id: string; // UUID
   genId: string;
   text: string;
 };
@@ -23,7 +23,7 @@ export const formWithChoicesSchema = z.object({
   choices: z
     .array(
       z.object({
-        id: z.number(),
+        id: z.string().uuid(),
         text: z.string().min(1, "Choice text cannot be empty"),
       }),
     )
@@ -74,7 +74,7 @@ const Choices: React.FC<OwnProps> = ({
                       className="mt-[2px] h-8 w-8"
                       iconClassName="h-6 w-6"
                       checked={isChecked(index)}
-                      onClick={() => onCheck(choice.id)}
+                      onClick={() => onCheck(index)}
                     />
                     <div className="flex-grow">
                       <TextField name={`choices[${index}].text`} />

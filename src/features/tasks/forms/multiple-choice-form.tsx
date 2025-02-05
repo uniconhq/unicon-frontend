@@ -8,6 +8,7 @@ import {
   UseFieldArrayReturn,
   useForm,
 } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
 import CheckboxField from "@/components/form/fields/checkbox-field";
@@ -22,7 +23,7 @@ import Choices, { formWithChoicesSchema, FormWithChoicesType } from "./choices";
 const multipleChoiceFormSchema = formWithChoicesSchema
   .extend({
     question: z.string().min(1, "Question cannot be empty"),
-    expected_answer: z.number().min(0, "Correct choice cannot be empty"),
+    expected_answer: z.string().uuid(),
     autograde: z.boolean(),
   })
   .refine(
@@ -36,7 +37,7 @@ export type MultipleChoiceFormType = z.infer<typeof multipleChoiceFormSchema>;
 const multipleChoiceFormDefault = {
   question: "",
   choices: [],
-  expected_answer: -1,
+  expected_answer: undefined,
   autograde: true,
 };
 
@@ -77,14 +78,15 @@ const MultipleChoiceForm: React.FC<OwnProps> = ({
   const isChecked = (index: number) =>
     form.getValues().choices[index].id === form.getValues().expected_answer;
 
-  const onCheck = (choiceId: number) => {
-    form.setValue("expected_answer", choiceId);
+  const onCheck = (index: number) => {
+    form.setValue("expected_answer", choices.fields[index].id);
     form.trigger("expected_answer");
   };
 
   const onDelete = (index: number) => {
     if (form.getValues().expected_answer === choices.fields[index].id) {
-      form.setValue("expected_answer", -1);
+      // @ts-expect-error clear the expected answer if the choice is deleted
+      form.setValue("expected_answer", undefined);
       trigger("expected_answer");
     }
     choices.remove(index);
@@ -114,9 +116,7 @@ const MultipleChoiceForm: React.FC<OwnProps> = ({
                 variant={"outline"}
                 type="button"
                 onClick={() => {
-                  const id = choices.fields.length
-                    ? Math.max(...choices.fields.map((choice) => choice.id)) + 1
-                    : 0;
+                  const id = uuidv4();
                   choices.append({ id, text: "" });
                 }}
               >
