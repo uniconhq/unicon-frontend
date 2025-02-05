@@ -83,7 +83,7 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
               <CheckboxField label="Restricted" name="restricted" />
             </div>
           </div>
-          <EditTasksDisplay tasks={problem.tasks} />
+          <EditTasksDisplay problemId={id} tasks={problem.tasks} />
         </div>
       </form>
     </Form>

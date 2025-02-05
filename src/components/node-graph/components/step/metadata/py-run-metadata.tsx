@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { PyRunFunctionStep } from "@/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  GraphActionType,
   GraphContext,
   GraphDispatchContext,
 } from "@/features/problems/components/tasks/graph-context";
@@ -14,7 +15,7 @@ type OwnProps = {
 };
 
 const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
-  const { isEditing } = useContext(GraphContext)!;
+  const { edit } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
   const [functionIdentifier, setFunctionIdentifier] = useState(
@@ -25,17 +26,18 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
 
   const onChange = (newFunctionIdentifier: string, allow_error: boolean) => {
     dispatch({
-      type: "UPDATE_STEP_EXCLUDING_SOCKETS",
-      stepId: step.id,
-      step: {
-        ...step,
-        function_identifier: newFunctionIdentifier,
-        allow_error: allow_error,
+      type: GraphActionType.UpdateStepMetadata,
+      payload: {
+        stepId: step.id,
+        stepMetadata: {
+          functionIdentifier: newFunctionIdentifier,
+          allow_error,
+        },
       },
     });
   };
 
-  return isEditing ? (
+  return edit ? (
     <>
       <div>
         function_identifier: "

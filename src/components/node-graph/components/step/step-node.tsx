@@ -5,8 +5,10 @@ import { GoDotFill } from "react-icons/go";
 import { StepSocket } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
+  GraphActionType,
   GraphContext,
   GraphDispatchContext,
+  SocketType,
 } from "@/features/problems/components/tasks/graph-context";
 import { Step } from "@/features/problems/components/tasks/types";
 import { StepNodeColorMap } from "@/lib/colors";
@@ -16,45 +18,39 @@ import { NodeSlot, NodeSlotGroup } from "../node-slot";
 import StepMetadata from "./metadata/step-metadata";
 
 export function StepNode({ data }: { data: Step }) {
-  const { isEditing } = useContext(GraphContext)!;
+  const { edit } = useContext(GraphContext)!;
   const dispatch = useContext(GraphDispatchContext)!;
 
   const isStepEditable = data.id !== 0;
-  const showEditElements = isEditing && isStepEditable;
+  const showEditElements = edit && isStepEditable;
 
   const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
     dispatch({
-      type: "UPDATE_STEP_SOCKET",
-      stepId: data.id,
-      oldSocketId,
-      newSocketId,
-      isInput: data.inputs.some((socket) => socket.id === oldSocketId),
+      type: GraphActionType.UpdateSocketId,
+      payload: { stepId: data.id, oldSocketId, newSocketId },
     });
   };
 
-  const addInputSocket = useCallback(() => {
-    dispatch({ type: "ADD_STEP_SOCKET", stepId: data.id, isInput: true });
-  }, [data.id, dispatch]);
+  const addSocket = useCallback(
+    (socketType: SocketType) => () => {
+      dispatch({
+        type: GraphActionType.AddSocket,
+        payload: { stepId: data.id, socketType },
+      });
+    },
+    [data.id, dispatch],
+  );
 
-  const addOutputSocket = useCallback(() => {
-    dispatch({ type: "ADD_STEP_SOCKET", stepId: data.id, isInput: false });
-  }, [data.id, dispatch]);
-
-  const deleteSocket = (isInput: boolean, socketId: string) => () => {
+  const deleteSocket = (socketId: string) => () => {
     dispatch({
-      type: "DELETE_STEP_SOCKET",
-      stepId: data.id,
-      socketId,
-      isInput,
+      type: GraphActionType.DeleteSocket,
+      payload: { stepId: data.id, socketId },
     });
   };
 
   const deleteStep = useCallback(
     () =>
-      dispatch({
-        type: "REMOVE_STEP",
-        stepId: data.id,
-      }),
+      dispatch({ type: GraphActionType.DeleteStep, payload: { id: data.id } }),
     [data.id, dispatch],
   );
 
@@ -97,15 +93,15 @@ export function StepNode({ data }: { data: Step }) {
         <div className="text-xs font-light">
           <div className="flex flex-row justify-between">
             <NodeSlotGroup>
-              {data.inputs.map((stepSocket: StepSocket) => (
+              {data.inputs.map((stepSocket: StepSocket, index: number) => (
                 <NodeSlot
-                  key={stepSocket.id}
+                  key={index}
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="target"
-                  isEditable={isEditing}
+                  edit={edit}
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
-                  onDeleteSocket={deleteSocket(true, stepSocket.id)}
+                  onDeleteSocket={deleteSocket(stepSocket.id)}
                 />
               ))}
               {showEditElements && (
@@ -113,7 +109,7 @@ export function StepNode({ data }: { data: Step }) {
                   size={"sm"}
                   className="ml-3 h-fit w-fit px-1 py-1"
                   variant={"secondary"}
-                  onClick={addInputSocket}
+                  onClick={addSocket(SocketType.Input)}
                   type="button"
                 >
                   <Plus className="h-2 w-2" />
@@ -121,15 +117,15 @@ export function StepNode({ data }: { data: Step }) {
               )}
             </NodeSlotGroup>
             <NodeSlotGroup>
-              {data.outputs.map((stepSocket: StepSocket) => (
+              {data.outputs.map((stepSocket: StepSocket, index: number) => (
                 <NodeSlot
-                  key={stepSocket.id}
+                  key={index}
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="source"
-                  isEditable={isEditing}
+                  edit={edit}
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
-                  onDeleteSocket={deleteSocket(false, stepSocket.id)}
+                  onDeleteSocket={deleteSocket(stepSocket.id)}
                 />
               ))}
               {showEditElements && (
@@ -137,7 +133,7 @@ export function StepNode({ data }: { data: Step }) {
                   size={"sm"}
                   className="mr-3 h-fit w-fit self-end px-1 py-1"
                   variant={"secondary"}
-                  onClick={addOutputSocket}
+                  onClick={addSocket(SocketType.Output)}
                   type="button"
                 >
                   <Plus className="h-2 w-2" />
