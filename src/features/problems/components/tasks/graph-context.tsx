@@ -142,7 +142,7 @@ const updateUserInputStep = (
 
 const addStep = (state: GraphState, { payload }: AddStepAction) => {
   const baseStep: Step = {
-    id: Math.max(...state.steps.map((node) => node.id), -1) + 1,
+    id: Math.max(...state.steps.map((node) => node.id), 0) + 1,
     type: payload.type,
     inputs: [{ id: "CONTROL.IN", data: null }],
     outputs: [{ id: "CONTROL.OUT", data: null }],
