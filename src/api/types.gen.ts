@@ -787,6 +787,31 @@ export type UpdateTaskResponses = {
     200: unknown;
 };
 
+export type RerunTaskAttemptData = {
+    body?: never;
+    path: {
+        attempt_id: number;
+    };
+    query?: never;
+    url: '/problems/attempts/{attempt_id}/rerun';
+};
+
+export type RerunTaskAttemptErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RerunTaskAttemptError = RerunTaskAttemptErrors[keyof RerunTaskAttemptErrors];
+
+export type RerunTaskAttemptResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type GetProblemTaskAttemptResultsData = {
     body?: never;
     path: {
