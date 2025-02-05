@@ -18,6 +18,7 @@ import {
   Problem,
   ProblemUpdate,
   ProgrammingTask,
+  rerunTaskAttempt,
   ShortAnswerTask,
   submitProblemTaskAttempt,
   updateProblem,
@@ -87,6 +88,21 @@ export const useDeleteTask = (problemId: number, taskId: number) => {
     mutationFn: () =>
       deleteTask({
         path: { id: problemId, task_id: taskId },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ContestQueryKeys.Problem, problemId],
+      });
+    },
+  });
+};
+
+export const useRerunTaskAttempt = (problemId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (attemptId: number) =>
+      rerunTaskAttempt({
+        path: { attempt_id: attemptId },
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
