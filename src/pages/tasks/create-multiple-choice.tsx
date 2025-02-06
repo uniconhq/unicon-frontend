@@ -1,12 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
 import { SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-import { useCreateTask } from "@/features/problems/queries";
+import { getProblemById, useCreateTask } from "@/features/problems/queries";
 import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
 
 import MultipleChoiceForm, {
   MultipleChoiceFormType,
 } from "../../features/tasks/forms/multiple-choice-form";
+import { Unauthorized } from "../error";
 
 const CreateMultipleChoice = () => {
   const problemId = useProblemId();
@@ -14,6 +16,11 @@ const CreateMultipleChoice = () => {
 
   const createTaskMutation = useCreateTask(problemId);
   const navigate = useNavigate();
+
+  const { data } = useQuery(getProblemById(problemId));
+  if (data && !data.edit) {
+    throw Unauthorized;
+  }
 
   const onSubmit: SubmitHandler<MultipleChoiceFormType> = async (data) => {
     createTaskMutation.mutate(

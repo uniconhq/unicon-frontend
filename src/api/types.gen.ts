@@ -179,6 +179,7 @@ export type OutputStep = {
 
 export type Problem = {
     name: string;
+    restricted: boolean;
     description: string;
     tasks: Array<({
         type?: 'PROGRAMMING_TASK';
@@ -196,13 +197,32 @@ export type ProblemBase = {
     name: string;
     description: string;
     project_id: number;
+    restricted: boolean;
 };
 
 export type ProblemOrm = {
     id: number;
     name: string;
     description: string;
+    restricted?: boolean;
     project_id: number;
+};
+
+export type ProblemPublic = {
+    name: string;
+    restricted: boolean;
+    description: string;
+    tasks: Array<({
+        type?: 'PROGRAMMING_TASK';
+    } & ProgrammingTask) | ({
+        type?: 'MULTIPLE_CHOICE_TASK';
+    } & MultipleChoiceTask) | ({
+        type?: 'MULTIPLE_RESPONSE_TASK';
+    } & MultipleResponseTask) | ({
+        type?: 'SHORT_ANSWER_TASK';
+    } & ShortAnswerTask)>;
+    edit: boolean;
+    make_submission: boolean;
 };
 
 export type ProgrammingTask = {
@@ -235,12 +255,24 @@ export type ProjectPublic = {
     name: string;
     id: number;
     roles: Array<RolePublic>;
+    view_own_submission: boolean;
+    view_others_submission: boolean;
+    view_roles: boolean;
+    add_roles: boolean;
+    edit_roles: boolean;
+    create_problems: boolean;
 };
 
 export type ProjectPublicWithProblems = {
     name: string;
     id: number;
     roles: Array<RolePublic>;
+    view_own_submission: boolean;
+    view_others_submission: boolean;
+    view_roles: boolean;
+    add_roles: boolean;
+    edit_roles: boolean;
+    create_problems: boolean;
     problems: Array<ProblemBase>;
 };
 
@@ -271,10 +303,6 @@ export type RequiredInput = {
     data: string | number | number | boolean | File;
 };
 
-export type RoleBase = {
-    name: string;
-};
-
 export type RoleCreate = {
     name: string;
 };
@@ -283,13 +311,47 @@ export type RolePublic = {
     name: string;
     id: number;
     project_id: number;
+    view_problems_access: boolean;
+    create_problems_access: boolean;
+    edit_problems_access: boolean;
+    delete_problems_access: boolean;
+    view_restricted_problems_access: boolean;
+    edit_restricted_problems_access: boolean;
+    delete_restricted_problems_access: boolean;
+    make_submission_access: boolean;
+    view_own_submission_access: boolean;
+    view_others_submission_access: boolean;
 };
 
 export type RolePublicWithInvitationKeys = {
     name: string;
     id: number;
     project_id: number;
+    view_problems_access: boolean;
+    create_problems_access: boolean;
+    edit_problems_access: boolean;
+    delete_problems_access: boolean;
+    view_restricted_problems_access: boolean;
+    edit_restricted_problems_access: boolean;
+    delete_restricted_problems_access: boolean;
+    make_submission_access: boolean;
+    view_own_submission_access: boolean;
+    view_others_submission_access: boolean;
     invitation_keys: Array<InvitationKeyPublic>;
+};
+
+export type RoleUpdate = {
+    name: string;
+    view_problems_access: boolean;
+    create_problems_access: boolean;
+    edit_problems_access: boolean;
+    delete_problems_access: boolean;
+    view_restricted_problems_access: boolean;
+    edit_restricted_problems_access: boolean;
+    delete_restricted_problems_access: boolean;
+    make_submission_access: boolean;
+    view_own_submission_access: boolean;
+    view_others_submission_access: boolean;
 };
 
 export type ShortAnswerTask = {
@@ -358,6 +420,7 @@ export type SubmissionPublic = {
     user_id: number;
     submitted_at: string | null;
     task_attempts: Array<TaskAttemptPublic>;
+    user: UserPublic;
 };
 
 export type TaskAttemptPublic = {
@@ -558,7 +621,7 @@ export type GetProblemResponses = {
     /**
      * Successful Response
      */
-    200: Problem;
+    200: ProblemPublic;
 };
 
 export type GetProblemResponse = GetProblemResponses[keyof GetProblemResponses];
@@ -1152,7 +1215,7 @@ export type DeleteRoleResponses = {
 };
 
 export type UpdateRoleData = {
-    body: RoleBase;
+    body: RoleUpdate;
     path: {
         id: number;
     };

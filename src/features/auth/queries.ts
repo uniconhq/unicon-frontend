@@ -11,5 +11,6 @@ export const getUserProfile = () => {
     queryKey: [UserQueryKeys.UserProfile],
     queryFn: () =>
       getUser({ withCredentials: true }).then((response) => response.data),
+    retry: false,
   });
 };

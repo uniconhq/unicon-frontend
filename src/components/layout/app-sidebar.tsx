@@ -10,7 +10,7 @@ import { AiFillSecurityScan } from "react-icons/ai";
 import { GoPeople, GoProject, GoProjectSymlink } from "react-icons/go";
 import { Link, useNavigate } from "react-router-dom";
 
-import { logout } from "@/api";
+import { logout, ProjectPublicWithProblems } from "@/api";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,7 +35,14 @@ const SIDEBAR_ITEMS = [
   { path: "/projects", icon: <GoProject />, label: "Projects" },
 ];
 
-const PROJECT_SIDEBAR_ITEMS = [
+type SidebarItem = {
+  path: string;
+  icon: JSX.Element;
+  label: string;
+  permission?: keyof Omit<ProjectPublicWithProblems, "problems">;
+};
+
+const PROJECT_SIDEBAR_ITEMS: SidebarItem[] = [
   {
     path: "",
     icon: <FileQuestion />,
@@ -50,11 +57,13 @@ const PROJECT_SIDEBAR_ITEMS = [
     path: "/users",
     icon: <GoPeople />,
     label: "Users",
+    permission: "view_own_submission",
   },
   {
     path: "/roles",
     icon: <AiFillSecurityScan />,
     label: "Roles",
+    permission: "view_roles",
   },
 ];
 
@@ -126,19 +135,27 @@ const AppSidebar: React.FC<OwnProps> = ({ pathname }) => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </SidebarMenuItem>
-              {PROJECT_SIDEBAR_ITEMS.map(({ icon, label, path }) => {
-                const fullPath = `/projects/${currentProjectId}${path}`;
-                return (
-                  <SidebarMenuItem key={path}>
-                    <SidebarMenuButton asChild isActive={pathname === fullPath}>
-                      <Link to={fullPath}>
-                        {icon}
-                        <span>{label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+              {PROJECT_SIDEBAR_ITEMS.map(
+                ({ icon, label, path, permission }) => {
+                  const fullPath = `/projects/${currentProjectId}${path}`;
+                  if (permission && !currentProject[permission]) {
+                    return;
+                  }
+                  return (
+                    <SidebarMenuItem key={path}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === fullPath}
+                      >
+                        <Link to={fullPath}>
+                          {icon}
+                          <span>{label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                },
+              )}
             </SidebarMenu>
           </SidebarGroup>
         )}
