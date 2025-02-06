@@ -7,13 +7,8 @@ export const NotFound = new Error("Not Found");
 const ERROR_404 =
   "Oops, it looks like the page you're looking for doesn't exist.";
 const ERROR_403 = "You are not authorized to view this page.";
-
-type OwnProps = {
-  error?: AxiosError | typeof Unauthorized | typeof NotFound;
-};
-
-const ErrorPage: React.FC<OwnProps> = () => {
-  const routeError = useRouteError();
+const ErrorPage = () => {
+  const error = useRouteError();
 
   let errorMessage = "An unexpected error has occurred.";
   let errorStatus = "Something went wrong :(";
@@ -27,10 +22,10 @@ const ErrorPage: React.FC<OwnProps> = () => {
     }
   }
 
-  if (routeError instanceof AxiosError) {
-    if (routeError.response) {
-      errorStatus = `[${routeError.response.status}] ${routeError.response.statusText}`;
-      switch (routeError.response.status) {
+  if (error instanceof AxiosError) {
+    if (error.response) {
+      errorStatus = `[${error.response.status}] ${error.response.statusText}`;
+      switch (error.response.status) {
         case 404:
           errorMessage = ERROR_404;
           break;
@@ -41,10 +36,10 @@ const ErrorPage: React.FC<OwnProps> = () => {
     }
   }
 
-  if (routeError === Unauthorized) {
+  if (error === Unauthorized) {
     errorStatus = `[403] Forbidden`;
     errorMessage = ERROR_403;
-  } else if (routeError === NotFound) {
+  } else if (error === NotFound) {
     errorStatus = `[404] Not Found`;
     errorMessage = ERROR_404;
   }
