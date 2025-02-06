@@ -37,7 +37,7 @@ const CreateProgramming = () => {
     );
   };
 
-  return <ProgrammingForm onSubmit={onSubmit} />;
+  return <ProgrammingForm title="New programming task" onSubmit={onSubmit} />;
 };
 
 export default CreateProgramming;

@@ -2,7 +2,13 @@ import { OnDragEndResponder } from "@hello-pangea/dnd";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import {
+  SubmitHandler,
+  useFieldArray,
+  UseFieldArrayReturn,
+  useForm,
+} from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
 import CheckboxField from "@/components/form/fields/checkbox-field";
@@ -12,41 +18,51 @@ import FormSection from "@/components/form/form-section";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 
-import Choices from "./choices";
+import Choices, { formWithChoicesSchema, FormWithChoicesType } from "./choices";
 
-const multipleChoiceFormSchema = z
-  .object({
+const multipleChoiceFormSchema = formWithChoicesSchema
+  .extend({
     question: z.string().min(1, "Question cannot be empty"),
-    choices: z.array(z.string()).nonempty("Choices cannot be empty"),
-    expected_answer: z.number().min(0, "Correct choice cannot be empty"),
+    expected_answer: z.string().uuid(),
     autograde: z.boolean(),
   })
   .refine(
     (data) =>
-      0 <= data.expected_answer && data.expected_answer < data.choices.length,
+      data.choices.map((choice) => choice.id).includes(data.expected_answer),
     {},
   );
 
 export type MultipleChoiceFormType = z.infer<typeof multipleChoiceFormSchema>;
+
 const multipleChoiceFormDefault = {
   question: "",
   choices: [],
-  expected_answer: -1,
+  expected_answer: undefined,
   autograde: true,
 };
 
 type OwnProps = {
+  title: string;
   initialValue?: MultipleChoiceFormType;
   onSubmit: SubmitHandler<MultipleChoiceFormType>;
 };
 
-const MultipleChoiceForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
+const MultipleChoiceForm: React.FC<OwnProps> = ({
+  title,
+  initialValue,
+  onSubmit,
+}) => {
   const form = useForm<MultipleChoiceFormType>({
     resolver: zodResolver(multipleChoiceFormSchema),
     defaultValues: initialValue ?? multipleChoiceFormDefault,
   });
 
-  const { formState, setValue, getValues, trigger } = form;
+  const { formState, trigger } = form;
+  const choices = useFieldArray({
+    control: form.control,
+    name: "choices",
+    keyName: "genId",
+  });
 
   const onDragEnd: OnDragEndResponder<string> = ({ source, destination }) => {
     if (!destination) {
@@ -56,62 +72,30 @@ const MultipleChoiceForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
       return;
     }
 
-    // swap the choice
-    const choice = getValues().choices[source.index];
-    const newChoices = [...getValues().choices];
-    newChoices.splice(source.index, 1);
-    newChoices.splice(destination.index, 0, choice);
-
-    // @ts-expect-error - it's okay for the user to delete all choices, just don't let them submit
-    form.setValue("choices", [...newChoices]);
-    trigger("choices");
-
-    // fix expected answer after the move
-    if (source.index == getValues().expected_answer) {
-      form.setValue("expected_answer", destination.index);
-    } else if (
-      source.index < getValues().expected_answer &&
-      destination.index >= getValues().expected_answer
-    ) {
-      setValue("expected_answer", getValues().expected_answer - 1);
-    } else if (
-      source.index > getValues().expected_answer &&
-      destination.index <= getValues().expected_answer
-    ) {
-      setValue("expected_answer", getValues().expected_answer + 1);
-    }
+    choices.move(source.index, destination.index);
   };
 
   const isChecked = (index: number) =>
-    index == form.getValues().expected_answer;
+    form.getValues().choices[index].id === form.getValues().expected_answer;
+
   const onCheck = (index: number) => {
-    form.setValue("expected_answer", index);
+    form.setValue("expected_answer", choices.fields[index].id);
     form.trigger("expected_answer");
   };
-  const onDelete = (index: number) => {
-    setValue(
-      "choices",
-      // @ts-expect-error - delete all choices - validation fails but its okay as long as user cant submit
-      getValues().choices.filter((_, i) => i !== index),
-    );
 
-    if (index == form.getValues().expected_answer) {
-      form.setValue("expected_answer", -1);
-    } else {
-      form.setValue(
-        "expected_answer",
-        form.getValues().expected_answer -
-          Number(index < form.getValues().expected_answer),
-      );
+  const onDelete = (index: number) => {
+    if (form.getValues().expected_answer === choices.fields[index].id) {
+      // @ts-expect-error clear the expected answer if the choice is deleted
+      form.setValue("expected_answer", undefined);
+      trigger("expected_answer");
     }
-    trigger("choices");
-    trigger("expected_answer");
+    choices.remove(index);
   };
 
   return (
     <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">New multiple choice task</h1>
+        <h1 className="text-2xl font-semibold">{title}</h1>
       </div>
       <Form {...form}>
         <form
@@ -132,8 +116,8 @@ const MultipleChoiceForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                 variant={"outline"}
                 type="button"
                 onClick={() => {
-                  setValue("choices", [...getValues().choices, ""]);
-                  trigger("choices");
+                  const id = uuidv4();
+                  choices.append({ id, text: "" });
                 }}
               >
                 <PlusIcon />
@@ -143,7 +127,13 @@ const MultipleChoiceForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
                 <ErrorAlert message="Select the correct option." />
               )}
               <Choices
-                choices={form.getValues().choices}
+                choices={
+                  choices as unknown as UseFieldArrayReturn<
+                    FormWithChoicesType,
+                    "choices",
+                    "genId"
+                  >
+                }
                 onDragEnd={onDragEnd}
                 onCheck={onCheck}
                 isChecked={isChecked}

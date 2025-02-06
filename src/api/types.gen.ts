@@ -9,6 +9,12 @@ export type BodyLoginAuthTokenPost = {
     client_secret?: string | null;
 };
 
+export type Choice = {
+    id: string;
+    order_index: number;
+    text: string;
+};
+
 export type Comparison = {
     operator: Operator;
     value: unknown;
@@ -74,9 +80,10 @@ export type MultipleChoiceTask = {
     id: number;
     type: 'MULTIPLE_CHOICE_TASK';
     autograde?: boolean;
+    order_index: number;
     question: string;
-    choices: Array<string>;
-    expected_answer: number;
+    choices: Array<Choice>;
+    expected_answer: string;
 };
 
 export type MultipleChoiceTaskResult = {
@@ -95,9 +102,10 @@ export type MultipleResponseTask = {
     id: number;
     type: 'MULTIPLE_RESPONSE_TASK';
     autograde?: boolean;
+    order_index: number;
     question: string;
-    choices: Array<string>;
-    expected_answer: Array<number>;
+    choices: Array<Choice>;
+    expected_answer: Array<string>;
 };
 
 export type MultipleResponseTaskResult = {
@@ -113,8 +121,8 @@ export type MultipleResponseTaskResult = {
 };
 
 export type MultipleResponseTaskResultType = {
-    correct_choices: Array<number>;
-    incorrect_choices: Array<number>;
+    correct_choices: Array<string>;
+    incorrect_choices: Array<string>;
     num_choices: number;
 };
 
@@ -225,10 +233,18 @@ export type ProblemPublic = {
     make_submission: boolean;
 };
 
+export type ProblemUpdate = {
+    name: string;
+    restricted: boolean;
+    description: string;
+    task_order: Array<TaskOrder>;
+};
+
 export type ProgrammingTask = {
     id: number;
     type: 'PROGRAMMING_TASK';
     autograde?: boolean;
+    order_index: number;
     question: string;
     environment: ComputeContext;
     required_inputs: Array<RequiredInput>;
@@ -358,6 +374,7 @@ export type ShortAnswerTask = {
     id: number;
     type: 'SHORT_ANSWER_TASK';
     autograde?: boolean;
+    order_index: number;
     question: string;
     expected_answer?: string | null;
 };
@@ -455,12 +472,24 @@ export type TaskOrm = {
     other_fields?: {
         [key: string]: unknown;
     };
+    updated_version_id: number | null;
+    order_index: number;
     problem_id: number;
+};
+
+export type TaskOrder = {
+    id: number;
+    order_index: number;
 };
 
 export type TaskResult = MultipleChoiceTaskResult | MultipleResponseTaskResult | ProgrammingTaskResult | ShortAnswerTaskResult;
 
 export type TaskType = 'MULTIPLE_CHOICE_TASK' | 'MULTIPLE_RESPONSE_TASK' | 'SHORT_ANSWER_TASK' | 'PROGRAMMING_TASK';
+
+export type TaskUpdate = {
+    task: ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask;
+    rerun: boolean;
+};
 
 export type Testcase = {
     nodes: Array<OutputStep | InputStep | PyRunFunctionStep | LoopStep | IfElseStep | StringMatchStep | ObjectAccessStep>;
@@ -627,7 +656,7 @@ export type GetProblemResponses = {
 export type GetProblemResponse = GetProblemResponses[keyof GetProblemResponses];
 
 export type UpdateProblemData = {
-    body: Problem;
+    body: ProblemUpdate;
     path: {
         id: number;
     };
@@ -678,6 +707,32 @@ export type AddTaskToProblemResponses = {
     200: unknown;
 };
 
+export type DeleteTaskData = {
+    body?: never;
+    path: {
+        task_id: number;
+        id: number;
+    };
+    query?: never;
+    url: '/problems/{id}/tasks/{task_id}';
+};
+
+export type DeleteTaskErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteTaskError = DeleteTaskErrors[keyof DeleteTaskErrors];
+
+export type DeleteTaskResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type SubmitProblemTaskAttemptData = {
     body: UserInput;
     path: {
@@ -705,6 +760,57 @@ export type SubmitProblemTaskAttemptResponses = {
 };
 
 export type SubmitProblemTaskAttemptResponse = SubmitProblemTaskAttemptResponses[keyof SubmitProblemTaskAttemptResponses];
+
+export type UpdateTaskData = {
+    body: TaskUpdate;
+    path: {
+        task_id: number;
+        id: number;
+    };
+    query?: never;
+    url: '/problems/{id}/tasks/{task_id}';
+};
+
+export type UpdateTaskErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateTaskError = UpdateTaskErrors[keyof UpdateTaskErrors];
+
+export type UpdateTaskResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type RerunTaskAttemptData = {
+    body?: never;
+    path: {
+        attempt_id: number;
+    };
+    query?: never;
+    url: '/problems/attempts/{attempt_id}/rerun';
+};
+
+export type RerunTaskAttemptErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RerunTaskAttemptError = RerunTaskAttemptErrors[keyof RerunTaskAttemptErrors];
+
+export type RerunTaskAttemptResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type GetProblemTaskAttemptResultsData = {
     body?: never;

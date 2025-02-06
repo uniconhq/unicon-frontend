@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { isRouteErrorResponse, Link, useRouteError } from "react-router-dom";
 
 export const Unauthorized = new Error("Unauthorized");
+export const NotFound = new Error("Not Found");
 
 const ERROR_404 =
   "Oops, it looks like the page you're looking for doesn't exist.";
@@ -38,6 +39,9 @@ const ErrorPage = () => {
   if (error === Unauthorized) {
     errorStatus = `[403] Forbidden`;
     errorMessage = ERROR_403;
+  } else if (error === NotFound) {
+    errorStatus = `[404] Not Found`;
+    errorMessage = ERROR_404;
   }
 
   return (

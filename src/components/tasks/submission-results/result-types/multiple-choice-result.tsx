@@ -1,18 +1,32 @@
-import { MultipleChoiceTaskResult } from "@/api";
+import { Choice, MultipleChoiceTaskResult, TaskAttemptPublic } from "@/api";
+
+import SubmittedChoices from "./submitted-choices";
 
 type OwnProps = {
-  taskResult: MultipleChoiceTaskResult;
+  taskAttempt: TaskAttemptPublic;
 };
 
-const MultipleChoiceResult: React.FC<OwnProps> = ({ taskResult }) => {
+const MultipleChoiceResult: React.FC<OwnProps> = ({ taskAttempt }) => {
+  const taskResults = taskAttempt.task_results as MultipleChoiceTaskResult[];
+  const taskResult = taskResults[0];
+
+  if (!taskResult || taskResult.result === null) {
+    return null;
+  }
+
+  const choices = taskAttempt.task.other_fields?.choices as unknown as Choice[];
+  const chosenAnswerId = taskAttempt.other_fields.user_input as string;
+  const correctAnswerId = taskAttempt.task.other_fields
+    ?.expected_answer as string;
+
   return (
-    <div>
-      {taskResult.result ? (
-        <div className="bg-green-800/50 p-2">Correct!</div>
-      ) : (
-        <div className="bg-red-800/50 p-2">Incorrect!</div>
-      )}
-    </div>
+    <SubmittedChoices
+      choices={choices.map((choice) => ({
+        text: choice.text,
+        isCorrect: correctAnswerId === choice.id,
+        wasChosen: chosenAnswerId === choice.id,
+      }))}
+    />
   );
 };
 

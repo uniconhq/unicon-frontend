@@ -25,7 +25,7 @@ export function NodeSlot({
   onEditSocketId,
   onDeleteSocket,
 }: NodeSlotProps) {
-  const [slotType, slotDirection, ...name] = id.split(".");
+  const [slotType] = id.split(".");
   const isControl = slotType === "CONTROL";
 
   const handleEditSocketId = (newSocketId: string) => {
@@ -67,15 +67,9 @@ export function NodeSlot({
                   "text-right": type === "source",
                 },
               ]}
-              value={
-                name.length ? name.join(".") : `${slotType}.${slotDirection}`
-              }
+              value={id}
               onChange={(newValue) => {
-                handleEditSocketId(
-                  name.length
-                    ? `${slotType}.${slotDirection}.${newValue}`
-                    : newValue,
-                );
+                handleEditSocketId(newValue);
               }}
             />
             <Button
@@ -89,9 +83,7 @@ export function NodeSlot({
             </Button>
           </div>
         ) : (
-          <span className="text-xs">
-            {name.length ? name.join(".") : `${slotType}.${slotDirection}`}
-          </span>
+          <span className="text-xs">{id}</span>
         ))}
     </div>
   );

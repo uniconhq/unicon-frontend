@@ -7,8 +7,8 @@ export function MultipleChoice({ task }: { task: MultipleChoiceTask }) {
       {task.question}
       <span className="text-xs font-medium text-gray-300">CHOICES</span>
       <ul className="list-inside list-disc space-y-2">
-        {task.choices.map((choice, index) => (
-          <li key={index}>{choice}</li>
+        {task.choices.map((choice) => (
+          <li key={choice.id}>{choice.text}</li>
         ))}
       </ul>
     </div>

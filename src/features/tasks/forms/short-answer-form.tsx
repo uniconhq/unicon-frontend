@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import CheckboxField from "@/components/form/fields/checkbox-field";
 import TextField from "@/components/form/fields/text-field";
+import TextareaField from "@/components/form/fields/textarea-field";
 import FormSection from "@/components/form/form-section";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -27,11 +28,16 @@ const shortAnswerFormDefault = {
 };
 
 type OwnProps = {
+  title: string;
   initialValue?: ShortAnswerFormType;
   onSubmit: SubmitHandler<ShortAnswerFormType>;
 };
 
-const ShortAnswerForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
+const ShortAnswerForm: React.FC<OwnProps> = ({
+  title,
+  initialValue,
+  onSubmit,
+}) => {
   const form = useForm<ShortAnswerFormType>({
     resolver: zodResolver(shortAnswerFormSchema),
     defaultValues: initialValue ?? shortAnswerFormDefault,
@@ -42,7 +48,7 @@ const ShortAnswerForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
   return (
     <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">New short answer task</h1>
+        <h1 className="text-2xl font-semibold">{title}</h1>
       </div>
       <Form {...form}>
         <form
@@ -50,7 +56,7 @@ const ShortAnswerForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
           className="flex flex-col gap-4"
         >
           <FormSection title="Task details">
-            <TextField label="Question" name="question" />
+            <TextareaField label="Question" name="question" />
           </FormSection>
           <hr />
           <FormSection title="Autograde?">
