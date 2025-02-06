@@ -38,6 +38,27 @@ export type GraphEdge = {
     to_socket_id: string;
 };
 
+export type GroupCreate = {
+    name: string;
+};
+
+export type GroupMemberPublicWithGroup = {
+    is_supervisor: boolean;
+    group: MiniGroupPublic;
+};
+
+export type GroupPublic = {
+    id: number;
+    name: string;
+    members: Array<MiniGroupMemberPublic>;
+};
+
+export type GroupUpdate = {
+    name: string;
+    members: Array<number>;
+    supervisors: Array<number>;
+};
+
 export type HttpValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -68,6 +89,21 @@ export type LoopStep = {
     inputs: Array<StepSocket>;
     outputs: Array<StepSocket>;
     type: StepType;
+};
+
+export type MiniGroupMemberPublic = {
+    is_supervisor: boolean;
+    user: UserPublic;
+};
+
+export type MiniGroupPublic = {
+    id: number;
+    name: string;
+};
+
+export type MiniProblemPublic = {
+    id: number;
+    name: string;
 };
 
 export type MultipleChoiceTask = {
@@ -256,11 +292,16 @@ export type ProjectPublic = {
     id: number;
     roles: Array<RolePublic>;
     view_own_submission: boolean;
+    view_supervised_submission: boolean;
     view_others_submission: boolean;
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
     create_problems: boolean;
+    view_groups: boolean;
+    create_groups: boolean;
+    edit_groups: boolean;
+    delete_groups: boolean;
 };
 
 export type ProjectPublicWithProblems = {
@@ -268,11 +309,16 @@ export type ProjectPublicWithProblems = {
     id: number;
     roles: Array<RolePublic>;
     view_own_submission: boolean;
+    view_supervised_submission: boolean;
     view_others_submission: boolean;
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
     create_problems: boolean;
+    view_groups: boolean;
+    create_groups: boolean;
+    edit_groups: boolean;
+    delete_groups: boolean;
     problems: Array<ProblemBase>;
 };
 
@@ -320,7 +366,12 @@ export type RolePublic = {
     delete_restricted_problems_access: boolean;
     make_submission_access: boolean;
     view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
     view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
 };
 
 export type RolePublicWithInvitationKeys = {
@@ -336,7 +387,12 @@ export type RolePublicWithInvitationKeys = {
     delete_restricted_problems_access: boolean;
     make_submission_access: boolean;
     view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
     view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
     invitation_keys: Array<InvitationKeyPublic>;
 };
 
@@ -351,7 +407,12 @@ export type RoleUpdate = {
     delete_restricted_problems_access: boolean;
     make_submission_access: boolean;
     view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
     view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
 };
 
 export type ShortAnswerTask = {
@@ -420,7 +481,8 @@ export type SubmissionPublic = {
     user_id: number;
     submitted_at: string | null;
     task_attempts: Array<TaskAttemptPublic>;
-    user: UserPublic;
+    user: UserPublicWithRolesAndGroups;
+    problem: MiniProblemPublic;
 };
 
 export type TaskAttemptPublic = {
@@ -498,10 +560,11 @@ export type UserPublic = {
     username: string;
 };
 
-export type UserPublicWithRoles = {
+export type UserPublicWithRolesAndGroups = {
     id: number;
     username: string;
     roles: Array<RolePublic>;
+    group_members: Array<GroupMemberPublicWithGroup>;
 };
 
 export type ValidationError = {
@@ -1101,10 +1164,64 @@ export type GetProjectUsersResponses = {
     /**
      * Successful Response
      */
-    200: Array<UserPublicWithRoles>;
+    200: Array<UserPublicWithRolesAndGroups>;
 };
 
 export type GetProjectUsersResponse = GetProjectUsersResponses[keyof GetProjectUsersResponses];
+
+export type GetProjectGroupsData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/projects/{id}/groups';
+};
+
+export type GetProjectGroupsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetProjectGroupsError = GetProjectGroupsErrors[keyof GetProjectGroupsErrors];
+
+export type GetProjectGroupsResponses = {
+    /**
+     * Successful Response
+     */
+    200: Array<GroupPublic>;
+};
+
+export type GetProjectGroupsResponse = GetProjectGroupsResponses[keyof GetProjectGroupsResponses];
+
+export type CreateGroupData = {
+    body: GroupCreate;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/projects/{id}/groups';
+};
+
+export type CreateGroupErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateGroupError = CreateGroupErrors[keyof CreateGroupErrors];
+
+export type CreateGroupResponses = {
+    /**
+     * Successful Response
+     */
+    200: GroupPublic;
+};
+
+export type CreateGroupResponse = CreateGroupResponses[keyof CreateGroupResponses];
 
 export type GetProjectSubmissionsData = {
     body?: never;
@@ -1288,3 +1405,82 @@ export type CreateInvitationKeyResponses = {
      */
     200: unknown;
 };
+
+export type DeleteGroupData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/groups/{id}';
+};
+
+export type DeleteGroupErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteGroupError = DeleteGroupErrors[keyof DeleteGroupErrors];
+
+export type DeleteGroupResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetGroupData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/groups/{id}';
+};
+
+export type GetGroupErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetGroupError = GetGroupErrors[keyof GetGroupErrors];
+
+export type GetGroupResponses = {
+    /**
+     * Successful Response
+     */
+    200: GroupPublic;
+};
+
+export type GetGroupResponse = GetGroupResponses[keyof GetGroupResponses];
+
+export type UpdateGroupData = {
+    body: GroupUpdate;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/groups/{id}';
+};
+
+export type UpdateGroupErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateGroupError = UpdateGroupErrors[keyof UpdateGroupErrors];
+
+export type UpdateGroupResponses = {
+    /**
+     * Successful Response
+     */
+    200: GroupPublic;
+};
+
+export type UpdateGroupResponse = UpdateGroupResponses[keyof UpdateGroupResponses];

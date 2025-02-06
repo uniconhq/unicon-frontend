@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
 
 import { ProblemOrm } from "@/api";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<ProblemOrm>[] = [
   {
@@ -9,8 +10,17 @@ export const columns: ColumnDef<ProblemOrm>[] = [
     header: "Problem ID",
   },
   {
-    accessorKey: "name",
     header: "Name",
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2">
+          <span>{row.original.name}</span>
+          {row.original.restricted && (
+            <Badge variant={"destructive"}>Restricted</Badge>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "description",

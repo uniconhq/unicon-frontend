@@ -2,12 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import AddRoleDialog from "@/features/projects/components/add-role-dialog";
 import { useProjectId } from "@/features/projects/hooks/use-id";
 import {
   getProjectById,
   getProjectRolesById,
 } from "@/features/projects/queries";
-import AddRoleDialog from "@/features/projects/table/roles/add-role-dialog";
 import RolePermissionsTable from "@/features/projects/table/roles/role-permissions-table";
 import RolesTable from "@/features/projects/table/roles/roles-table";
 
