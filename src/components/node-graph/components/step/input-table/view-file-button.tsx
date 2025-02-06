@@ -2,7 +2,10 @@ import { useContext } from "react";
 
 import { File, InputStep, StepSocket } from "@/api";
 import { Button } from "@/components/ui/button";
-import { GraphDispatchContext } from "@/features/problems/components/tasks/graph-context";
+import {
+  GraphActionType,
+  GraphDispatchContext,
+} from "@/features/problems/components/tasks/graph-context";
 
 type OwnProps = {
   step: InputStep;
@@ -19,9 +22,11 @@ const ViewFileButton: React.FC<OwnProps> = ({ step, socket }) => {
       variant={"secondary"}
       onClick={() => {
         dispatch({
-          type: "SELECT_STEP",
-          stepId: step.id,
-          socketId: socket.id,
+          type: GraphActionType.SelectSocket,
+          payload: {
+            stepId: step.id,
+            socketId: socket.id,
+          },
         });
       }}
     >

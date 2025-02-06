@@ -56,11 +56,9 @@ const RolePermissionsTable: React.FC<OwnProps> = ({ data, projectId }) => {
   const updateRolesMutation = useUpdateRoles(projectId);
 
   const onSave = () => {
-    console.log({ isThisOutdated: roles });
     updateRolesMutation.mutate(roles);
   };
 
-  console.log({ roles });
   if (!project) {
     return;
   }

@@ -84,6 +84,10 @@ const Submissions = () => {
     );
   }
 
+  if (!project) {
+    return;
+  }
+
   return (
     <div className="flex w-full flex-col px-8 py-6">
       <h1 className="text-2xl font-semibold">Submissions</h1>

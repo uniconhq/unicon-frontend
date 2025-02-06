@@ -132,12 +132,10 @@ export const useDeleteInvitationKey = (projectId: number, roleId: number) => {
 export const useUpdateRoles = (projectId: number) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (roles: Omit<RolePublic, "project_id">[]) => {
-      console.log({ mutationRoles: roles });
-      return Promise.all(
+    mutationFn: (roles: Omit<RolePublic, "project_id">[]) =>
+      Promise.all(
         roles.map((role) => updateRole({ body: role, path: { id: role.id } })),
-      );
-    },
+      ),
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [ProjectQueryKeys.Project, projectId, ProjectQueryKeys.Role],

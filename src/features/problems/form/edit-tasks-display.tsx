@@ -8,10 +8,11 @@ import { TaskType } from "@/features/problems/queries";
 import CreateTaskPopover from "./create-task-popover";
 
 type OwnProps = {
+  problemId: number;
   tasks: TaskType[];
 };
 
-const EditTasksDisplay: React.FC<OwnProps> = ({ tasks }) => {
+const EditTasksDisplay: React.FC<OwnProps> = ({ problemId, tasks }) => {
   return (
     <div>
       <h2 className="min-w-[200px] text-lg font-medium">Tasks</h2>
@@ -53,7 +54,7 @@ const EditTasksDisplay: React.FC<OwnProps> = ({ tasks }) => {
                     </div>
                   </CardTitle>
                   <CardContent className="p-0 py-2">
-                    <Task task={task} />
+                    <Task submit={false} problemId={problemId} task={task} />
                   </CardContent>
                 </CardHeader>
               </Card>

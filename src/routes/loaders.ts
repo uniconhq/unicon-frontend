@@ -2,7 +2,7 @@ import qs from "qs";
 import { Params } from "react-router-dom";
 
 import { getGroup, getProblem, getProject } from "@/api";
-import { client } from "@/api";
+import { client } from "@/api/client.gen";
 
 client.setConfig({
   baseURL: import.meta.env.VITE_BACKEND_URL,

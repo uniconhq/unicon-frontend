@@ -34,7 +34,7 @@ const InputMetadataRow: React.FC<OwnProps> = ({
   isEditable,
 }) => {
   return (
-    <TableRow key={socket.id}>
+    <TableRow>
       <TableCell>
         {isEditable && (
           <Button
@@ -96,13 +96,7 @@ const InputMetadataRow: React.FC<OwnProps> = ({
         )}
       </TableCell>
       <TableCell>
-        <NodeSlot
-          key={socket.id}
-          id={socket.id}
-          label=""
-          type="source"
-          hideLabel
-        />
+        <NodeSlot id={socket.id} label="" type="source" hideLabel />
       </TableCell>
     </TableRow>
   );
