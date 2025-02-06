@@ -18,9 +18,9 @@ const ErrorPage: React.FC<OwnProps> = () => {
   let errorMessage = "An unexpected error has occurred.";
   let errorStatus = "Something went wrong :(";
 
-  if (isRouteErrorResponse(routeError)) {
-    errorStatus = `[${routeError.status}] ${routeError.statusText}`;
-    switch (routeError.status) {
+  if (isRouteErrorResponse(error)) {
+    errorStatus = `[${error.status}] ${error.statusText}`;
+    switch (error.status) {
       case 404:
         errorMessage = ERROR_404;
         break;
