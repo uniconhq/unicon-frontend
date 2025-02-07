@@ -5,14 +5,19 @@ import { useContext, useState } from "react";
 import { InputStep, PyRunFunctionStep } from "@/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   GraphActionType,
   GraphContext,
   GraphDispatchContext,
 } from "@/features/problems/components/tasks/graph-context";
 import { getFunctions } from "@/features/problems/queries";
 import { isFile } from "@/lib/types";
-
-import NodeInput from "../node-input";
 
 type OwnProps = {
   step: PyRunFunctionStep;
@@ -43,12 +48,9 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
   const fileContent =
     fileSocket && isFile(fileSocket.data) ? fileSocket.data.content : undefined;
 
-  const { data: functionSignatures, error } = useQuery(
+  const { data: functionSignatures } = useQuery(
     getFunctions(fileContent ?? ""),
   );
-
-  // TODO: remove once something is done with this
-  console.log({ functionSignatures, error });
 
   const onChange = (newFunctionIdentifier: string, allow_error: boolean) => {
     dispatch({
@@ -61,20 +63,44 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
         },
       },
     });
+    if (newFunctionIdentifier !== step.function_identifier) {
+      const newFunctionSignature = functionSignatures?.find(
+        (signature) => signature.name === newFunctionIdentifier,
+      );
+      if (!newFunctionSignature) return;
+      dispatch({
+        type: GraphActionType.UpdateFunctionIdentifierStep,
+        payload: {
+          stepId: step.id,
+          functionIdentifier: newFunctionIdentifier,
+          functionSignature: newFunctionSignature,
+        },
+      });
+    }
   };
 
   return edit ? (
     <>
-      <div>
-        function_identifier: "
-        <NodeInput
+      <div className="flex items-center gap-2">
+        function_identifier:
+        <Select
           value={functionIdentifier}
-          onChange={(newFunctionIdentifier) => {
+          onValueChange={(newFunctionIdentifier) => {
             setFunctionIdentifier(newFunctionIdentifier);
             onChange(newFunctionIdentifier, allowError);
           }}
-        />
-        "
+        >
+          <SelectTrigger className="w-fit">
+            <SelectValue placeholder="Select a function" />
+          </SelectTrigger>
+          <SelectContent>
+            {functionSignatures?.map((signature) => (
+              <SelectItem key={signature.name} value={signature.name}>
+                {signature.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex items-center gap-2">
         allow_error:

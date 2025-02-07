@@ -1,7 +1,7 @@
 import { createContext, Dispatch } from "react";
 import { ImmerReducer } from "use-immer";
 
-import { GraphEdge, InputStep, StepType } from "@/api";
+import { GraphEdge, InputStep, ParsedFunction, StepType } from "@/api";
 import { isFile } from "@/lib/types";
 
 import { Step } from "./types";
@@ -33,6 +33,7 @@ export enum GraphActionType {
   DeselectSocket = "DESELECT_SOCKET",
   // Special actions
   UpdateUserInputStep = "UPDATE_USER_INPUT_STEP",
+  UpdateFunctionIdentifierStep = "UPDATE_FUNCTION_IDENTIFIER_STEP",
 }
 
 interface BaseGraphAction {
@@ -117,6 +118,15 @@ interface UpdateUserInputStepAction extends BaseGraphAction {
   payload: { step: InputStep };
 }
 
+interface UpdateFunctionIdentifierStepAction extends BaseGraphAction {
+  type: GraphActionType.UpdateFunctionIdentifierStep;
+  payload: {
+    stepId: number;
+    functionIdentifier: string;
+    functionSignature: ParsedFunction;
+  };
+}
+
 export type GraphAction =
   | AddStepAction
   | DeleteStepAction
@@ -129,7 +139,8 @@ export type GraphAction =
   | DeleteEdgeAction
   | SelectSocketAction
   | DeselectSocketAction
-  | UpdateUserInputStepAction;
+  | UpdateUserInputStepAction
+  | UpdateFunctionIdentifierStepAction;
 
 const updateUserInputStep = (
   state: GraphState,
@@ -137,6 +148,44 @@ const updateUserInputStep = (
 ) => {
   const userInputStepIdx = state.steps.findIndex((node) => node.id === 0);
   if (userInputStepIdx !== -1) state.steps[userInputStepIdx] = payload.step;
+  return state;
+};
+
+const updateFunctionIdentifierStep = (
+  state: GraphState,
+  { payload }: UpdateFunctionIdentifierStepAction,
+) => {
+  const stepIndex = state.steps.findIndex((node) => node.id === payload.stepId);
+  // 1. Update the identifier.
+  state.steps[stepIndex] = {
+    ...state.steps[stepIndex],
+    function_identifier: payload.functionIdentifier,
+  };
+  // 2. Remove all edges connected to the node except the file edge.
+  state.edges = state.edges.filter(
+    (edge) =>
+      edge.to_node_id !== payload.stepId ||
+      edge.to_socket_id === "DATA.IN.FILE",
+  );
+  // 3. Replace the input sockets with arguments of the new function signature.
+  const functionInputs = payload.functionSignature.args
+    .map((arg, index) => ({
+      id: `DATA.IN.ARG.${index}.${arg}`,
+      data: null,
+    }))
+    .concat(
+      payload.functionSignature.kwargs.map((kwarg) => ({
+        id: `DATA.IN.KWARG.${kwarg}`,
+        data: null,
+      })),
+    );
+
+  state.steps[stepIndex].inputs = [
+    { id: "CONTROL.IN", data: null },
+    { id: "DATA.IN.FILE", data: null },
+    ...functionInputs,
+  ];
+
   return state;
 };
 
@@ -384,6 +433,7 @@ const actionHandlers = {
   [GraphActionType.AddEdge]: addEdge,
   [GraphActionType.DeleteEdge]: deleteEdge,
   [GraphActionType.UpdateUserInputStep]: updateUserInputStep,
+  [GraphActionType.UpdateFunctionIdentifierStep]: updateFunctionIdentifierStep,
 };
 
 export const graphReducer: ImmerReducer<GraphState, GraphAction> = (

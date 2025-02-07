@@ -93,9 +93,11 @@ export function StepNode({ data }: { data: Step }) {
         <div className="text-xs font-light">
           <div className="flex flex-row justify-between">
             <NodeSlotGroup>
-              {data.inputs.map((stepSocket: StepSocket, index: number) => (
+              {data.inputs.map((stepSocket: StepSocket, _: number) => (
                 <NodeSlot
-                  key={index}
+                  // TODO: changing this to id is a regression, but is needed to show the correct socket id on dropdown change
+                  // the proper fix comes with the pending refactor of socket id formats
+                  key={stepSocket.id}
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="target"
