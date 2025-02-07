@@ -1,7 +1,13 @@
 import { createContext, Dispatch } from "react";
 import { ImmerReducer } from "use-immer";
 
-import { GraphEdge, InputStep, ParsedFunction, StepType } from "@/api";
+import {
+  GraphEdge,
+  InputStep,
+  ParsedFunction,
+  PyRunFunctionStep,
+  StepType,
+} from "@/api";
 import { isFile } from "@/lib/types";
 
 import { Step } from "./types";
@@ -33,7 +39,7 @@ export enum GraphActionType {
   DeselectSocket = "DESELECT_SOCKET",
   // Special actions
   UpdateUserInputStep = "UPDATE_USER_INPUT_STEP",
-  UpdateFunctionIdentifierStep = "UPDATE_FUNCTION_IDENTIFIER_STEP",
+  UpdatePyRunFunctionStep = "UPDATE_FUNCTION_IDENTIFIER_STEP",
 }
 
 interface BaseGraphAction {
@@ -118,12 +124,13 @@ interface UpdateUserInputStepAction extends BaseGraphAction {
   payload: { step: InputStep };
 }
 
-interface UpdateFunctionIdentifierStepAction extends BaseGraphAction {
-  type: GraphActionType.UpdateFunctionIdentifierStep;
+interface UpdatePyRunFunctionStepAction extends BaseGraphAction {
+  type: GraphActionType.UpdatePyRunFunctionStep;
   payload: {
     stepId: number;
     functionIdentifier: string;
-    functionSignature: ParsedFunction;
+    functionSignature?: ParsedFunction;
+    allowError: boolean;
   };
 }
 
@@ -140,7 +147,7 @@ export type GraphAction =
   | SelectSocketAction
   | DeselectSocketAction
   | UpdateUserInputStepAction
-  | UpdateFunctionIdentifierStepAction;
+  | UpdatePyRunFunctionStepAction;
 
 const updateUserInputStep = (
   state: GraphState,
@@ -151,40 +158,77 @@ const updateUserInputStep = (
   return state;
 };
 
-const updateFunctionIdentifierStep = (
+const updatePyRunFunctionStep = (
   state: GraphState,
-  { payload }: UpdateFunctionIdentifierStepAction,
+  { payload }: UpdatePyRunFunctionStepAction,
 ) => {
   const stepIndex = state.steps.findIndex((node) => node.id === payload.stepId);
-  // 1. Update the identifier.
-  state.steps[stepIndex] = {
-    ...state.steps[stepIndex],
-    function_identifier: payload.functionIdentifier,
-  };
-  // 2. Remove all edges connected to the node except the file edge.
-  state.edges = state.edges.filter(
-    (edge) =>
-      edge.to_node_id !== payload.stepId ||
-      edge.to_socket_id === "DATA.IN.FILE",
-  );
-  // 3. Replace the input sockets with arguments of the new function signature.
-  const functionInputs = payload.functionSignature.args
-    .map((arg, index) => ({
-      id: `DATA.IN.ARG.${index}.${arg}`,
-      data: null,
-    }))
-    .concat(
-      payload.functionSignature.kwargs.map((kwarg) => ({
-        id: `DATA.IN.KWARG.${kwarg}`,
-        data: null,
-      })),
-    );
+  const step = state.steps[stepIndex] as PyRunFunctionStep;
 
-  state.steps[stepIndex].inputs = [
-    { id: "CONTROL.IN", data: null },
-    { id: "DATA.IN.FILE", data: null },
-    ...functionInputs,
-  ];
+  // Detect changes
+  const functionIdentifierChanged =
+    step.function_identifier !== payload.functionIdentifier;
+  const functionSignatureChanged = payload.functionSignature !== undefined;
+  const allowErrorChanged = step.allow_error !== payload.allowError;
+
+  if (functionIdentifierChanged) {
+    // 1. Update the identifier.
+    state.steps[stepIndex] = {
+      ...state.steps[stepIndex],
+      function_identifier: payload.functionIdentifier,
+    };
+  }
+
+  if (functionSignatureChanged && payload.functionSignature) {
+    // 1. Remove all edges connected to the node except the file edge.
+    state.edges = state.edges.filter(
+      (edge) =>
+        edge.to_node_id !== payload.stepId ||
+        edge.to_socket_id === "DATA.IN.FILE",
+    );
+    // 2. Replace the input sockets with arguments of the new function signature.
+    const functionInputs = payload.functionSignature.args
+      .map((arg, index) => ({
+        id: `DATA.IN.ARG.${index}.${arg}`,
+        data: null,
+      }))
+      .concat(
+        payload.functionSignature.kwargs.map((kwarg) => ({
+          id: `DATA.IN.KWARG.${kwarg}`,
+          data: null,
+        })),
+      );
+
+    state.steps[stepIndex].inputs = [
+      { id: "CONTROL.IN", data: null },
+      { id: "DATA.IN.FILE", data: null },
+      ...functionInputs,
+    ];
+  }
+
+  if (allowErrorChanged) {
+    // If allow error is changed to true, add a new output socket.
+    // If allow error is changed to false, remove the output socket and outgoing edges.
+    state.steps[stepIndex] = {
+      ...state.steps[stepIndex],
+      allow_error: payload.allowError,
+    };
+    if (payload.allowError) {
+      state.steps[stepIndex].outputs.push({
+        id: "DATA.OUT.ERROR",
+        data: null,
+      });
+    } else {
+      state.steps[stepIndex].outputs = state.steps[stepIndex].outputs.filter(
+        (socket) => socket.id !== "DATA.OUT.ERROR",
+      );
+      state.edges = state.edges.filter(
+        (edge) =>
+          edge.from_node_id !== payload.stepId ||
+          edge.from_socket_id !== "DATA.OUT.ERROR",
+      );
+    }
+  }
 
   return state;
 };
@@ -433,7 +477,7 @@ const actionHandlers = {
   [GraphActionType.AddEdge]: addEdge,
   [GraphActionType.DeleteEdge]: deleteEdge,
   [GraphActionType.UpdateUserInputStep]: updateUserInputStep,
-  [GraphActionType.UpdateFunctionIdentifierStep]: updateFunctionIdentifierStep,
+  [GraphActionType.UpdatePyRunFunctionStep]: updatePyRunFunctionStep,
 };
 
 export const graphReducer: ImmerReducer<GraphState, GraphAction> = (

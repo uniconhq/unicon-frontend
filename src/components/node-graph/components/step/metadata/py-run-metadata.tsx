@@ -33,7 +33,7 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
     step.function_identifier,
   );
 
-  const [allowError, setAllowError] = useState(step.allow_error || false);
+  const [allowError, setAllowError] = useState(step.allow_error ?? false);
 
   const connections = useNodeConnections({
     handleType: "target",
@@ -52,31 +52,34 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
     getFunctions(fileContent ?? ""),
   );
 
-  const onChange = (newFunctionIdentifier: string, allow_error: boolean) => {
+  const onChange = (newFunctionIdentifier: string) => {
+    const newFunctionSignature = functionSignatures?.find(
+      (signature) => signature.name === newFunctionIdentifier,
+    );
+    if (!newFunctionSignature) return;
     dispatch({
-      type: GraphActionType.UpdateStepMetadata,
+      type: GraphActionType.UpdatePyRunFunctionStep,
       payload: {
         stepId: step.id,
-        stepMetadata: {
-          function_identifier: newFunctionIdentifier,
-          allow_error,
-        },
+        functionIdentifier: newFunctionIdentifier,
+        functionSignature: newFunctionSignature,
+        allowError: !!step.allow_error,
       },
     });
-    if (newFunctionIdentifier !== step.function_identifier) {
-      const newFunctionSignature = functionSignatures?.find(
-        (signature) => signature.name === newFunctionIdentifier,
-      );
-      if (!newFunctionSignature) return;
+  };
+
+  const onAllowErrorChange = () => {
+    setAllowError((allowError) => {
       dispatch({
-        type: GraphActionType.UpdateFunctionIdentifierStep,
+        type: GraphActionType.UpdatePyRunFunctionStep,
         payload: {
           stepId: step.id,
-          functionIdentifier: newFunctionIdentifier,
-          functionSignature: newFunctionSignature,
+          functionIdentifier,
+          allowError: !allowError,
         },
       });
-    }
+      return !allowError;
+    });
   };
 
   return edit ? (
@@ -87,7 +90,7 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
           value={functionIdentifier}
           onValueChange={(newFunctionIdentifier) => {
             setFunctionIdentifier(newFunctionIdentifier);
-            onChange(newFunctionIdentifier, allowError);
+            onChange(newFunctionIdentifier);
           }}
         >
           <SelectTrigger className="w-fit">
@@ -107,7 +110,7 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
         <Checkbox
           className="inline bg-transparent text-xs"
           checked={allowError}
-          onCheckedChange={() => setAllowError(!allowError)}
+          onCheckedChange={onAllowErrorChange}
         />
       </div>
     </>
