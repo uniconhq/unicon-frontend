@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNodeConnections, useNodesData } from "@xyflow/react";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, TriangleAlert } from "lucide-react";
 import { useContext, useState } from "react";
 
 import { InputStep, PyRunFunctionStep } from "@/api";
@@ -13,6 +13,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   GraphActionType,
   GraphContext,
@@ -84,6 +90,12 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
     });
   };
 
+  const isFunctionMissing =
+    functionIdentifier &&
+    !functionSignatures?.filter(
+      (signature) => signature.name === functionIdentifier,
+    ).length;
+
   return edit ? (
     <>
       <div className="flex items-center gap-2">
@@ -104,8 +116,26 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
                 {signature.name}
               </SelectItem>
             ))}
+            {isFunctionMissing && (
+              <SelectItem value={functionIdentifier}>
+                {functionIdentifier}
+              </SelectItem>
+            )}
           </SelectContent>
         </Select>
+        {isFunctionMissing && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TriangleAlert className="h-4 w-4 text-yellow-500" />
+              </TooltipTrigger>
+              <TooltipContent className="flex items-center gap-2">
+                <TriangleAlert className="h-4 w-4 text-yellow-600" /> Function
+                not found. Please check the file.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
         <Button
           size="sm"
           variant="secondary"
