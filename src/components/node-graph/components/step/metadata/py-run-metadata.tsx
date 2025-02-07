@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNodeConnections, useNodesData } from "@xyflow/react";
+import { RefreshCcw } from "lucide-react";
 import { useContext, useState } from "react";
 
 import { InputStep, PyRunFunctionStep } from "@/api";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -104,6 +106,16 @@ const PyRunMetadata: React.FC<OwnProps> = ({ step }) => {
             ))}
           </SelectContent>
         </Select>
+        <Button
+          size="sm"
+          variant="secondary"
+          type="button"
+          onClick={() => {
+            onChange(functionIdentifier);
+          }}
+        >
+          <RefreshCcw />
+        </Button>
       </div>
       <div className="flex items-center gap-2">
         allow_error:
