@@ -15,6 +15,7 @@ import {
   makeSubmission,
   MultipleChoiceTask,
   MultipleResponseTask,
+  parsePythonFunctions,
   Problem,
   ProblemUpdate,
   ProgrammingTask,
@@ -31,6 +32,7 @@ export enum ContestQueryKeys {
   Problem = "Problem",
   TaskResult = "TaskResult",
   Submission = "Submission",
+  File = "File",
 }
 
 export const useCreateProblem = (project_id: number) => {
@@ -197,5 +199,19 @@ export const useCreateSubmission = (problemId: number) => {
         }),
       );
     },
+  });
+};
+
+export const getFunctions = (content: string) => {
+  return queryOptions({
+    queryKey: [ContestQueryKeys.File, content],
+    queryFn: () =>
+      parsePythonFunctions({
+        body: {
+          content,
+        },
+      }).then((response) => response.data),
+    staleTime: Infinity,
+    enabled: !!content,
   });
 };
