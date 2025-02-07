@@ -23,6 +23,8 @@ export function StepNode({ data }: { data: Step }) {
 
   const isStepEditable = data.id !== 0;
   const showEditElements = edit && isStepEditable;
+  const allowEditSockets =
+    showEditElements && data.type !== "PY_RUN_FUNCTION_STEP";
 
   const handleEditSocketId = (oldSocketId: string) => (newSocketId: string) => {
     dispatch({
@@ -93,18 +95,21 @@ export function StepNode({ data }: { data: Step }) {
         <div className="text-xs font-light">
           <div className="flex flex-row justify-between">
             <NodeSlotGroup>
-              {data.inputs.map((stepSocket: StepSocket, index: number) => (
+              {data.inputs.map((stepSocket: StepSocket, _: number) => (
                 <NodeSlot
-                  key={index}
+                  // TODO: changing this to id is a regression, but is needed to show the correct socket id on dropdown change
+                  // the proper fix comes with the pending refactor of socket id formats
+                  key={stepSocket.id}
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="target"
-                  edit={edit}
+                  edit={edit && showEditElements}
+                  allowEditSockets={allowEditSockets}
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
                   onDeleteSocket={deleteSocket(stepSocket.id)}
                 />
               ))}
-              {showEditElements && (
+              {showEditElements && allowEditSockets && (
                 <Button
                   size={"sm"}
                   className="ml-3 h-fit w-fit px-1 py-1"
@@ -123,12 +128,13 @@ export function StepNode({ data }: { data: Step }) {
                   id={stepSocket.id}
                   label={stepSocket.id}
                   type="source"
-                  edit={edit}
+                  edit={edit && showEditElements}
+                  allowEditSockets={allowEditSockets}
                   onEditSocketId={handleEditSocketId(stepSocket.id)}
                   onDeleteSocket={deleteSocket(stepSocket.id)}
                 />
               ))}
-              {showEditElements && (
+              {showEditElements && allowEditSockets && (
                 <Button
                   size={"sm"}
                   className="mr-3 h-fit w-fit self-end px-1 py-1"

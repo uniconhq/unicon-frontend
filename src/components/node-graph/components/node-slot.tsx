@@ -13,6 +13,7 @@ interface NodeSlotProps {
   type: HandleType;
   hideLabel?: boolean;
   edit?: boolean;
+  allowEditSockets?: boolean;
   onEditSocketId?: (socketId: string) => void;
   onDeleteSocket?: () => void;
 }
@@ -22,6 +23,7 @@ export function NodeSlot({
   type,
   hideLabel = false,
   edit = false,
+  allowEditSockets = true,
   onEditSocketId,
   onDeleteSocket,
 }: NodeSlotProps) {
@@ -55,7 +57,7 @@ export function NodeSlot({
         }
       />
       {!hideLabel &&
-        (edit && !isControl ? (
+        (edit && allowEditSockets && !isControl ? (
           <div
             className={cn("flex grow justify-between gap-2", {
               "flex-row-reverse space-x-reverse": type === "source",
@@ -72,15 +74,17 @@ export function NodeSlot({
                 handleEditSocketId(newValue);
               }}
             />
-            <Button
-              size={"sm"}
-              className="h-fit w-fit px-1 py-1"
-              variant={"secondary"}
-              onClick={onDeleteSocket}
-              type="button"
-            >
-              <Trash className="h-2 w-2" />
-            </Button>
+            {allowEditSockets && (
+              <Button
+                size={"sm"}
+                className="h-fit w-fit px-1 py-1"
+                variant={"secondary"}
+                onClick={onDeleteSocket}
+                type="button"
+              >
+                <Trash className="h-2 w-2" />
+              </Button>
+            )}
           </div>
         ) : (
           <span className="text-xs">{id}</span>
