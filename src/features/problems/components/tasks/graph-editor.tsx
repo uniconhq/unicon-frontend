@@ -28,6 +28,11 @@ import {
 import { GraphEdge } from "@/api";
 import { StepNode } from "@/components/node-graph/components/step/step-node";
 import { Button } from "@/components/ui/button";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { cn } from "@/lib/utils";
 import getLayoutedElements from "@/utils/graph";
 
@@ -181,55 +186,60 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
 
   return (
     <div
-      className={cn("grid gap-1", className, {
-        "grid-cols-5": selectedSocketId,
+      className={cn(className, {
         "fixed inset-0 z-30 h-full bg-black/100 animate-in fade-in": expanded,
       })}
       data-state={expanded ? "open" : "closed"}
     >
-      {selectedSocketId && (
-        <div className="col-span-2">
-          <GraphFileEditor />
-        </div>
-      )}
-      <div className={selectedSocketId ? "col-span-3" : ""}>
-        <ReactFlow
-          id={graphId}
-          onInit={onInit}
-          nodeTypes={nodeTypes}
-          nodes={flowNodes}
-          edges={flowEdges}
-          onNodesChange={onFlowNodesChange}
-          onEdgesChange={onFlowEdgesChange}
-          onConnect={onConnect}
-          onReconnectStart={onReconnectStart}
-          onReconnectEnd={onReconnectEnd}
-          onReconnect={onReconnect}
-          nodesConnectable={edit}
-          colorMode="dark"
-          proOptions={{ hideAttribution: true }}
-        >
-          {/* Custom controls */}
-          <div
-            className={cn(
-              "absolute right-1 top-1 z-10 mt-4 flex space-x-1 px-2",
-              { "z-30": expanded },
-            )}
+      <ResizablePanelGroup direction="horizontal">
+        {selectedSocketId && (
+          <>
+            <ResizablePanel defaultSize={2} order={0}>
+              <GraphFileEditor />
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+          </>
+        )}
+
+        <ResizablePanel defaultSize={3} order={1}>
+          <ReactFlow
+            id={graphId}
+            onInit={onInit}
+            nodeTypes={nodeTypes}
+            nodes={flowNodes}
+            edges={flowEdges}
+            onNodesChange={onFlowNodesChange}
+            onEdgesChange={onFlowEdgesChange}
+            onConnect={onConnect}
+            onReconnectStart={onReconnectStart}
+            onReconnectEnd={onReconnectEnd}
+            onReconnect={onReconnect}
+            nodesConnectable={edit}
+            colorMode="dark"
+            proOptions={{ hideAttribution: true }}
           >
-            {edit && <AddNodeButton />}
-            <Button
-              onClick={() => setExpanded((prev) => !prev)}
-              type="button"
-              variant="outline"
+            {/* Custom controls */}
+            <div
+              className={cn(
+                "absolute right-1 top-1 z-10 mt-4 flex space-x-1 px-2",
+                { "z-30": expanded },
+              )}
             >
-              {expanded ? <ShrinkIcon /> : <ExpandIcon />}
-            </Button>
-          </div>
-          <Background variant={BackgroundVariant.Dots} />
-          <Controls showInteractive={edit} />
-          <MiniMap />
-        </ReactFlow>
-      </div>
+              {edit && <AddNodeButton />}
+              <Button
+                onClick={() => setExpanded((prev) => !prev)}
+                type="button"
+                variant="outline"
+              >
+                {expanded ? <ShrinkIcon /> : <ExpandIcon />}
+              </Button>
+            </div>
+            <Background variant={BackgroundVariant.Dots} />
+            <Controls showInteractive={edit} />
+            <MiniMap />
+          </ReactFlow>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 };
