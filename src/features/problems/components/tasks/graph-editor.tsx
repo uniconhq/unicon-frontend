@@ -104,13 +104,13 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
   }, [layoutApplied, rfInstance]);
 
   useEffect(() => {
-    setFlowNodes(
+    setFlowNodes((flowNodes) =>
       nodeData.map((node) => {
         const existingRfNode = flowNodes.find((n) => n.id === node.id);
         return existingRfNode ? { ...existingRfNode, data: node.data } : node;
       }),
     );
-  }, [nodeData, flowNodes, setFlowNodes]);
+  }, [nodeData, setFlowNodes]);
 
   useEffect(() => setFlowEdges(edgeData), [edgeData, setFlowEdges]);
 
