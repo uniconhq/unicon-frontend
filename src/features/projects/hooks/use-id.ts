@@ -9,3 +9,8 @@ export const useProblemId = () => {
   const { problemId: idStr } = useParams<"problemId">();
   return parseInt(idStr!);
 };
+
+export const useTaskId = () => {
+  const { taskId: idStr } = useParams<"taskId">();
+  return parseInt(idStr!);
+};

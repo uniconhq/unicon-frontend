@@ -18,7 +18,9 @@ const SubmissionResults = () => {
     refetchInterval: pending ? 5000 : false,
   });
 
-  const task_attempts = submission?.task_attempts;
+  const task_attempts = submission?.task_attempts.sort(
+    (a, b) => a.task.order_index - b.task.order_index,
+  );
 
   useEffect(() => {
     if (
@@ -39,7 +41,7 @@ const SubmissionResults = () => {
     : 0;
 
   return (
-    <div className="flex w-full flex-col gap-8 py-6">
+    <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-semibold">Submission (#{id})</h1>
         <Link to={`/projects/${projectId}/problems/${contest_id}`}>

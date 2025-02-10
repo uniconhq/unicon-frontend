@@ -3,5 +3,7 @@ node_modules
 
 # Build artifacts
 dist
+*.tsbuildinfo
+*.log
 
 **/.DS_Store

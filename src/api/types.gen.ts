@@ -9,6 +9,12 @@ export type BodyLoginAuthTokenPost = {
     client_secret?: string | null;
 };
 
+export type Choice = {
+    id: string;
+    order_index: number;
+    text: string;
+};
+
 export type Comparison = {
     operator: Operator;
     value: unknown;
@@ -36,6 +42,27 @@ export type GraphEdge = {
     from_socket_id: string;
     to_node_id: number;
     to_socket_id: string;
+};
+
+export type GroupCreate = {
+    name: string;
+};
+
+export type GroupMemberPublicWithGroup = {
+    is_supervisor: boolean;
+    group: MiniGroupPublic;
+};
+
+export type GroupPublic = {
+    id: number;
+    name: string;
+    members: Array<MiniGroupMemberPublic>;
+};
+
+export type GroupUpdate = {
+    name: string;
+    members: Array<number>;
+    supervisors: Array<number>;
 };
 
 export type HttpValidationError = {
@@ -70,13 +97,29 @@ export type LoopStep = {
     type: StepType;
 };
 
+export type MiniGroupMemberPublic = {
+    is_supervisor: boolean;
+    user: UserPublic;
+};
+
+export type MiniGroupPublic = {
+    id: number;
+    name: string;
+};
+
+export type MiniProblemPublic = {
+    id: number;
+    name: string;
+};
+
 export type MultipleChoiceTask = {
     id: number;
     type: 'MULTIPLE_CHOICE_TASK';
     autograde?: boolean;
+    order_index: number;
     question: string;
-    choices: Array<string>;
-    expected_answer: number;
+    choices: Array<Choice>;
+    expected_answer: string;
 };
 
 export type MultipleChoiceTaskResult = {
@@ -95,9 +138,10 @@ export type MultipleResponseTask = {
     id: number;
     type: 'MULTIPLE_RESPONSE_TASK';
     autograde?: boolean;
+    order_index: number;
     question: string;
-    choices: Array<string>;
-    expected_answer: Array<number>;
+    choices: Array<Choice>;
+    expected_answer: Array<string>;
 };
 
 export type MultipleResponseTaskResult = {
@@ -113,8 +157,8 @@ export type MultipleResponseTaskResult = {
 };
 
 export type MultipleResponseTaskResultType = {
-    correct_choices: Array<number>;
-    incorrect_choices: Array<number>;
+    correct_choices: Array<string>;
+    incorrect_choices: Array<string>;
     num_choices: number;
 };
 
@@ -144,10 +188,43 @@ export type OrganisationCreate = {
     description: string;
 };
 
+export type OrganisationInvitationKeyCreate = {
+    role: OrganisationRole;
+};
+
+export type OrganisationInvitationKeyPublic = {
+    id: number;
+    role: OrganisationRole;
+    key: string;
+};
+
+export type OrganisationJoinRequest = {
+    key: string;
+};
+
+export type OrganisationMemberPublic = {
+    user: UserPublic;
+    role: OrganisationRole;
+};
+
+export type OrganisationMemberUpdate = {
+    role: UpdatableRole;
+};
+
 export type OrganisationPublic = {
     name: string;
     description: string;
     id: number;
+};
+
+export type OrganisationPublicWithMembers = {
+    name: string;
+    description: string;
+    id: number;
+    owner: UserPublic;
+    members: Array<OrganisationMemberPublic>;
+    invitation_keys: Array<OrganisationInvitationKeyPublic> | null;
+    edit_roles: boolean;
 };
 
 export type OrganisationPublicWithProjects = {
@@ -155,7 +232,10 @@ export type OrganisationPublicWithProjects = {
     description: string;
     id: number;
     projects: Array<ProjectPublic>;
+    delete: boolean;
 };
+
+export type OrganisationRole = 'admin' | 'observer';
 
 export type OrganisationUpdate = {
     name: string;
@@ -225,10 +305,18 @@ export type ProblemPublic = {
     make_submission: boolean;
 };
 
+export type ProblemUpdate = {
+    name: string;
+    restricted: boolean;
+    description: string;
+    task_order: Array<TaskOrder>;
+};
+
 export type ProgrammingTask = {
     id: number;
     type: 'PROGRAMMING_TASK';
     autograde?: boolean;
+    order_index: number;
     question: string;
     environment: ComputeContext;
     required_inputs: Array<RequiredInput>;
@@ -256,11 +344,16 @@ export type ProjectPublic = {
     id: number;
     roles: Array<RolePublic>;
     view_own_submission: boolean;
+    view_supervised_submission: boolean;
     view_others_submission: boolean;
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
     create_problems: boolean;
+    view_groups: boolean;
+    create_groups: boolean;
+    edit_groups: boolean;
+    delete_groups: boolean;
 };
 
 export type ProjectPublicWithProblems = {
@@ -268,11 +361,16 @@ export type ProjectPublicWithProblems = {
     id: number;
     roles: Array<RolePublic>;
     view_own_submission: boolean;
+    view_supervised_submission: boolean;
     view_others_submission: boolean;
     view_roles: boolean;
     add_roles: boolean;
     edit_roles: boolean;
     create_problems: boolean;
+    view_groups: boolean;
+    create_groups: boolean;
+    edit_groups: boolean;
+    delete_groups: boolean;
     problems: Array<ProblemBase>;
 };
 
@@ -320,7 +418,12 @@ export type RolePublic = {
     delete_restricted_problems_access: boolean;
     make_submission_access: boolean;
     view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
     view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
 };
 
 export type RolePublicWithInvitationKeys = {
@@ -336,7 +439,12 @@ export type RolePublicWithInvitationKeys = {
     delete_restricted_problems_access: boolean;
     make_submission_access: boolean;
     view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
     view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
     invitation_keys: Array<InvitationKeyPublic>;
 };
 
@@ -351,13 +459,19 @@ export type RoleUpdate = {
     delete_restricted_problems_access: boolean;
     make_submission_access: boolean;
     view_own_submission_access: boolean;
+    view_supervised_submission_access: boolean;
     view_others_submission_access: boolean;
+    view_groups_access: boolean;
+    create_groups_access: boolean;
+    edit_groups_access: boolean;
+    delete_groups_access: boolean;
 };
 
 export type ShortAnswerTask = {
     id: number;
     type: 'SHORT_ANSWER_TASK';
     autograde?: boolean;
+    order_index: number;
     question: string;
     expected_answer?: string | null;
 };
@@ -420,7 +534,8 @@ export type SubmissionPublic = {
     user_id: number;
     submitted_at: string | null;
     task_attempts: Array<TaskAttemptPublic>;
-    user: UserPublic;
+    user: UserPublicWithRolesAndGroups;
+    problem: MiniProblemPublic;
 };
 
 export type TaskAttemptPublic = {
@@ -455,12 +570,24 @@ export type TaskOrm = {
     other_fields?: {
         [key: string]: unknown;
     };
+    updated_version_id: number | null;
+    order_index: number;
     problem_id: number;
+};
+
+export type TaskOrder = {
+    id: number;
+    order_index: number;
 };
 
 export type TaskResult = MultipleChoiceTaskResult | MultipleResponseTaskResult | ProgrammingTaskResult | ShortAnswerTaskResult;
 
 export type TaskType = 'MULTIPLE_CHOICE_TASK' | 'MULTIPLE_RESPONSE_TASK' | 'SHORT_ANSWER_TASK' | 'PROGRAMMING_TASK';
+
+export type TaskUpdate = {
+    task: ProgrammingTask | MultipleChoiceTask | MultipleResponseTask | ShortAnswerTask;
+    rerun: boolean;
+};
 
 export type Testcase = {
     nodes: Array<OutputStep | InputStep | PyRunFunctionStep | LoopStep | IfElseStep | StringMatchStep | ObjectAccessStep>;
@@ -482,6 +609,11 @@ export type Token = {
     user: UserPublic;
 };
 
+/**
+ * this is OrganisationRole + owner
+ */
+export type UpdatableRole = 'admin' | 'observer' | 'owner';
+
 export type UserCreate = {
     username: string;
     password: string;
@@ -498,10 +630,11 @@ export type UserPublic = {
     username: string;
 };
 
-export type UserPublicWithRoles = {
+export type UserPublicWithRolesAndGroups = {
     id: number;
     username: string;
     roles: Array<RolePublic>;
+    group_members: Array<GroupMemberPublicWithGroup>;
 };
 
 export type ValidationError = {
@@ -627,7 +760,7 @@ export type GetProblemResponses = {
 export type GetProblemResponse = GetProblemResponses[keyof GetProblemResponses];
 
 export type UpdateProblemData = {
-    body: Problem;
+    body: ProblemUpdate;
     path: {
         id: number;
     };
@@ -678,6 +811,32 @@ export type AddTaskToProblemResponses = {
     200: unknown;
 };
 
+export type DeleteTaskData = {
+    body?: never;
+    path: {
+        task_id: number;
+        id: number;
+    };
+    query?: never;
+    url: '/problems/{id}/tasks/{task_id}';
+};
+
+export type DeleteTaskErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteTaskError = DeleteTaskErrors[keyof DeleteTaskErrors];
+
+export type DeleteTaskResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type SubmitProblemTaskAttemptData = {
     body: UserInput;
     path: {
@@ -705,6 +864,57 @@ export type SubmitProblemTaskAttemptResponses = {
 };
 
 export type SubmitProblemTaskAttemptResponse = SubmitProblemTaskAttemptResponses[keyof SubmitProblemTaskAttemptResponses];
+
+export type UpdateTaskData = {
+    body: TaskUpdate;
+    path: {
+        task_id: number;
+        id: number;
+    };
+    query?: never;
+    url: '/problems/{id}/tasks/{task_id}';
+};
+
+export type UpdateTaskErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateTaskError = UpdateTaskErrors[keyof UpdateTaskErrors];
+
+export type UpdateTaskResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type RerunTaskAttemptData = {
+    body?: never;
+    path: {
+        attempt_id: number;
+    };
+    query?: never;
+    url: '/problems/attempts/{attempt_id}/rerun';
+};
+
+export type RerunTaskAttemptErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RerunTaskAttemptError = RerunTaskAttemptErrors[keyof RerunTaskAttemptErrors];
+
+export type RerunTaskAttemptResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type GetProblemTaskAttemptResultsData = {
     body?: never;
@@ -946,6 +1156,161 @@ export type CreateProjectResponses = {
 
 export type CreateProjectResponse = CreateProjectResponses[keyof CreateProjectResponses];
 
+export type GetOrganisationMembersData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/organisations/{id}/members';
+};
+
+export type GetOrganisationMembersErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetOrganisationMembersError = GetOrganisationMembersErrors[keyof GetOrganisationMembersErrors];
+
+export type GetOrganisationMembersResponses = {
+    /**
+     * Successful Response
+     */
+    200: OrganisationPublicWithMembers;
+};
+
+export type GetOrganisationMembersResponse = GetOrganisationMembersResponses[keyof GetOrganisationMembersResponses];
+
+export type CreateOrganisationInvitationKeyData = {
+    body: OrganisationInvitationKeyCreate;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/organisations/{id}/invitation_key';
+};
+
+export type CreateOrganisationInvitationKeyErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateOrganisationInvitationKeyError = CreateOrganisationInvitationKeyErrors[keyof CreateOrganisationInvitationKeyErrors];
+
+export type CreateOrganisationInvitationKeyResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type DeleteOrganisationInvitationKeyData = {
+    body?: never;
+    path: {
+        id: number;
+        key_id: number;
+    };
+    query?: never;
+    url: '/organisations/{id}/invitation_key/{key_id}';
+};
+
+export type DeleteOrganisationInvitationKeyErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteOrganisationInvitationKeyError = DeleteOrganisationInvitationKeyErrors[keyof DeleteOrganisationInvitationKeyErrors];
+
+export type DeleteOrganisationInvitationKeyResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type JoinOrganisationData = {
+    body: OrganisationJoinRequest;
+    path?: never;
+    query?: never;
+    url: '/organisations/join';
+};
+
+export type JoinOrganisationErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type JoinOrganisationError = JoinOrganisationErrors[keyof JoinOrganisationErrors];
+
+export type JoinOrganisationResponses = {
+    /**
+     * Successful Response
+     */
+    200: OrganisationPublic;
+};
+
+export type JoinOrganisationResponse = JoinOrganisationResponses[keyof JoinOrganisationResponses];
+
+export type DeleteMemberData = {
+    body?: never;
+    path: {
+        id: number;
+        user_id: number;
+    };
+    query?: never;
+    url: '/organisations/{id}/members/{user_id}';
+};
+
+export type DeleteMemberErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteMemberError = DeleteMemberErrors[keyof DeleteMemberErrors];
+
+export type DeleteMemberResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UpdateMemberData = {
+    body: OrganisationMemberUpdate;
+    path: {
+        id: number;
+        user_id: number;
+    };
+    query?: never;
+    url: '/organisations/{id}/members/{user_id}';
+};
+
+export type UpdateMemberErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateMemberError = UpdateMemberErrors[keyof UpdateMemberErrors];
+
+export type UpdateMemberResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type GetAllProjectsData = {
     body?: never;
     path?: never;
@@ -1101,10 +1466,64 @@ export type GetProjectUsersResponses = {
     /**
      * Successful Response
      */
-    200: Array<UserPublicWithRoles>;
+    200: Array<UserPublicWithRolesAndGroups>;
 };
 
 export type GetProjectUsersResponse = GetProjectUsersResponses[keyof GetProjectUsersResponses];
+
+export type GetProjectGroupsData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/projects/{id}/groups';
+};
+
+export type GetProjectGroupsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetProjectGroupsError = GetProjectGroupsErrors[keyof GetProjectGroupsErrors];
+
+export type GetProjectGroupsResponses = {
+    /**
+     * Successful Response
+     */
+    200: Array<GroupPublic>;
+};
+
+export type GetProjectGroupsResponse = GetProjectGroupsResponses[keyof GetProjectGroupsResponses];
+
+export type CreateGroupData = {
+    body: GroupCreate;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/projects/{id}/groups';
+};
+
+export type CreateGroupErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateGroupError = CreateGroupErrors[keyof CreateGroupErrors];
+
+export type CreateGroupResponses = {
+    /**
+     * Successful Response
+     */
+    200: GroupPublic;
+};
+
+export type CreateGroupResponse = CreateGroupResponses[keyof CreateGroupResponses];
 
 export type GetProjectSubmissionsData = {
     body?: never;
@@ -1288,3 +1707,82 @@ export type CreateInvitationKeyResponses = {
      */
     200: unknown;
 };
+
+export type DeleteGroupData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/groups/{id}';
+};
+
+export type DeleteGroupErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteGroupError = DeleteGroupErrors[keyof DeleteGroupErrors];
+
+export type DeleteGroupResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetGroupData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/groups/{id}';
+};
+
+export type GetGroupErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetGroupError = GetGroupErrors[keyof GetGroupErrors];
+
+export type GetGroupResponses = {
+    /**
+     * Successful Response
+     */
+    200: GroupPublic;
+};
+
+export type GetGroupResponse = GetGroupResponses[keyof GetGroupResponses];
+
+export type UpdateGroupData = {
+    body: GroupUpdate;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/groups/{id}';
+};
+
+export type UpdateGroupErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateGroupError = UpdateGroupErrors[keyof UpdateGroupErrors];
+
+export type UpdateGroupResponses = {
+    /**
+     * Successful Response
+     */
+    200: GroupPublic;
+};
+
+export type UpdateGroupResponse = UpdateGroupResponses[keyof UpdateGroupResponses];
