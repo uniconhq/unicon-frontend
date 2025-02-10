@@ -43,7 +43,7 @@ const programmingFormSchema = z.object({
   autograde: z.boolean().transform((val) => Boolean(val)),
   environment: z.object({
     language: z.literal("PYTHON"),
-    options: z.object({
+    extra_options: z.object({
       version: z.string(),
     }),
     time_limit_secs: z
@@ -65,7 +65,7 @@ const programmingFormDefault = {
   autograde: true,
   environment: {
     language: "PYTHON" as const,
-    options: {
+    extra_options: {
       version: "3.11.9",
     },
     time_limit_secs: 1,
@@ -76,11 +76,16 @@ const programmingFormDefault = {
 };
 
 type OwnProps = {
+  title: string;
   initialValue?: ProgrammingFormType;
   onSubmit: SubmitHandler<ProgrammingFormType>;
 };
 
-const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
+const ProgrammingForm: React.FC<OwnProps> = ({
+  title,
+  initialValue,
+  onSubmit,
+}) => {
   const form = useForm<ProgrammingFormType>({
     resolver: zodResolver(programmingFormSchema),
     defaultValues: initialValue ?? programmingFormDefault,
@@ -168,7 +173,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
   return (
     <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">New programming task</h1>
+        <h1 className="text-2xl font-semibold">{title}</h1>
       </div>
       <Form {...form}>
         <form
@@ -193,9 +198,9 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
               />
               <SelectField
                 label="Version"
-                name="environment.options.version"
+                name="environment.extra_options.version"
                 options={[{ label: "3.11.9", value: "3.11.9" }]}
-                disabled
+                // disabled
               />
             </div>
             <div className="flex gap-4">
@@ -259,7 +264,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({ initialValue, onSubmit }) => {
           </FormSection>
           <hr />
           <div className="flex w-full flex-col items-start">
-            <div className="sticky top-0 z-20 w-full">
+            <div className="w-full">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-medium">Testcases</h2>
                 <Button variant="secondary" type="button" onClick={addTestcase}>

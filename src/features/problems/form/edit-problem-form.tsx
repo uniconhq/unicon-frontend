@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -10,6 +10,7 @@ import TextField from "@/components/form/fields/text-field";
 import TextareaField from "@/components/form/fields/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useProjectId } from "@/features/projects/hooks/use-id";
 import { useToast } from "@/hooks/use-toast";
 
 import { useUpdateProblem } from "../queries";
@@ -39,10 +40,37 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
   });
 
   const toast = useToast();
+  const projectId = useProjectId();
+
+  const [taskOrder, setTaskOrder] = useState(
+    problem.tasks.map((task, index) => ({
+      id: task.id,
+      orderIndex: index,
+    })),
+  );
+
+  useEffect(() => {
+    setTaskOrder(
+      problem.tasks.map((task, index) => ({
+        id: task.id,
+        orderIndex: index,
+      })),
+    );
+  }, [problem.tasks]);
+
+  const sortedTasks = taskOrder.map(
+    (order) => problem.tasks.find((task) => task.id === order.id)!,
+  );
 
   const onSubmit: SubmitHandler<ProblemFormType> = async (data) => {
     updateProblemMutation.mutate(
-      { ...data, tasks: problem.tasks },
+      {
+        ...data,
+        task_order: taskOrder.map((order) => ({
+          id: order.id,
+          order_index: order.orderIndex,
+        })),
+      },
       {
         onSettled: (response) => {
           if (!response) {
@@ -83,7 +111,12 @@ const EditProblemForm: React.FC<OwnProps> = ({ id, problem }) => {
               <CheckboxField label="Restricted" name="restricted" />
             </div>
           </div>
-          <EditTasksDisplay problemId={id} tasks={problem.tasks} />
+          <EditTasksDisplay
+            tasks={sortedTasks}
+            problemId={id}
+            projectId={projectId}
+            handleUpdateOrder={setTaskOrder}
+          />
         </div>
       </form>
     </Form>

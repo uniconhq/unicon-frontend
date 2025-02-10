@@ -18,7 +18,9 @@ const SubmissionResults = () => {
     refetchInterval: pending ? 5000 : false,
   });
 
-  const task_attempts = submission?.task_attempts;
+  const task_attempts = submission?.task_attempts.sort(
+    (a, b) => a.task.order_index - b.task.order_index,
+  );
 
   useEffect(() => {
     if (

@@ -2,12 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Pencil, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { Task } from "@/components/tasks/task";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProblemById } from "@/features/problems/queries";
 import { useProblemId, useProjectId } from "@/features/projects/hooks/use-id";
+import TaskCard from "@/features/tasks/components/task-card";
 
 const Problem = () => {
   const projectId = useProjectId();
@@ -54,27 +53,15 @@ const Problem = () => {
       </div>
       <div className="flex flex-col gap-8">
         {data?.tasks.map((task, index) => (
-          <Card key={index} className="bg-inherit">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-4 font-mono">
-                <span className="text-lg font-medium">Task #{task.id + 1}</span>
-                <div className="flex items-center gap-2 text-xs text-gray-300">
-                  <span className="rounded-md border border-blue-700 p-2">
-                    {task.type}
-                  </span>
-                  {task.autograde && (
-                    <span className="rounded-md border border-green-700 p-2">
-                      Autograded
-                    </span>
-                  )}
-                </div>
-              </CardTitle>
-              <CardContent className="p-0 py-2">
-                {/* TODO: Access control */}
-                <Task submit={true} problemId={id} task={task} />
-              </CardContent>
-            </CardHeader>
-          </Card>
+          <TaskCard
+            index={index}
+            key={task.id}
+            task={task}
+            problemId={id}
+            projectId={projectId}
+            edit={false}
+            submit={data.make_submission}
+          />
         ))}
       </div>
     </div>

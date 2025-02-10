@@ -32,6 +32,7 @@ import CreateMultipleChoice from "@/pages/tasks/create-multiple-choice";
 import CreateMultipleResponse from "@/pages/tasks/create-multiple-response";
 import CreateProgramming from "@/pages/tasks/create-programming";
 import CreateShortAnswer from "@/pages/tasks/create-short-answer";
+import EditTask from "@/pages/tasks/edit-task";
 
 import { groupLoader, problemLoader, projectLoader } from "./loaders";
 
@@ -179,6 +180,23 @@ export const routes = [
                               {
                                 index: true,
                                 element: <EditProblem />,
+                              },
+                              {
+                                path: "tasks/:taskId",
+                                element: <EditTask />,
+                                loader: problemLoader,
+                                handle: {
+                                  crumb: (match: UIMatch<ProblemType>) => ({
+                                    label: `Task ${
+                                      (match.data.tasks.find(
+                                        (task) =>
+                                          task.id ===
+                                          Number(match.params.taskId),
+                                      )?.order_index ?? 0) + 1
+                                    }`,
+                                    href: `/projects/${match.params.projectId}/problems/${match.params.problemId}/edit`,
+                                  }),
+                                },
                               },
                               {
                                 path: "tasks/new",

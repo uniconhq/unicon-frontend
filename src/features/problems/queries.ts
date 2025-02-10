@@ -1,8 +1,13 @@
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import {
   addTaskToProblem,
   createProblem,
+  deleteTask,
   getProblem,
   getProblemTaskAttemptResults,
   getProjectSubmissions,
@@ -11,10 +16,13 @@ import {
   MultipleChoiceTask,
   MultipleResponseTask,
   Problem,
+  ProblemUpdate,
   ProgrammingTask,
+  rerunTaskAttempt,
   ShortAnswerTask,
   submitProblemTaskAttempt,
   updateProblem,
+  updateTask,
   UserInput,
 } from "@/api";
 
@@ -34,7 +42,7 @@ export const useCreateProblem = (project_id: number) => {
 
 export const useUpdateProblem = (problemId: number) => {
   return useMutation({
-    mutationFn: (data: Problem) =>
+    mutationFn: (data: ProblemUpdate) =>
       updateProblem({ body: data, path: { id: problemId } }),
   });
 };
@@ -47,8 +55,60 @@ export type TaskType =
 
 export const useCreateTask = (problemId: number) => {
   return useMutation({
-    mutationFn: (data: TaskType) =>
-      addTaskToProblem({ body: data, path: { id: problemId } }),
+    mutationFn: (data: Omit<TaskType, "order_index">) => {
+      // order_index is recalculated in the backend, this is just a dummy value
+      const payload = { ...data, order_index: 0 } as unknown as TaskType;
+      return addTaskToProblem({
+        body: payload,
+        path: { id: problemId },
+      });
+    },
+  });
+};
+
+export const useUpdateTask = (problemId: number, taskId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { task: TaskType; rerun: boolean }) =>
+      updateTask({
+        body: payload,
+        path: { id: problemId, task_id: taskId },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ContestQueryKeys.Problem, problemId],
+      });
+    },
+  });
+};
+
+export const useDeleteTask = (problemId: number, taskId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      deleteTask({
+        path: { id: problemId, task_id: taskId },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ContestQueryKeys.Problem, problemId],
+      });
+    },
+  });
+};
+
+export const useRerunTaskAttempt = (problemId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (attemptId: number) =>
+      rerunTaskAttempt({
+        path: { attempt_id: attemptId },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ContestQueryKeys.Problem, problemId],
+      });
+    },
   });
 };
 
