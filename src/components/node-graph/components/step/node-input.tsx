@@ -18,7 +18,7 @@ const NodeInput: React.FC<OwnProps> = ({ className = [], value, onChange }) => {
     <input
       type="text"
       className={cn(
-        "inline max-w-fit rounded-sm border border-gray-500/50 bg-transparent p-1 font-mono text-xs",
+        "nodrag inline max-w-fit rounded-sm border border-gray-500/50 bg-transparent p-1 font-mono text-xs",
         ...className,
       )}
       value={displayValue}
