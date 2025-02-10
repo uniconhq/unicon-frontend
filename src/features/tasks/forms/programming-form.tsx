@@ -4,13 +4,19 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
+import { useQuery } from "@tanstack/react-query";
 import { produce } from "immer";
 import { PlusIcon, Trash } from "lucide-react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useDebouncedCallback } from "use-debounce";
 import { z } from "zod";
 
-import { File as FileType, InputStep, Testcase as TestcaseApi } from "@/api";
+import {
+  File as FileType,
+  InputStep,
+  PythonVersion,
+  Testcase as TestcaseApi,
+} from "@/api";
 import CheckboxField from "@/components/form/fields/checkbox-field";
 import NumberField from "@/components/form/fields/number-field";
 import SelectField from "@/components/form/fields/select-field";
@@ -27,6 +33,7 @@ import {
   graphReducer,
 } from "@/features/problems/components/tasks/graph-context";
 import Testcase from "@/features/problems/components/tasks/testcase";
+import { getSupportedPythonVersions } from "@/features/problems/queries";
 
 const fileSchema = z.object({
   name: z.string(),
@@ -46,7 +53,7 @@ const programmingFormSchema = z.object({
   environment: z.object({
     language: z.literal("PYTHON"),
     extra_options: z.object({
-      version: z.string(),
+      version: z.custom<PythonVersion>(() => true),
       requirements: z.string(),
     }),
     time_limit_secs: z
@@ -86,7 +93,7 @@ const programmingFormDefault = {
   environment: {
     language: "PYTHON" as const,
     extra_options: {
-      version: "3.11.9",
+      version: "3.11.9" as PythonVersion,
       requirements: "",
     },
     time_limit_secs: 1,
@@ -112,7 +119,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({
     resolver: zodResolver(programmingFormSchema),
     defaultValues: initialValue ?? programmingFormDefault,
   });
-
+  const { data: versions } = useQuery(getSupportedPythonVersions());
   const inputs = useFieldArray({ control: form.control, name: "required_inputs" }); // prettier-ignore
   const testcases = useFieldArray({ control: form.control, name: "testcases" });
   const slurmArgs = useFieldArray({ control: form.control, name: "slurmArgs" });
@@ -194,6 +201,8 @@ const ProgrammingForm: React.FC<OwnProps> = ({
   };
 
   const args = form.watch("slurmArgs");
+  const validArgs = args.filter((arg) => arg.flag && arg.value);
+
   return (
     <div className="flex w-full flex-col gap-8 px-8 py-6">
       <div className="flex items-center justify-between">
@@ -223,7 +232,10 @@ const ProgrammingForm: React.FC<OwnProps> = ({
               <SelectField
                 label="Version"
                 name="environment.extra_options.version"
-                options={[{ label: "3.11.9", value: "3.11.9" }]}
+                options={(versions ?? []).map((version) => ({
+                  label: version,
+                  value: version,
+                }))}
                 // disabled
               />
               <NumberField
@@ -275,18 +287,19 @@ const ProgrammingForm: React.FC<OwnProps> = ({
                     </Button>
                   </div>
                 ))}
-                {args.length > 0 && (
+                {validArgs.length > 0 && (
                   <span className="text-gray-500">
                     Your code will be run on slurm with flags:{" "}
                     <code className="border px-2 font-mono">
-                      {args
-                        .filter((arg) => arg.flag && arg.value)
+                      {validArgs
                         .map((arg) => `${arg.flag} ${arg.value}`)
                         .reduce((acc, curr) => `${acc} ${curr}`, "")}
                     </code>
                   </span>
                 )}
-                {args.length === 0 && <EmptyPlaceholder description={""} />}
+                {args.length === 0 && (
+                  <EmptyPlaceholder description={"No arguments added."} />
+                )}
               </div>
             </div>
           </FormSection>

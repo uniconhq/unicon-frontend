@@ -26,9 +26,12 @@ export type ComputeContext = {
     memory_limit_mb: number;
     slurm?: boolean;
     slurm_options?: Array<string>;
-    extra_options?: {
-        [key: string]: string;
-    } | null;
+    extra_options?: ExtraOptions | null;
+};
+
+export type ExtraOptions = {
+    version?: PythonVersion | null;
+    requirements?: string | null;
 };
 
 export type File = {
@@ -396,6 +399,11 @@ export type PyRunFunctionStep = {
     allow_error?: boolean;
 };
 
+/**
+ * Ensure consistency with `uv python list`
+ */
+export type PythonVersion = '3.7.9' | '3.8.20' | '3.9.21' | '3.10.12' | '3.11.9' | '3.11.11' | '3.12.8' | '3.13.1';
+
 export type RequiredInput = {
     id: string;
     data: string | number | number | boolean | File;
@@ -731,6 +739,31 @@ export type GetUserResponses = {
 };
 
 export type GetUserResponse = GetUserResponses[keyof GetUserResponses];
+
+export type GetPythonVersionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/problems/python-versions';
+};
+
+export type GetPythonVersionsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetPythonVersionsError = GetPythonVersionsErrors[keyof GetPythonVersionsErrors];
+
+export type GetPythonVersionsResponses = {
+    /**
+     * Successful Response
+     */
+    200: Array<string>;
+};
+
+export type GetPythonVersionsResponse = GetPythonVersionsResponses[keyof GetPythonVersionsResponses];
 
 export type GetProblemData = {
     body?: never;
