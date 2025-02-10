@@ -1,7 +1,7 @@
 import qs from "qs";
 import { Params } from "react-router-dom";
 
-import { getGroup, getProblem, getProject } from "@/api";
+import { getGroup, getOrganisation, getProblem, getProject } from "@/api";
 import { client } from "@/api/client.gen";
 
 client.setConfig({
@@ -20,6 +20,16 @@ export const projectLoader = async ({
 }) => {
   const { projectId: id } = params;
   const response = await getProject({ path: { id: Number(id) } });
+  return response.data;
+};
+
+export const organisationLoader = async ({
+  params,
+}: {
+  params: Params<"organisationId">;
+}) => {
+  const { organisationId: id } = params;
+  const response = await getOrganisation({ path: { id: Number(id) } });
   return response.data;
 };
 

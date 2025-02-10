@@ -4,6 +4,7 @@ import { Navigate, UIMatch } from "react-router-dom";
 
 import {
   GroupPublic,
+  OrganisationPublicWithProjects,
   Problem as ProblemType,
   ProjectPublicWithProblems,
 } from "@/api";
@@ -14,6 +15,7 @@ import Error from "@/pages/error";
 import Login from "@/pages/login";
 import CreateOrganisation from "@/pages/organisations/create-organisation";
 import Organisation from "@/pages/organisations/organisation";
+import OrganisationUsers from "@/pages/organisations/organisation-users";
 import Organisations from "@/pages/organisations/organisations";
 import CreateProblem from "@/pages/problems/create-problem";
 import EditProblem from "@/pages/problems/edit-problem";
@@ -34,7 +36,12 @@ import CreateProgramming from "@/pages/tasks/create-programming";
 import CreateShortAnswer from "@/pages/tasks/create-short-answer";
 import EditTask from "@/pages/tasks/edit-task";
 
-import { groupLoader, problemLoader, projectLoader } from "./loaders";
+import {
+  groupLoader,
+  organisationLoader,
+  problemLoader,
+  projectLoader,
+} from "./loaders";
 
 export const routes = [
   {
@@ -53,15 +60,59 @@ export const routes = [
             path: "organisations",
             children: [
               { index: true, element: <Organisations /> },
-              { path: "new", element: <CreateOrganisation /> },
               {
-                path: ":id",
+                path: "new",
+                element: <CreateOrganisation />,
+                handle: {
+                  crumb: () => ({
+                    label: "New organisation",
+                    href: "/organisations/new",
+                  }),
+                },
+              },
+              {
+                path: ":organisationId",
                 children: [
-                  { index: true, element: <Organisation /> },
-                  { path: "projects/new", element: <CreateProject /> },
+                  {
+                    index: true,
+                    element: <Organisation />,
+                    handle: {
+                      crumb: () => ({
+                        label: "Projects",
+                      }),
+                    },
+                  },
+                  {
+                    path: "projects/new",
+                    element: <CreateProject />,
+                    handle: {
+                      crumb: () => ({
+                        label: "New project",
+                      }),
+                    },
+                  },
+                  {
+                    path: "users",
+                    element: <OrganisationUsers />,
+                    handle: {
+                      crumb: () => ({
+                        label: "Users",
+                      }),
+                    },
+                  },
                 ],
+                loader: organisationLoader,
+                handle: {
+                  crumb: (match: UIMatch<OrganisationPublicWithProjects>) => ({
+                    label: match.data.name,
+                    href: `/organisations/${match.data.id}`,
+                  }),
+                },
               },
             ],
+            // handle: {
+            //   crumb: () => ({ label: "Organisations", href: "/organisations" }),
+            // },
           },
           {
             path: "projects",
