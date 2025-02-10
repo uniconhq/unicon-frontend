@@ -1,19 +1,21 @@
 import { Link } from "react-router-dom";
 
+import { MiniProblemPublic } from "@/api";
+
 import { useProjectId } from "../../hooks/use-id";
 
 type OwnProps = {
-  problemId: number;
+  problem: MiniProblemPublic;
 };
 
-const ViewProblemButton = ({ problemId }: OwnProps) => {
+const ViewProblemButton = ({ problem }: OwnProps) => {
   const projectId = useProjectId();
   return (
     <Link
-      to={`/projects/${projectId}/problems/${problemId}`}
-      className="font-mono hover:text-purple-300 hover:underline"
+      to={`/projects/${projectId}/problems/${problem.id}`}
+      className="text-ellipsis text-nowrap hover:text-purple-300 hover:underline"
     >
-      #{problemId}
+      {problem.name}
     </Link>
   );
 };

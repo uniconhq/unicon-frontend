@@ -3,6 +3,7 @@ import {
   ChevronDown,
   ChevronUp,
   FileQuestion,
+  Group,
   ListChecks,
   User2,
 } from "lucide-react";
@@ -64,6 +65,12 @@ const PROJECT_SIDEBAR_ITEMS: SidebarItem[] = [
     icon: <AiFillSecurityScan />,
     label: "Roles",
     permission: "view_roles",
+  },
+  {
+    path: "/groups",
+    icon: <Group />,
+    label: "Groups",
+    permission: "view_groups",
   },
 ];
 

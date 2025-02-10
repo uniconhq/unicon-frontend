@@ -10,6 +10,11 @@ export const useProblemId = () => {
   return parseInt(idStr!);
 };
 
+export const useGroupId = () => {
+  const { groupId: groupIdStr } = useParams<"groupId">();
+  return parseInt(groupIdStr!);
+};
+
 export const useTaskId = () => {
   const { taskId: idStr } = useParams<"taskId">();
   return parseInt(idStr!);
