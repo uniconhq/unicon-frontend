@@ -11,6 +11,7 @@ import {
   getProblem,
   getProblemTaskAttemptResults,
   getProjectSubmissions,
+  getPythonVersions,
   getSubmission,
   makeSubmission,
   MultipleChoiceTask,
@@ -31,7 +32,16 @@ export enum ContestQueryKeys {
   Problem = "Problem",
   TaskResult = "TaskResult",
   Submission = "Submission",
+  PythonVersions = "PythonVersions",
 }
+
+export const getSupportedPythonVersions = () => {
+  return queryOptions({
+    queryKey: [ContestQueryKeys.PythonVersions],
+    queryFn: () => getPythonVersions().then((response) => response.data ?? []),
+    staleTime: Infinity,
+  });
+};
 
 export const useCreateProblem = (project_id: number) => {
   return useMutation({

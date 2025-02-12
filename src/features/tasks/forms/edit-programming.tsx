@@ -29,7 +29,13 @@ const EditProgramming: React.FC<OwnProps> = ({ task, problemId }) => {
   const updateTask = (data: ProgrammingFormType) => (rerun: boolean) => {
     updateTaskMutation.mutate(
       {
-        task: { ...task, ...data },
+        task: {
+          ...task,
+          ...data,
+          environment: {
+            ...data.environment,
+          },
+        },
         rerun,
       },
       {
@@ -59,8 +65,19 @@ const EditProgramming: React.FC<OwnProps> = ({ task, problemId }) => {
       <ProgrammingForm
         title="Edit programming task"
         onSubmit={onSubmit}
-        // @ts-expect-error version is defined because this is an edited task
-        initialValue={{ ...task, autograde: !!task.autograde }}
+        initialValue={{
+          ...task,
+          autograde: !!task.autograde,
+          environment: {
+            ...task.environment,
+            extra_options: {
+              ...task.environment.extra_options,
+              version: task.environment.extra_options?.version ?? "3.11.9",
+              requirements: task.environment.extra_options?.requirements ?? "",
+            },
+            slurm_options: task.environment.slurm_options ?? [],
+          },
+        }}
       />
     </>
   );
