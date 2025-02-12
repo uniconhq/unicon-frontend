@@ -56,6 +56,14 @@ const programmingFormSchema = z.object({
       version: z.custom<PythonVersion>(() => true),
       requirements: z.string(),
     }),
+    slurm_options: z.array(
+      z
+        .string()
+        .regex(
+          /^-{1,2}[^-]+/,
+          "Must start with - or -- and contain at least one character.",
+        ),
+    ),
     time_limit_secs: z
       .union([z.string(), z.number()])
       .transform((val) => Number(val))
@@ -70,17 +78,7 @@ const programmingFormSchema = z.object({
       }),
   }),
   required_inputs: z.array(requiredInputSchema),
-  slurmArgs: z.array(
-    z.object({
-      flag: z
-        .string()
-        .regex(
-          /^-{1,2}.+$/,
-          "Must start with - or -- and contain at least one character.",
-        ),
-      value: z.string().min(1),
-    }),
-  ),
+
   // TODO: no validation here
   testcases: z.array(z.custom<TestcaseApi>(() => true)),
 });
@@ -96,12 +94,12 @@ const programmingFormDefault = {
       version: "3.11.9" as PythonVersion,
       requirements: "",
     },
+    slurm_options: [],
     time_limit_secs: 1,
     memory_limit_mb: 256,
   },
   required_inputs: [],
   testcases: [],
-  slurmArgs: [],
 };
 
 type OwnProps = {
@@ -122,7 +120,6 @@ const ProgrammingForm: React.FC<OwnProps> = ({
   const { data: versions } = useQuery(getSupportedPythonVersions());
   const inputs = useFieldArray({ control: form.control, name: "required_inputs" }); // prettier-ignore
   const testcases = useFieldArray({ control: form.control, name: "testcases" });
-  const slurmArgs = useFieldArray({ control: form.control, name: "slurmArgs" });
 
   const userInputNode: InputStep = {
     id: 0,
@@ -130,6 +127,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({
     inputs: [],
     outputs: form.getValues("required_inputs"),
   };
+  console.log(form.getValues("environment.slurm_options"));
 
   const addTestcase = () => {
     const newId = Math.max(...form.watch("testcases").map((t) => t.id), -1) + 1;
@@ -200,8 +198,8 @@ const ProgrammingForm: React.FC<OwnProps> = ({
     });
   };
 
-  const args = form.watch("slurmArgs");
-  const validArgs = args.filter((arg) => arg.flag && arg.value);
+  const args = form.watch("environment.slurm_options");
+  const validArgs = args.filter((arg) => arg.startsWith("-"));
 
   return (
     <div className="flex w-full flex-col gap-8 px-8 py-6">
@@ -262,26 +260,34 @@ const ProgrammingForm: React.FC<OwnProps> = ({
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={() => slurmArgs.append({ flag: "", value: "" })}
+                  onClick={() =>
+                    form.setValue(
+                      "environment.slurm_options",
+                      form.getValues("environment.slurm_options").concat(""),
+                    )
+                  }
                 >
                   Add argument
                 </Button>
               </div>
               <div className="mt-4 flex flex-col gap-2">
-                {slurmArgs.fields.map((field, index) => (
-                  <div key={field.id} className="flex gap-4">
+                {form.getValues("environment.slurm_options").map((_, index) => (
+                  <div key={index} className="flex gap-4">
                     <TextField
-                      name={`slurmArgs.${index}.flag`}
-                      placeholder="--gpu"
-                    />
-                    <TextField
-                      name={`slurmArgs.${index}.value`}
-                      placeholder="a100-40"
+                      name={`environment.slurm_options.${index}`}
+                      placeholder="--gpus=a100-80"
                     />
                     <Button
                       type="button"
                       variant="destructive"
-                      onClick={() => slurmArgs.remove(index)}
+                      onClick={() =>
+                        form.setValue(
+                          "environment.slurm_options",
+                          form
+                            .getValues("environment.slurm_options")
+                            .filter((_, i) => i !== index),
+                        )
+                      }
                     >
                       <Trash />
                     </Button>
@@ -291,9 +297,7 @@ const ProgrammingForm: React.FC<OwnProps> = ({
                   <span className="text-gray-500">
                     Your code will be run on slurm with flags:{" "}
                     <code className="border px-2 font-mono">
-                      {validArgs
-                        .map((arg) => `${arg.flag} ${arg.value}`)
-                        .reduce((acc, curr) => `${acc} ${curr}`, "")}
+                      {validArgs.reduce((acc, curr) => `${acc} ${curr}`, "")}
                     </code>
                   </span>
                 )}

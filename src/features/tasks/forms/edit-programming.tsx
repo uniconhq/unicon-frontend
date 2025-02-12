@@ -34,9 +34,6 @@ const EditProgramming: React.FC<OwnProps> = ({ task, problemId }) => {
           ...data,
           environment: {
             ...data.environment,
-            slurm_options: data.slurmArgs
-              .map((arg) => [arg.flag, arg.value])
-              .flat(),
           },
         },
         rerun,
@@ -71,18 +68,6 @@ const EditProgramming: React.FC<OwnProps> = ({ task, problemId }) => {
         initialValue={{
           ...task,
           autograde: !!task.autograde,
-          slurmArgs:
-            task.environment.slurm_options?.flatMap((option, index) =>
-              // e.g slurm_options = ["--gpu", "a100-40"]
-              index % 2 === 0
-                ? [
-                    {
-                      flag: option,
-                      value: task.environment.slurm_options![index + 1],
-                    },
-                  ]
-                : [],
-            ) ?? [],
           environment: {
             ...task.environment,
             extra_options: {
@@ -90,6 +75,7 @@ const EditProgramming: React.FC<OwnProps> = ({ task, problemId }) => {
               version: task.environment.extra_options?.version ?? "3.11.9",
               requirements: task.environment.extra_options?.requirements ?? "",
             },
+            slurm_options: task.environment.slurm_options ?? [],
           },
         }}
       />
