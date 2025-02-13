@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { getUserProfile } from "@/features/auth/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
+import { Separator } from "../ui/separator";
 import Breadcrumb from "./breadcrumb";
 
 const Layout: React.FC<PropsWithChildren> = () => {
@@ -35,10 +36,11 @@ const Layout: React.FC<PropsWithChildren> = () => {
           <SidebarProvider>
             <AppSidebar pathname={pathname} />
             <main className="w-full">
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <SidebarTrigger />
+                <Separator orientation="vertical" className="mr-2 h-4" />
+                <Breadcrumb />
               </div>
-              <Breadcrumb />
               <Outlet />
             </main>
           </SidebarProvider>

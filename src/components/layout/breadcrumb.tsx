@@ -26,7 +26,7 @@ const Breadcrumb = () => {
   );
   const pathname = useLocation().pathname;
   return (
-    <ShadcnBreadcrumb className="px-8">
+    <ShadcnBreadcrumb>
       <BreadcrumbList>
         {matchesWithBreadcrumbs.map(
           (match: UIMatch<unknown, Handle>, index) => {
