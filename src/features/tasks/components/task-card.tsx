@@ -8,7 +8,6 @@ import { Task } from "@/components/tasks/task";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskType, useDeleteTask } from "@/features/problems/queries";
-import { cn } from "@/lib/utils";
 
 type OwnProps = {
   index: number;
@@ -55,9 +54,7 @@ const TaskCard: React.FC<OwnProps> = ({
       >
         <CardHeader>
           <CardTitle
-            className={cn("flex items-center justify-between font-mono", {
-              "-mx-6 -mt-6 bg-neutral-800 px-6 pb-4 pt-4": edit,
-            })}
+            className="-mx-6 -mt-6 flex items-center justify-between rounded-t-xl bg-neutral-800 px-6 pb-4 pt-4 font-mono"
             {...(provided?.dragHandleProps ?? {})}
           >
             <div className="flex items-center gap-4">
