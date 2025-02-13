@@ -14,6 +14,7 @@ const InputTable: React.FC<OwnProps> = ({ data, step }) => {
       columns={columns}
       data={data.map((row) => ({ ...row, step }))}
       hidePagination
+      hideOverflow
     />
   );
 };
