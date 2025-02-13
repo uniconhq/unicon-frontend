@@ -1,9 +1,9 @@
-import { MultipleChoiceTask } from "@/api";
+import { MultipleResponseTask } from "@/api";
 import TaskContainer from "@/features/tasks/components/task-container";
 import TaskSection from "@/features/tasks/components/task-section";
 import TaskSectionHeader from "@/features/tasks/components/task-section-header";
 
-export function MultipleChoice({ task }: { task: MultipleChoiceTask }) {
+export function MultipleResponse({ task }: { task: MultipleResponseTask }) {
   return (
     <TaskContainer>
       <TaskSection>
@@ -11,10 +11,10 @@ export function MultipleChoice({ task }: { task: MultipleChoiceTask }) {
         <span className="text-gray-300">{task.question}</span>
       </TaskSection>
       <TaskSection>
-        <TaskSectionHeader content="Choices" />
-        <ul className="list-inside list-disc space-y-2">
-          {task.choices.map((choice) => (
-            <li key={choice.id}>{choice.text}</li>
+        <TaskSectionHeader content="Options" />
+        <ul className="list-inside list-decimal space-y-2">
+          {task.choices.map((option) => (
+            <li key={option.id}>{option.text}</li>
           ))}
         </ul>
       </TaskSection>

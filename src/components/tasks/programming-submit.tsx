@@ -19,6 +19,8 @@ import {
   useCreateTaskAttempt,
   useRerunTaskAttempt,
 } from "@/features/problems/queries";
+import TaskSection from "@/features/tasks/components/task-section";
+import TaskSectionHeader from "@/features/tasks/components/task-section-header";
 
 import TaskResultCard from "./submission-results/task-result";
 
@@ -97,8 +99,8 @@ export function ProgrammingSubmitForm({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <span className="font-medium">SUBMISSION</span>
+      <TaskSection>
+        <TaskSectionHeader content="Submission" />
         <form onSubmit={handleSubmit(submitForm)}>
           {requiredInputs.map(({ id, name }) => (
             <div
@@ -117,9 +119,9 @@ export function ProgrammingSubmitForm({
             Submit
           </Button>
         </form>
-      </div>
-      <div className="flex flex-col gap-2">
-        <span className="font-medium">RESULTS</span>
+      </TaskSection>
+      <TaskSection>
+        <TaskSectionHeader content="Results" />
         <div className="relative flex flex-col gap-4">
           <div className="flex gap-4">
             <Select
@@ -208,7 +210,7 @@ export function ProgrammingSubmitForm({
             />
           ) : null}
         </div>
-      </div>
+      </TaskSection>
     </div>
   );
 }

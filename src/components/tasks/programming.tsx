@@ -2,6 +2,9 @@ import { useState } from "react";
 
 import { InputStep, ProgrammingTask } from "@/api";
 import Testcase from "@/features/problems/components/tasks/testcase";
+import TaskContainer from "@/features/tasks/components/task-container";
+import TaskSection from "@/features/tasks/components/task-section";
+import TaskSectionHeader from "@/features/tasks/components/task-section-header";
 
 import { Table, TableBody, TableCell, TableHead, TableRow } from "../ui/table";
 import ProgrammingSubmitForm from "./programming-submit";
@@ -27,13 +30,13 @@ export function Programming({
   );
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <span className="font-medium">QUESTION</span>
+    <TaskContainer>
+      <TaskSection>
+        <TaskSectionHeader content="Question" />
         <span className="text-gray-300">{task.question}</span>
-      </div>
-      <div className="flex flex-col gap-2">
-        <span className="font-medium">ENVIRONMENT</span>
+      </TaskSection>
+      <TaskSection>
+        <TaskSectionHeader content="Environment" />
         <div className="w-fit">
           <Table>
             <TableBody>
@@ -76,9 +79,9 @@ export function Programming({
             </TableBody>
           </Table>
         </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <span className="font-medium">TESTCASES</span>
+      </TaskSection>
+      <TaskSection>
+        <TaskSectionHeader content="Testcases" />
         <div className="flex gap-2 font-mono text-gray-300">
           {task.testcases.map((testcase, index) => (
             <Testcase
@@ -92,8 +95,8 @@ export function Programming({
             />
           ))}
         </div>
-      </div>
+      </TaskSection>
       {submit && <ProgrammingSubmitForm problemId={problemId} task={task} />}
-    </div>
+    </TaskContainer>
   );
 }
