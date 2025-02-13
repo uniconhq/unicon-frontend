@@ -4,8 +4,8 @@ import {
   ProgrammingTask,
   ShortAnswerTask,
 } from "@/api";
-import { MultipleResponse } from "@/components/tasks/multi-response";
 import { MultipleChoice } from "@/components/tasks/multiple-choice";
+import { MultipleResponse } from "@/components/tasks/multiple-response";
 import { Programming } from "@/components/tasks/programming";
 import { ShortAnswer } from "@/components/tasks/short-answer";
 

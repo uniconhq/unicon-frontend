@@ -28,17 +28,17 @@ const Layout: React.FC<PropsWithChildren> = () => {
   }, [setUser, userProfile, isLoading]);
 
   return (
-    <main className="flex h-screen w-screen flex-col overflow-y-scroll bg-[#141414] p-4">
+    <main className="flex h-screen w-screen flex-col overflow-y-scroll bg-[#141414]">
       <Toaster />
       <div className="flex max-h-screen w-full text-neutral-300">
         {user && (
           <SidebarProvider>
             <AppSidebar pathname={pathname} />
-            <main className="w-full">
-              <div className="flex justify-between">
+            <main className="w-full p-4">
+              <div className="flex items-center gap-2">
                 <SidebarTrigger />
+                <Breadcrumb />
               </div>
-              <Breadcrumb />
               <Outlet />
             </main>
           </SidebarProvider>

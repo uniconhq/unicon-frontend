@@ -11,7 +11,7 @@ import {
   SocketType,
 } from "@/features/problems/components/tasks/graph-context";
 import { Step } from "@/features/problems/components/tasks/types";
-import { StepNodeColorMap } from "@/lib/colors";
+import { StepNodeColorMap, StepTypeAliasMap } from "@/lib/colors";
 import { cn } from "@/lib/utils";
 
 import { NodeSlot, NodeSlotGroup } from "../node-slot";
@@ -71,7 +71,7 @@ export function StepNode({ data }: { data: Step }) {
             style={{ color: `${StepNodeColorMap[data.type]}` }}
             className="h-5 w-5"
           />
-          {data.type}
+          {StepTypeAliasMap[data.type]}
         </div>
         {showEditElements && (
           <Button

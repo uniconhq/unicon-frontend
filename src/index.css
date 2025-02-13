@@ -11,11 +11,6 @@
   transform: translate(0, 0);
 }
 
-/* makes edges appear above the nodes, useful for outputstep */
-.react-flow__node {
-  z-index: -1 !important;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -34,7 +29,7 @@
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
+    --border: 0 0% 30%;
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
     --chart-1: 12 76% 61%;
@@ -43,6 +38,8 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --xy-edge-stroke: grey;
+    --xy-edge-stroke-width: 2;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -61,7 +58,7 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
+    --border: 0 0% 30%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
     --chart-1: 220 70% 50%;
@@ -79,4 +76,18 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* This is so tables don't need overflow-auto to fix corner borders. */
+table > :first-child > :first-child > :first-child {
+  border-top-left-radius: 5px;
+}
+table > :first-child > :first-child > :last-child {
+  border-top-right-radius: 5px;
+}
+table > :last-child > :last-child > :first-child {
+  border-bottom-left-radius: 5px;
+}
+table > :last-child > :last-child > :last-child {
+  border-bottom-right-radius: 5px;
 }

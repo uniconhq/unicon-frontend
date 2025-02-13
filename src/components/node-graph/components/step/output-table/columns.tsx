@@ -10,7 +10,16 @@ export const columns: ColumnDef<OutputSocket>[] = [
     header: "",
     cell: ({ row }) => {
       const id = row.original.id;
-      return <NodeSlot key={id} id={id} label="" type="target" hideLabel />;
+      return (
+        <NodeSlot
+          key={id}
+          id={id}
+          label=""
+          type="target"
+          hideLabel
+          style={{ width: "20px", borderRadius: "10px", left: "-12px" }}
+        />
+      );
     },
   },
   {

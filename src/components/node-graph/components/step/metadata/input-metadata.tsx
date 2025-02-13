@@ -101,7 +101,7 @@ const InputMetadata: React.FC<OwnProps> = ({ step }) => {
   return (
     <div>
       <div className="rounded-md border">
-        <Table>
+        <Table hideOverflow>
           <TableHeader>
             <TableRow>
               <TableHead></TableHead>

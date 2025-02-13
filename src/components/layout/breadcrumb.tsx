@@ -10,6 +10,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+import { Separator } from "../ui/separator";
+
 type Handle = {
   crumb?: (match: UIMatch) => BreadcrumbPart;
 };
@@ -26,40 +28,45 @@ const Breadcrumb = () => {
   );
   const pathname = useLocation().pathname;
   return (
-    <ShadcnBreadcrumb className="px-8">
-      <BreadcrumbList>
-        {matchesWithBreadcrumbs.map(
-          (match: UIMatch<unknown, Handle>, index) => {
-            // Never happens, since filtered above.
-            if (!match.handle.crumb) {
-              return;
-            }
-            const part = match.handle.crumb(match);
-            return (
-              <React.Fragment key={match.id}>
-                {index !== 0 && <BreadcrumbSeparator />}
-                {index !== matchesWithBreadcrumbs.length - 1 && (
-                  <BreadcrumbItem>
-                    {part.href && part.href !== pathname ? (
-                      <BreadcrumbLink asChild>
-                        <Link to={part.href}>{part.label}</Link>
-                      </BreadcrumbLink>
-                    ) : (
-                      <span>{part.label}</span>
-                    )}
-                  </BreadcrumbItem>
-                )}
-                {index === matchesWithBreadcrumbs.length - 1 && (
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{part.label}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                )}
-              </React.Fragment>
-            );
-          },
-        )}
-      </BreadcrumbList>
-    </ShadcnBreadcrumb>
+    <>
+      {matchesWithBreadcrumbs.length > 0 && (
+        <Separator orientation="vertical" className="mr-2 h-4" />
+      )}
+      <ShadcnBreadcrumb>
+        <BreadcrumbList>
+          {matchesWithBreadcrumbs.map(
+            (match: UIMatch<unknown, Handle>, index) => {
+              // Never happens, since filtered above.
+              if (!match.handle.crumb) {
+                return;
+              }
+              const part = match.handle.crumb(match);
+              return (
+                <React.Fragment key={match.id}>
+                  {index !== 0 && <BreadcrumbSeparator />}
+                  {index !== matchesWithBreadcrumbs.length - 1 && (
+                    <BreadcrumbItem>
+                      {part.href && part.href !== pathname ? (
+                        <BreadcrumbLink asChild>
+                          <Link to={part.href}>{part.label}</Link>
+                        </BreadcrumbLink>
+                      ) : (
+                        <span>{part.label}</span>
+                      )}
+                    </BreadcrumbItem>
+                  )}
+                  {index === matchesWithBreadcrumbs.length - 1 && (
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{part.label}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  )}
+                </React.Fragment>
+              );
+            },
+          )}
+        </BreadcrumbList>
+      </ShadcnBreadcrumb>
+    </>
   );
 };
 

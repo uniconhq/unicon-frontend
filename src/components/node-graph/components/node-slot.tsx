@@ -1,4 +1,9 @@
-import { Handle, HandleType, Position as HandlePosition } from "@xyflow/react";
+import {
+  Handle,
+  HandleType,
+  Position as HandlePosition,
+  useNodeConnections,
+} from "@xyflow/react";
 import { Trash } from "lucide-react";
 import { twJoin } from "tailwind-merge";
 
@@ -15,6 +20,7 @@ interface NodeSlotProps {
   edit?: boolean;
   onEditSocketId?: (socketId: string) => void;
   onDeleteSocket?: () => void;
+  style?: React.CSSProperties;
 }
 
 export function NodeSlot({
@@ -24,27 +30,39 @@ export function NodeSlot({
   edit = false,
   onEditSocketId,
   onDeleteSocket,
+  style,
 }: NodeSlotProps) {
   const [slotType] = id.split(".");
   const isControl = slotType === "CONTROL";
-
   const handleEditSocketId = (newSocketId: string) => {
     if (onEditSocketId) {
       onEditSocketId(newSocketId);
     }
   };
 
+  const connections = useNodeConnections({
+    handleType: type,
+    handleId: id,
+  });
+  const hasConnections = connections.length > 0;
+
   return (
     <div
       className={twJoin(
-        "my-1 flex items-center space-x-2",
+        "relative my-1 flex items-center space-x-2",
         type === "source" && "flex-row-reverse space-x-reverse",
       )}
     >
       <Handle
-        style={{ border: "0", position: "static" }} // NOTE: Override default position to use flex positioning
+        style={{
+          width: "12px",
+          height: "12px",
+          backgroundColor: hasConnections ? "white" : "black",
+          border: "1px solid white",
+          ...(style ?? {}),
+        }} // NOTE: Override default position to use flex positioning
         className={twJoin(
-          "h-4 w-2 bg-neutral-700",
+          "bg-neutral-700",
           type === "target" && "rounded-bl-full rounded-tl-full",
           type === "source" && "rounded-br-full rounded-tr-full",
         )}

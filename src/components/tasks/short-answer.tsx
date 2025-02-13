@@ -1,10 +1,15 @@
 import { ShortAnswerTask } from "@/api";
+import TaskContainer from "@/features/tasks/components/task-container";
+import TaskSection from "@/features/tasks/components/task-section";
+import TaskSectionHeader from "@/features/tasks/components/task-section-header";
 
 export function ShortAnswer({ task }: { task: ShortAnswerTask }) {
   return (
-    <div className="flex flex-col gap-4">
-      <span className="text-xs font-medium text-gray-300">QUESTION</span>
-      {task.question}
-    </div>
+    <TaskContainer>
+      <TaskSection>
+        <TaskSectionHeader content="Question" />
+        <span className="text-gray-300">{task.question}</span>
+      </TaskSection>
+    </TaskContainer>
   );
 }

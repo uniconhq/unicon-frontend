@@ -31,7 +31,16 @@ export const columns: ColumnDef<StepSocket & { step: InputStep }>[] = [
     header: "",
     cell: ({ row }) => {
       const id = row.original.id;
-      return <NodeSlot key={id} id={id} label="" type="source" hideLabel />;
+      return (
+        <NodeSlot
+          key={id}
+          id={id}
+          label=""
+          type="source"
+          hideLabel
+          style={{ width: "20px", borderRadius: "10px", right: "-12px" }}
+        />
+      );
     },
   },
 ];
