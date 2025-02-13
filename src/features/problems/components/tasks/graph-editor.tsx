@@ -215,6 +215,7 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
             onReconnectEnd={onReconnectEnd}
             onReconnect={onReconnect}
             nodesConnectable={edit}
+            edgesReconnectable={edit}
             colorMode="dark"
             proOptions={{ hideAttribution: true }}
           >
@@ -234,7 +235,12 @@ const GraphEditor: React.FC<GraphEditorProps> = ({ graphId, className }) => {
                 {expanded ? <ShrinkIcon /> : <ExpandIcon />}
               </Button>
             </div>
-            <Background variant={BackgroundVariant.Dots} />
+            <Background
+              variant={BackgroundVariant.Dots}
+              style={{
+                backgroundColor: "#1c1c1c",
+              }}
+            />
             <Controls showInteractive={edit} />
             <MiniMap />
           </ReactFlow>

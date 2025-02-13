@@ -33,7 +33,13 @@ const OutputMetadataRow: React.FC<OwnProps> = ({
   return (
     <TableRow>
       <TableCell>
-        <NodeSlot id={socket.id} label="" type="target" hideLabel />
+        <NodeSlot
+          id={socket.id}
+          label=""
+          type="target"
+          hideLabel
+          style={{ width: "20px", borderRadius: "10px", left: "-10px" }}
+        />
       </TableCell>
       <TableCell>
         {isEditable ? (

@@ -96,7 +96,13 @@ const InputMetadataRow: React.FC<OwnProps> = ({
         )}
       </TableCell>
       <TableCell>
-        <NodeSlot id={socket.id} label="" type="source" hideLabel />
+        <NodeSlot
+          style={{ width: "20px", borderRadius: "10px", right: "-10px" }}
+          id={socket.id}
+          label=""
+          type="source"
+          hideLabel
+        />
       </TableCell>
     </TableRow>
   );

@@ -11,11 +11,6 @@
   transform: translate(0, 0);
 }
 
-/* makes edges appear above the nodes, useful for outputstep */
-.react-flow__node {
-  z-index: -1 !important;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -43,6 +38,8 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --xy-edge-stroke: grey;
+    --xy-edge-stroke-width: 2;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -79,4 +76,18 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* This is so tables don't need overflow-auto to fix corner borders. */
+table > :first-child > :first-child > :first-child {
+  border-top-left-radius: 5px;
+}
+table > :first-child > :first-child > :last-child {
+  border-top-right-radius: 5px;
+}
+table > :last-child > :last-child > :first-child {
+  border-bottom-left-radius: 5px;
+}
+table > :last-child > :last-child > :last-child {
+  border-bottom-right-radius: 5px;
 }
