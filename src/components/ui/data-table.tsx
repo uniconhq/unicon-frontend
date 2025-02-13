@@ -32,12 +32,14 @@ interface DataTableProps<TData extends ExtendedData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   hidePagination?: boolean;
+  hideOverflow?: boolean;
 }
 
 export function DataTable<TData extends ExtendedData, TValue>({
   columns,
   data,
   hidePagination = false,
+  hideOverflow = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
@@ -53,7 +55,7 @@ export function DataTable<TData extends ExtendedData, TValue>({
   return (
     <div>
       <div>
-        <Table>
+        <Table hideOverflow={hideOverflow}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
