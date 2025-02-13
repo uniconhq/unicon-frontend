@@ -3,6 +3,7 @@ import { useState } from "react";
 import { InputStep, ProgrammingTask } from "@/api";
 import Testcase from "@/features/problems/components/tasks/testcase";
 
+import { Table, TableBody, TableCell, TableHead, TableRow } from "../ui/table";
 import ProgrammingSubmitForm from "./programming-submit";
 
 export function Programming({
@@ -33,16 +34,47 @@ export function Programming({
       </div>
       <div className="flex flex-col gap-2">
         <span className="font-medium">ENVIRONMENT</span>
-        <div className="flex flex-col gap-2 font-mono text-sm text-gray-300">
-          <span>Language: {task.environment.language}</span>
-          <span>Time Limit: {task.environment.time_limit_secs}s</span>
-          <span>Memory Limit: {task.environment.memory_limit_mb}MB</span>
-          {task.environment.extra_options && (
-            <span>
-              Extra Options:{" "}
-              {JSON.stringify(task.environment.extra_options, null, 4)}
-            </span>
-          )}
+        <div className="w-fit">
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableHead>Language</TableHead>
+                <TableCell>{task.environment.language}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableHead>Time Limit</TableHead>
+                <TableCell>{task.environment.time_limit_secs}s</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableHead>Memory Limit</TableHead>
+                <TableCell>{task.environment.memory_limit_mb}MB</TableCell>
+              </TableRow>
+              {task.environment.extra_options && (
+                <>
+                  <TableRow>
+                    <TableHead>Extra Options</TableHead>
+                    <TableCell>
+                      <Table className="w-fit">
+                        <TableBody>
+                          {Object.entries(task.environment.extra_options).map(
+                            ([key, value]) =>
+                              !!value && (
+                                <TableRow key={key}>
+                                  <TableHead>{key}</TableHead>
+                                  <TableCell className="whitespace-pre-line">
+                                    {value}
+                                  </TableCell>
+                                </TableRow>
+                              ),
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableCell>
+                  </TableRow>
+                </>
+              )}
+            </TableBody>
+          </Table>
         </div>
       </div>
       <div className="flex flex-col gap-2">
