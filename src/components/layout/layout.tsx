@@ -8,7 +8,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { getUserProfile } from "@/features/auth/queries";
 import { useUserStore } from "@/store/user/user-store-provider";
 
-import { Separator } from "../ui/separator";
 import Breadcrumb from "./breadcrumb";
 
 const Layout: React.FC<PropsWithChildren> = () => {
@@ -29,16 +28,15 @@ const Layout: React.FC<PropsWithChildren> = () => {
   }, [setUser, userProfile, isLoading]);
 
   return (
-    <main className="flex h-screen w-screen flex-col overflow-y-scroll bg-[#141414] p-4">
+    <main className="flex h-screen w-screen flex-col overflow-y-scroll bg-[#141414]">
       <Toaster />
       <div className="flex max-h-screen w-full text-neutral-300">
         {user && (
           <SidebarProvider>
             <AppSidebar pathname={pathname} />
-            <main className="w-full">
+            <main className="w-full p-4">
               <div className="flex items-center gap-2">
                 <SidebarTrigger />
-                <Separator orientation="vertical" className="mr-2 h-4" />
                 <Breadcrumb />
               </div>
               <Outlet />
