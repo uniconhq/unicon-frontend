@@ -27,7 +27,7 @@ const StepMetadata: React.FC<OwnProps> = ({ step }) => {
     return null;
   }
   return (
-    <div className="mx-2 pb-4 text-sm text-gray-500">
+    <div className="mx-2 pb-4 text-sm">
       {step.type === "PY_RUN_FUNCTION_STEP" && (
         <PyRunMetadata step={step as PyRunFunctionStep} />
       )}

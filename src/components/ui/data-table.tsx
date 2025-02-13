@@ -52,7 +52,7 @@ export function DataTable<TData extends ExtendedData, TValue>({
 
   return (
     <div>
-      <div className="rounded-md border">
+      <div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
