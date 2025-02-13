@@ -96,116 +96,120 @@ export function ProgrammingSubmitForm({
       : undefined;
 
   return (
-    <>
-      <span className="text-xs font-medium text-gray-300">SUBMISSION</span>
-      <form onSubmit={handleSubmit(submitForm)}>
-        {requiredInputs.map(({ id, name }) => (
-          <div
-            key={id}
-            className="mt-2 grid w-full max-w-sm items-center gap-2"
-          >
-            <Label className="text-md font-mono">{name}</Label>
-            <Input
-              {...register(id.replace(/\./g, "_"), { required: true })}
-              id={id}
-              type="file"
-            />
-          </div>
-        ))}
-        <Button className="mt-6" type="submit">
-          Submit
-        </Button>
-      </form>
-      <span className="text-xs font-medium text-gray-300">RESULTS</span>
-      <div className="relative flex flex-col gap-4">
-        <div className="flex gap-4">
-          <Select
-            value={selectedAttemptIdx?.toString() ?? ""}
-            onValueChange={(value) => {
-              setSelectedAttemptIdx(+value);
-              if (
-                taskAttemptResults &&
-                taskAttemptResults[+value]?.task_results.length > 0
-              ) {
-                setSelectedResultIdx(
-                  taskAttemptResults[+value]?.task_results.length - 1,
-                );
-              }
-            }}
-            disabled={!taskAttemptResults?.length}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select an attempt" />
-            </SelectTrigger>
-            <SelectContent>
-              {taskAttemptResults
-                ?.slice()
-                .reverse()
-                .map((taskAttempt, index) => (
-                  <SelectItem
-                    key={taskAttempt.id}
-                    value={`${taskAttemptResults.length - index - 1}`}
-                  >
-                    Attempt #{taskAttemptResults.length - index}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-          {selectedAttempt && selectedAttempt.task_results.length > 0 && (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <span className="font-medium">SUBMISSION</span>
+        <form onSubmit={handleSubmit(submitForm)}>
+          {requiredInputs.map(({ id, name }) => (
+            <div
+              key={id}
+              className="mt-2 grid w-full max-w-sm items-center gap-2"
+            >
+              <Label className="text-md font-mono">{name}</Label>
+              <Input
+                {...register(id.replace(/\./g, "_"), { required: true })}
+                id={id}
+                type="file"
+              />
+            </div>
+          ))}
+          <Button className="mt-6" type="submit">
+            Submit
+          </Button>
+        </form>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="font-medium">RESULTS</span>
+        <div className="relative flex flex-col gap-4">
+          <div className="flex gap-4">
             <Select
-              value={selectedResultIdx?.toString() ?? ""}
-              onValueChange={(value) => setSelectedResultIdx(+value)}
-              disabled={!selectedAttempt.task_results?.length}
+              value={selectedAttemptIdx?.toString() ?? ""}
+              onValueChange={(value) => {
+                setSelectedAttemptIdx(+value);
+                if (
+                  taskAttemptResults &&
+                  taskAttemptResults[+value]?.task_results.length > 0
+                ) {
+                  setSelectedResultIdx(
+                    taskAttemptResults[+value]?.task_results.length - 1,
+                  );
+                }
+              }}
+              disabled={!taskAttemptResults?.length}
             >
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a result" />
+                <SelectValue placeholder="Select an attempt" />
               </SelectTrigger>
               <SelectContent>
-                {selectedAttempt.task_results
+                {taskAttemptResults
                   ?.slice()
                   .reverse()
-                  .map((taskResult, index) => (
+                  .map((taskAttempt, index) => (
                     <SelectItem
-                      key={taskResult.id}
-                      value={`${selectedAttempt.task_results.length - index - 1}`}
+                      key={taskAttempt.id}
+                      value={`${taskAttemptResults.length - index - 1}`}
                     >
-                      Result #{selectedAttempt.task_results.length - index}
+                      Attempt #{taskAttemptResults.length - index}
                     </SelectItem>
                   ))}
               </SelectContent>
             </Select>
-          )}
-          {selectedAttempt && (
-            <Button
-              onClick={() => rerunAttemptMutation.mutate(selectedAttempt.id)}
-            >
-              <RefreshCcw />
-              Rerun
-            </Button>
-          )}
+            {selectedAttempt && selectedAttempt.task_results.length > 0 && (
+              <Select
+                value={selectedResultIdx?.toString() ?? ""}
+                onValueChange={(value) => setSelectedResultIdx(+value)}
+                disabled={!selectedAttempt.task_results?.length}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a result" />
+                </SelectTrigger>
+                <SelectContent>
+                  {selectedAttempt.task_results
+                    ?.slice()
+                    .reverse()
+                    .map((taskResult, index) => (
+                      <SelectItem
+                        key={taskResult.id}
+                        value={`${selectedAttempt.task_results.length - index - 1}`}
+                      >
+                        Result #{selectedAttempt.task_results.length - index}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            )}
+            {selectedAttempt && (
+              <Button
+                onClick={() => rerunAttemptMutation.mutate(selectedAttempt.id)}
+              >
+                <RefreshCcw />
+                Rerun
+              </Button>
+            )}
+          </div>
+          {selectedAttemptIdx !== null &&
+          taskAttemptResults?.length &&
+          selectedAttempt ? (
+            <TaskResultCard
+              title={`Attempt ${selectedAttemptIdx + 1}`}
+              taskAttempt={{
+                ...selectedAttempt,
+                task_results: selectedAttempt.task_results.filter(
+                  (_result, index) => index === selectedResultIdx,
+                ),
+                task: {
+                  ...task,
+                  problem_id: problemId,
+                  autograde: task.autograde ?? false,
+                  other_fields: { ...task },
+                  updated_version_id: null,
+                },
+              }}
+            />
+          ) : null}
         </div>
-        {selectedAttemptIdx !== null &&
-        taskAttemptResults?.length &&
-        selectedAttempt ? (
-          <TaskResultCard
-            title={`Attempt ${selectedAttemptIdx + 1}`}
-            taskAttempt={{
-              ...selectedAttempt,
-              task_results: selectedAttempt.task_results.filter(
-                (_result, index) => index === selectedResultIdx,
-              ),
-              task: {
-                ...task,
-                problem_id: problemId,
-                autograde: task.autograde ?? false,
-                other_fields: { ...task },
-                updated_version_id: null,
-              },
-            }}
-          />
-        ) : null}
       </div>
-    </>
+    </div>
   );
 }
 

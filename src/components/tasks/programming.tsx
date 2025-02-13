@@ -26,34 +26,40 @@ export function Programming({
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <span className="text-xs font-medium text-gray-300">QUESTION</span>
-      {task.question}
-      <span className="text-xs font-medium text-gray-300">ENVIRONMENT</span>
-      <div className="flex flex-col gap-2 font-mono text-sm">
-        <span>Language: {task.environment.language}</span>
-        <span>Time Limit: {task.environment.time_limit_secs}s</span>
-        <span>Memory Limit: {task.environment.memory_limit_mb}MB</span>
-        {task.environment.extra_options && (
-          <span>
-            Extra Options:{" "}
-            {JSON.stringify(task.environment.extra_options, null, 4)}
-          </span>
-        )}
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <span className="font-medium">QUESTION</span>
+        <span className="text-gray-300">{task.question}</span>
       </div>
-      <span className="text-xs font-medium text-gray-300">TESTCASES</span>
-      <div className="flex gap-2 font-mono">
-        {task.testcases.map((testcase, index) => (
-          <Testcase
-            edit={false}
-            key={testcase.id}
-            index={index}
-            testcase={testcase}
-            userInput={userInput}
-            isSelected={selectedTestcaseIdx === index}
-            onSelected={setSelectedTestcaseIdx}
-          />
-        ))}
+      <div className="flex flex-col gap-2">
+        <span className="font-medium">ENVIRONMENT</span>
+        <div className="flex flex-col gap-2 font-mono text-sm text-gray-300">
+          <span>Language: {task.environment.language}</span>
+          <span>Time Limit: {task.environment.time_limit_secs}s</span>
+          <span>Memory Limit: {task.environment.memory_limit_mb}MB</span>
+          {task.environment.extra_options && (
+            <span>
+              Extra Options:{" "}
+              {JSON.stringify(task.environment.extra_options, null, 4)}
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="font-medium">TESTCASES</span>
+        <div className="flex gap-2 font-mono text-gray-300">
+          {task.testcases.map((testcase, index) => (
+            <Testcase
+              edit={false}
+              key={testcase.id}
+              index={index}
+              testcase={testcase}
+              userInput={userInput}
+              isSelected={selectedTestcaseIdx === index}
+              onSelected={setSelectedTestcaseIdx}
+            />
+          ))}
+        </div>
       </div>
       {submit && <ProgrammingSubmitForm problemId={problemId} task={task} />}
     </div>
