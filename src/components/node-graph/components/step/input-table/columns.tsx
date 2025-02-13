@@ -38,7 +38,7 @@ export const columns: ColumnDef<StepSocket & { step: InputStep }>[] = [
           label=""
           type="source"
           hideLabel
-          style={{ width: "20px", borderRadius: "10px", right: "-10px" }}
+          style={{ width: "20px", borderRadius: "10px", right: "-12px" }}
         />
       );
     },
