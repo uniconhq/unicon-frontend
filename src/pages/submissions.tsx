@@ -98,7 +98,7 @@ const Submissions = () => {
             setProblemFilter(value === "all" ? null : Number(value))
           }
         >
-          <SelectTrigger>
+          <SelectTrigger className="border border-border bg-zinc-800">
             <SelectValue placeholder="Filter by problem" />
           </SelectTrigger>
           <SelectContent>
@@ -120,7 +120,7 @@ const Submissions = () => {
               }
             }}
           >
-            <SelectTrigger>
+            <SelectTrigger className="border border-border bg-zinc-800">
               <SelectValue placeholder="Filter by group" />
             </SelectTrigger>
             <SelectContent>
@@ -141,7 +141,7 @@ const Submissions = () => {
               setUserFilter(value === "all" ? null : Number(value))
             }
           >
-            <SelectTrigger>
+            <SelectTrigger className="border border-border bg-zinc-800">
               <SelectValue placeholder="Filter by user" />
             </SelectTrigger>
             <SelectContent>
